@@ -63,9 +63,9 @@ public:
 	/// Saves the unit data to YAML.
 	void save(YAML::Emitter& out) const;
 	/// Gets the unit's type.
-	std::string getType() const;
+	const std::string getType() const;
 	/// Get the unit's stats.
-	UnitStats *getStats();
+	const UnitStats *getStats() const;
 	/// Get the unit's height when standing.
 	int getStandHeight() const;
 	/// Get the unit's height when kneeling.
@@ -75,7 +75,7 @@ public:
 	/// Get the armor type.
 	std::string getArmor() const;
 	/// Get the alien race type.
-	std::string getRace() const;
+	const std::string getRace() const;
 	/// Get the alien rank.
 	std::string getRank() const;
 	/// Get the value - for score calculation.

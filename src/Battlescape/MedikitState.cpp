@@ -191,6 +191,7 @@ void MedikitState::onEndClick(Action *)
 
 /**
  * Handler for clicking on the heal button
+ * Kmod: don't let me spend if it won't work.
  * @param action Pointer to an action.
  */
 void MedikitState::onHealClick(Action *)
@@ -201,14 +202,18 @@ void MedikitState::onHealClick(Action *)
 	{
 		return;
 	}
-	if (_unit->spendTimeUnits (rule->getTUUse()))
+	if (_unit->getTimeUnits() >= rule->getTUUse())
 	{
-		_targetUnit->heal(_medikitView->getSelectedPart(), rule->getHealAmount(), rule->getHealthAmount());
-		_item->setHealQuantity(--heal);
+		if (_targetUnit->heal(_medikitView->getSelectedPart(), 
+				rule->getHealAmount(), rule->getHealthAmount()))
+		{
+			_unit->spendTimeUnits (rule->getTUUse());
+			_item->setHealQuantity(--heal);
+		}
 		_medikitView->invalidate();
 		update();
 	}
-	else
+    else
 	{
 		_action->result = "STR_NOT_ENOUGH_TIME_UNITS";
 		_game->popState();

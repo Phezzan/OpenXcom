@@ -190,7 +190,7 @@ void Unit::save(YAML::Emitter &out) const
  * this unit. Each unit type has a unique name.
  * @return Unit name.
  */
-std::string Unit::getType() const
+const std::string Unit::getType() const
 {
 	return _type;
 }
@@ -199,7 +199,7 @@ std::string Unit::getType() const
  * Returns the unit's stats data object.
  * @return Stats.
  */
-UnitStats *Unit::getStats()
+UnitStats const *Unit::getStats() const
 {
 	return &_stats;
 }
@@ -244,7 +244,7 @@ std::string Unit::getArmor() const
  * Gets the alien's race.
  * @return string.
  */
-std::string Unit::getRace() const
+const std::string Unit::getRace() const
 {
 	return _race;
 }
