@@ -457,10 +457,12 @@ void Soldier::trainPsi()
 		int max = _rules->getMaxStats().psiSkill + _rules->getMaxStats().psiSkill / 2;
 		_improvement = RNG::generate(_rules->getMaxStats().psiSkill, max);
 	}
-	else if(_currentStats.psiSkill <= (_rules->getStatCaps().psiSkill / 2))
-		_improvement = RNG::generate(5, 12);
-	else if(_currentStats.psiSkill < _rules->getStatCaps().psiSkill)
+	else if(_currentStats.psiSkill * 2 <= _rules->getStatCaps().psiSkill)
+		_improvement = RNG::generate(4, 10);
+	else if(_currentStats.psiSkill * 10 < _rules->getStatCaps().psiSkill * 8 )
 		_improvement = RNG::generate(1, 3);
+	else if(_currentStats.psiSkill < _rules->getStatCaps().psiSkill)
+		_improvement = RNG::generate(0, 2);
 	_currentStats.psiSkill += _improvement;
 	if(_currentStats.psiSkill > 100)
 		_currentStats.psiSkill = 100;

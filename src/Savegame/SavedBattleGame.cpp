@@ -1543,11 +1543,11 @@ int SavedBattleGame::getMoraleModifier(BattleUnit* unit)
 			switch (leader->getRankInt())
 			{
 			case 5:
-				result += 25;
+				result += 20;
 			case 4:
 				result += 10;
 			case 3:
-				result += 5;
+				result += 10;
 			case 2:
 				result += 10;
 			default:
