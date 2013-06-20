@@ -30,6 +30,7 @@
 #include "../Savegame/Base.h"
 #include "../Interface/TextList.h"
 #include "GeoscapeState.h"
+#include "../Ruleset/RuleSoldier.h"
 #include "../Savegame/Soldier.h"
 #include "../Engine/Action.h"
 #include "../Engine/Options.h"
@@ -119,10 +120,11 @@ AllocatePsiTrainingState::AllocatePsiTrainingState(Game *game, Base *base) : Sta
 	int row = 0;
 	for(std::vector<Soldier*>::const_iterator s = base->getSoldiers()->begin(); s != base->getSoldiers()->end(); ++s)
 	{
-	std::wstringstream ssStr;
-	std::wstringstream ssSkl;
+		std::wstringstream ssStr;
+		std::wstringstream ssSkl;
 		_soldiers.push_back(*s);
-		if((*s)->getCurrentStats()->psiSkill <= 0)
+
+		if((*s)->getCurrentStats()->psiSkill <= (*s)->getRules()->getMaxStats().psiSkill)
 		{
 			ssSkl << "0/+0";
 			ssStr << _game->getLanguage()->getString("STR_UNKNOWN").c_str();

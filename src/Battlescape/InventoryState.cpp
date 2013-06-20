@@ -37,6 +37,7 @@
 #include "../Ruleset/Ruleset.h"
 #include "../Ruleset/RuleItem.h"
 #include "../Ruleset/RuleInventory.h"
+#include "../Ruleset/RuleSoldier.h"
 #include "../Ruleset/Armor.h"
 #include "../Engine/Options.h"
 #include "UnitInfoState.h"
@@ -233,7 +234,7 @@ void InventoryState::init()
 		ss3 << _game->getLanguage()->getString("STR_REACT") << L'\x01' << unit->getStats()->reactions;
 		_txtReact->setText(ss3.str());
 
-		if (unit->getStats()->psiSkill > 0)
+		if (unit->getStats()->psiSkill > s->getRules()->getMaxStats().psiSkill)
 		{
 			std::wstringstream ss4;
 			ss4 << _game->getLanguage()->getString("STR_PSKILL") << L'\x01' << unit->getStats()->psiSkill;

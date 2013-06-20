@@ -34,6 +34,7 @@
 #include "../Savegame/Base.h"
 #include "../Savegame/Craft.h"
 #include "../Ruleset/RuleCraft.h"
+#include "../Ruleset/RuleSoldier.h"
 #include "../Ruleset/Armor.h"
 #include "../Savegame/Soldier.h"
 #include "../Engine/SurfaceSet.h"
@@ -460,7 +461,7 @@ void UnitInfoState::init()
 	_barStrength->setMax(_unit->getStats()->strength);
 	_barStrength->setValue(_unit->getStats()->strength);
 
-	if (_unit->getStats()->psiSkill > 0)
+	if (_unit->getStats()->psiSkill > _game->getSavedGame()->getSoldier(0)->getRules()->getMaxStats().psiSkill)
 	{
 		ss.str(L"");
 		ss << _unit->getStats()->psiStrength;

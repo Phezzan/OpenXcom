@@ -32,6 +32,7 @@
 #include "../Savegame/Base.h"
 #include "../Savegame/Craft.h"
 #include "../Ruleset/RuleCraft.h"
+#include "../Ruleset/RuleSoldier.h"
 #include "../Savegame/Soldier.h"
 #include "../Engine/SurfaceSet.h"
 #include "../Ruleset/Armor.h"
@@ -324,7 +325,7 @@ void SoldierInfoState::init()
 	UnitStats *initial = s->getInitStats();
 	UnitStats *current = s->getCurrentStats();
 	
-	if(current->psiSkill > 0)
+	if(current->psiSkill >= s->getRules()->getMaxStats().psiSkill)
 	{
 		_txtPsiStrength->setVisible(true);
 		_numPsiStrength->setVisible(true);
@@ -440,7 +441,7 @@ void SoldierInfoState::init()
 
 	_txtPsionic->setVisible(s->isInPsiTraining());
 
-	if(current->psiSkill > 0)
+	if(current->psiSkill >= s->getRules()->getMaxStats().psiSkill)
 	{
 		std::wstringstream ss14;
 		ss14 << current->psiStrength;
