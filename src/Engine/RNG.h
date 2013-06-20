@@ -44,6 +44,8 @@ namespace RNG
 	double generate(double min, double max);
 	/// Get normally distributed value.
 	double boxMuller(double m = 0, double s = 1);
+    /// Roll n die, average result 
+    unsigned nDice(int const n, unsigned min, unsigned max);
 }
 
 }
