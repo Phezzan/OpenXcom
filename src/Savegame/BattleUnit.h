@@ -73,7 +73,7 @@ private:
 	int _walkPhase, _fallPhase;
 	std::vector<BattleUnit *> _visibleUnits, _unitsSpottedThisTurn;
 	std::vector<Tile *> _visibleTiles;
-	int _tu, _energy, _health, _morale, _stunlevel;
+	int _tu, _energy, _health, _morale, _stunlevel, _dmg; // _dmg - all dmg taken this battle
 	bool _kneeled, _floating, _dontReselect;
 	int _currentArmor[5];
 	int _fatalWounds[6];
@@ -92,9 +92,9 @@ private:
 	int _faceDirection; // used only during strafeing moves
 	
 	// static data
-	std::string _type;
+	std::string const _type;
 	std::string _rank;
-	std::string _race;
+	std::string const _race;
 	std::wstring _name;
 	UnitStats _stats;
 	int _standHeight, _kneelHeight, _floatHeight;
@@ -205,8 +205,12 @@ public:
 	int getFallingPhase() const;
 	/// The unit is out - either dead or unconscious.
 	bool isOut() const;
+	/// The unit is ready - not berserk or panicked or dead ...
+	bool isReady() const;
+    /// The unit is capable of snap shots (isReady() && _tu > SNAP)
+    bool isReactive() const;
 	/// Get the number of time units a certain action takes.
-	int getActionTUs(BattleActionType actionType, BattleItem *item);
+	int getActionTUs(BattleActionType actionType, BattleItem * const item) const;
 	/// Spend time units if it can.
 	bool spendTimeUnits(int tu, bool debugmode = false);
 	/// Spend energy if it can.
@@ -238,7 +242,7 @@ public:
 	/// Get total number of fatal wounds.
 	int getFatalWounds() const;
 	/// Get the current reaction score.
-	double getReactionScore();
+	unsigned getReactionScore(int TUmod = 0) const;
 	/// Prepare for a new turn.
 	void prepareNewTurn();
 	/// Morale change
@@ -304,7 +308,7 @@ public:
 	/// Get fatal wound amount of a body part
 	int getFatalWound(int part) const;
 	/// Heal one fatal wound
-	void heal(int part, int healAmount, int healthAmount);
+	int heal(int part, int healAmount, int healthAmount);
 	/// Give pain killers to this unit
 	void painKillers ();
 	/// Give stimulant to this unit
@@ -316,7 +320,7 @@ public:
 	/// Gets the unit's name.
 	std::wstring getName(Language *lang, bool debugAppendId = false) const;
 	/// Gets the unit's stats.
-	UnitStats *getStats();
+	const UnitStats *getStats() const;
 	/// Get the unit's stand height.
 	int getStandHeight() const;
 	/// Get the unit's kneel height.
@@ -348,7 +352,7 @@ public:
 	/// Add a kill to the counter.
 	void addKillCount();
 	/// Get unit type.
-	std::string getType() const;
+	const std::string getType() const;
 	/// Set the hand this unit is using;
 	void setActiveHand(const std::string &slot);
 	/// Get unit's active hand.
@@ -368,7 +372,7 @@ public:
 	/// Sets the unit's energy level.
 	void setEnergy(int energy);
 	/// Halve the unit's armor values.
-	void halveArmor();
+	void adjustArmor(int diff = 0);
 	/// Gets the unit's faction.
 	UnitFaction killedBy() const;
 	/// Set the faction that killed this unit.

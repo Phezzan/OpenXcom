@@ -519,7 +519,7 @@ void BattlescapeGame::checkForCasualties(BattleItem *murderweapon, BattleUnit *m
 			{
 				murderer->addKillCount();
 				victim->killedBy(murderer->getFaction());
-				int modifier = murderer->getFaction() == FACTION_PLAYER ? _save->getMoraleModifier() : 100;
+				int const modifier = murderer->getFaction() == FACTION_PLAYER ? _save->getMoraleModifier() : 100;
 
 				// if there is a known murderer, he will get a morale bonus if he is of a different faction (what with neutral?)
 				if ((victim->getOriginalFaction() == FACTION_PLAYER && murderer->getFaction() == FACTION_HOSTILE) ||
@@ -547,18 +547,17 @@ void BattlescapeGame::checkForCasualties(BattleItem *murderweapon, BattleUnit *m
 
 			if (victim->getFaction() != FACTION_NEUTRAL)
 			{
-				int modifier = _save->getMoraleModifier(victim);
-				int loserMod = victim->getFaction() == FACTION_HOSTILE ? 100 : _save->getMoraleModifier();
-				int winnerMod = victim->getFaction() == FACTION_HOSTILE ? _save->getMoraleModifier() : 100;
 				for (std::vector<BattleUnit*>::iterator i = _save->getUnits()->begin(); i != _save->getUnits()->end(); ++i)
 				{
-					if (!(*i)->isOut() && (*i)->getArmor()->getSize() == 1)
+					if (!(*i)->isOut() && (*i)->isFearable())
 					{
 						// the losing squad all get a morale loss
 						if ((*i)->getOriginalFaction() == victim->getOriginalFaction())
 						{
-							int bravery = (110 - (*i)->getStats()->bravery) / 10;
-							(*i)->moraleChange(-(modifier * 200 * bravery / loserMod / 100));
+							int const modifier = _save->getMoraleModifier(victim);
+							int const loserMod = victim->getFaction() == FACTION_HOSTILE ? 100 : _save->getMoraleModifier();
+							int const cowardice= (110 - (*i)->getStats()->bravery);
+							(*i)->moraleChange(-20 * modifier * cowardice / loserMod / 100);
 
 							// revenge procedure:
 							// if the victim is hostile, the nearest other hostile will aggro if he wasn't already
@@ -597,6 +596,7 @@ void BattlescapeGame::checkForCasualties(BattleItem *murderweapon, BattleUnit *m
 						// the winning squad all get a morale increase
 						else
 						{
+							int winnerMod = victim->getFaction() == FACTION_HOSTILE ? _save->getMoraleModifier() : 100;
 							(*i)->moraleChange(10 * winnerMod / 100);
 						}
 					}
@@ -627,7 +627,7 @@ void BattlescapeGame::checkForCasualties(BattleItem *murderweapon, BattleUnit *m
 					}
 				}
 			}
-			if ((*j)->getHealth() > 0 && (*j)->getSpecialAbility() == SPECAB_RESPAWN)
+			if ((*j)->getHealth() > 0 && (*j)->getHealth() < 5 && (*j)->getSpecialAbility() == SPECAB_RESPAWN)
 			{
 				(*j)->setSpecialAbility(SPECAB_NONE);
 				convertUnit((*j), (*j)->getSpawnUnit());
@@ -1543,11 +1543,6 @@ BattleUnit *BattlescapeGame::convertUnit(BattleUnit *unit, std::string newType)
 
 	BattleUnit *newUnit = new BattleUnit(getRuleset()->getUnit(newType), FACTION_HOSTILE, _save->getUnits()->back()->getId() + 1, getRuleset()->getArmor(newArmor.str()), difficulty);
 	
-	if (!difficulty)
-	{
-		newUnit->halveArmor();
-	}
-
 	getSave()->getTile(unit->getPosition())->setUnit(newUnit, _save->getTile(unit->getPosition() + Position(0,0,-1)));
 	newUnit->setPosition(unit->getPosition());
 	newUnit->setDirection(3);
@@ -1966,7 +1961,7 @@ void BattlescapeGame::tallyUnits(int &liveAliens, int &liveSoldiers, bool conver
 	bool psiCapture = Options::getBool("allowPsionicCapture");
 	for (std::vector<BattleUnit*>::iterator j = _save->getUnits()->begin(); j != _save->getUnits()->end(); ++j)
 	{
-		if (convert && (*j)->getHealth() > 0 && (*j)->getSpecialAbility() == SPECAB_RESPAWN)
+		if (convert && (*j)->getHealth() > 0 && (*j)->getHealth() < 5 && (*j)->getSpecialAbility() == SPECAB_RESPAWN)
 		{
 			(*j)->setSpecialAbility(SPECAB_NONE);
 			convertUnit((*j), (*j)->getSpawnUnit());

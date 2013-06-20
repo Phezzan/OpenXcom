@@ -46,17 +46,21 @@ namespace OpenXcom
  * @param soldier Pointer to the Soldier.
  * @param faction Which faction the units belongs to.
  */
-BattleUnit::BattleUnit(Soldier *soldier, UnitFaction faction) : _faction(faction), _originalFaction(faction), _killedBy(faction), _id(0), _pos(Position()), _tile(0),
-																_lastPos(Position()), _direction(0), _toDirection(0), _directionTurret(0), _toDirectionTurret(0),
-																_verticalDirection(0), _status(STATUS_STANDING), _walkPhase(0), _fallPhase(0), _kneeled(false), _floating(false),
-																_dontReselect(false), _fire(0), _currentAIState(0), _visible(false), _cacheInvalid(true),
-																_expBravery(0), _expReactions(0), _expFiring(0), _expThrowing(0), _expPsiSkill(0), _expMelee(0),
-																_turretType(-1), _motionPoints(0), _kills(0), _geoscapeSoldier(soldier), _charging(0), _turnsExposed(0),
-																_unitRules(0), _rankInt(-1), _hidingForTurn(false)
+BattleUnit::BattleUnit(Soldier *soldier, UnitFaction faction) : 
+    _faction(faction), _originalFaction(faction), _killedBy(faction), _id(0), 
+    _pos(Position()), _tile(0), _lastPos(Position()), 
+    _direction(0), _toDirection(0), _directionTurret(0), _toDirectionTurret(0),  
+    _verticalDirection(0), _status(STATUS_STANDING), 
+    _walkPhase(0), _fallPhase(0), _kneeled(false), _floating(false), _dontReselect(false), 
+    _fire(0), _currentAIState(0), _visible(false), _cacheInvalid(true), 
+    _expBravery(0), _expReactions(0), _expFiring(0), _expThrowing(0), _expPsiSkill(0), 
+    _expMelee(0), 
+    _turretType(-1), _motionPoints(0), _kills(0), 
+    _type("SOLDIER"), _geoscapeSoldier(soldier), 
+    _charging(0), _turnsExposed(0), _unitRules(0), _rankInt(-1), _hidingForTurn(false)
 {
 	_name = soldier->getName();
 	_id = soldier->getId();
-	_type = "SOLDIER";
 	_rank = soldier->getRankString();
 	_stats = *soldier->getCurrentStats();
 	_standHeight = soldier->getRules()->getStandHeight();
@@ -112,23 +116,21 @@ BattleUnit::BattleUnit(Soldier *soldier, UnitFaction faction) : _faction(faction
  * @param faction Which faction the units belongs to.
  * @param difficulty level (for stat adjustement)
  */
-BattleUnit::BattleUnit(Unit *unit, UnitFaction faction, int id, Armor *armor, int diff) : _faction(faction), _originalFaction(faction), _killedBy(faction), _id(id), _pos(Position()),
-																						_tile(0), _lastPos(Position()), _direction(0), _toDirection(0), _directionTurret(0),
-																						_toDirectionTurret(0),  _verticalDirection(0), _status(STATUS_STANDING), _walkPhase(0),
-																						_fallPhase(0), _kneeled(false), _floating(false), _dontReselect(false), _fire(0), _currentAIState(0),
-																						_visible(false), _cacheInvalid(true), _expBravery(0), _expReactions(0), _expFiring(0),
-																						_expThrowing(0), _expPsiSkill(0), _expMelee(0), _turretType(-1), _motionPoints(0), _kills(0),
-																						_armor(armor), _geoscapeSoldier(0), _charging(0), _turnsExposed(0), _unitRules(unit), _rankInt(-1),
-																						_hidingForTurn(false)
+BattleUnit::BattleUnit(Unit *unit, UnitFaction faction, int id, Armor *armor, int diff) : 
+    _faction(faction), _originalFaction(faction), _killedBy(faction), 
+    _id(id), _pos(Position()), _tile(0), _lastPos(Position()), 
+    _direction(0), _toDirection(0), _directionTurret(0), _toDirectionTurret(0),  
+    _verticalDirection(0), _status(STATUS_STANDING), 
+    _walkPhase(0), _fallPhase(0), _kneeled(false), _floating(false), _dontReselect(false), 
+    _fire(0), _currentAIState(0), _visible(false), _cacheInvalid(true),
+    _expBravery(0), _expReactions(0), _expFiring(0), _expThrowing(0), 
+    _expPsiSkill(0), _expMelee(0), 
+    _turretType(-1), _motionPoints(0), _kills(0), 
+    _type(unit->getType()), _race(unit->getRace()), _armor(armor), _geoscapeSoldier(0), 
+    _charging(0), _turnsExposed(0), _unitRules(unit), _rankInt(-1), _hidingForTurn(false)
 {
-	_type = unit->getType();
 	_rank = unit->getRank();
-	_race = unit->getRace();
 	_stats = *unit->getStats();
-	if (faction == FACTION_HOSTILE)
-	{
-		adjustStats(diff);
-	}
 	_standHeight = unit->getStandHeight();
 	_kneelHeight = unit->getKneelHeight();
 	_floatHeight = unit->getFloatHeight();
@@ -150,11 +152,19 @@ BattleUnit::BattleUnit(Unit *unit, UnitFaction faction, int id, Armor *armor, in
 	_health = _stats.health;
 	_morale = 100;
 	_stunlevel = 0;
+	_dmg = 0;
+
 	_currentArmor[SIDE_FRONT] = _armor->getFrontArmor();
 	_currentArmor[SIDE_LEFT] = _armor->getSideArmor();
 	_currentArmor[SIDE_RIGHT] = _armor->getSideArmor();
 	_currentArmor[SIDE_REAR] = _armor->getRearArmor();
 	_currentArmor[SIDE_UNDER] = _armor->getUnderArmor();
+
+	if (faction == FACTION_HOSTILE)
+	{
+		adjustStats(diff);
+        adjustArmor(diff);
+	}
 	for (int i = 0; i < 6; ++i)
 		_fatalWounds[i] = 0;
 	for (int i = 0; i < 5; ++i)
@@ -262,6 +272,7 @@ void BattleUnit::load(const YAML::Node &node)
 	node["tu"] >> _tu;
 	node["health"] >> _health;
 	node["stunlevel"] >> _stunlevel;
+	node["dmg"] >> _dmg;
 	node["energy"] >> _energy;
 	node["morale"] >> _morale;
 	node["kneeled"] >> _kneeled;
@@ -330,6 +341,7 @@ void BattleUnit::save(YAML::Emitter &out) const
 	out << YAML::Key << "tu" << YAML::Value << _tu;
 	out << YAML::Key << "health" << YAML::Value << _health;
 	out << YAML::Key << "stunlevel" << YAML::Value << _stunlevel;
+	out << YAML::Key << "dmg" << YAML::Value << _dmg;
 	out << YAML::Key << "energy" << YAML::Value << _energy;
 	out << YAML::Key << "morale" << YAML::Value << _morale;
 	out << YAML::Key << "kneeled" << YAML::Value << _kneeled;
@@ -1055,6 +1067,7 @@ int BattleUnit::damage(Position position, int power, ItemDamageType type, bool i
 		{
 			// health damage
 			_health -= power;
+            _dmg    += power;
 			if (_health < 0)
 			{
 				_health = 0;
@@ -1065,20 +1078,26 @@ int BattleUnit::damage(Position position, int power, ItemDamageType type, bool i
 				if (_armor->getSize() == 1)
 				{
 					// conventional weapons can cause additional stun damage
-					_stunlevel += RNG::generate(0, power / 4);
+					_stunlevel += RNG::nDice(2, 0, power / 4);
 				}
 				// fatal wounds
 				if (isWoundable())
 				{
-					if (RNG::generate(0, 10) < power)
-						_fatalWounds[bodypart] += RNG::generate(1,3);
+                    int rnd = RNG::generate(1, _health);
+					if (rnd <= power)
+                    {
+                        rnd = RNG::generate(1, power / rnd);
+                        if (rnd >= 2 + power / 12)
+                            rnd  = 2 + power / 12;
+						_fatalWounds[bodypart] += rnd;
+                    }
 
 					if (_fatalWounds[bodypart])
 						moraleChange(-_fatalWounds[bodypart]);
 				}
 				// armor damage
 				setArmor(getArmor(side) - (power/10) - 1, side);
-			}
+            }
 			_needPainKiller = true;
 		}
 	}
@@ -1154,13 +1173,30 @@ bool BattleUnit::isOut() const
 	return _status == STATUS_DEAD || _status == STATUS_UNCONSCIOUS;
 }
 
+bool BattleUnit::isReady() const
+{
+    return _tu > 3 && 
+        (_status == STATUS_STANDING || _status == STATUS_WALKING 
+        || _status == STATUS_FLYING || _status == STATUS_TURNING 
+        || _status == STATUS_AIMING);
+}
+
+bool BattleUnit::isReactive() const
+{
+    int snap = getActionTUs(BA_SNAPSHOT, getMainHandWeapon(1));
+    return _tu >= snap && snap > 0 &&
+        (_status == STATUS_STANDING || _status == STATUS_WALKING 
+        || _status == STATUS_FLYING || _status == STATUS_TURNING 
+        || _status == STATUS_AIMING);
+}
+
 /**
  * Get the number of time units a certain action takes.
  * @param actionType
  * @param item
  * @return TUs
  */
-int BattleUnit::getActionTUs(BattleActionType actionType, BattleItem *item)
+int BattleUnit::getActionTUs(BattleActionType actionType, BattleItem * const item) const
 {
 	if (item == 0)
 	{
@@ -1176,7 +1212,9 @@ int BattleUnit::getActionTUs(BattleActionType actionType, BattleItem *item)
 		case BA_AUTOSHOT:
 			return (int)(getStats()->tu * item->getRules()->getTUAuto() / 100);
 		case BA_SNAPSHOT:
-			return (int)(getStats()->tu * item->getRules()->getTUSnap() / 100);
+            if (item->getRules()->getTUSnap())
+                return (int)(getStats()->tu * item->getRules()->getTUSnap() / 100);
+            //Fall
 		case BA_STUN:
 		case BA_HIT:
 			if (item->getRules()->getFlatRate())
@@ -1434,11 +1472,29 @@ int BattleUnit::getFatalWounds() const
  * Little formula to calculate reaction score.
  * @return Reaction score.
  */
-double BattleUnit::getReactionScore()
+unsigned BattleUnit::getReactionScore(int TUmod) const
 {
 	//(Reactions Stat) x (Current Time Units / Max TUs)
-	double score = ((double)getStats()->reactions * (double)getTimeUnits()) / (double)getStats()->tu;
-	return score;
+    switch(_status)
+    {
+    case STATUS_STANDING:
+        return (RNG::nDice(2, 90, 110) * _stats.reactions * (TUmod + _tu)) / _stats.tu;
+    case STATUS_WALKING:
+    case STATUS_FLYING:
+    case STATUS_TURNING:
+        return (RNG::nDice(2, 80, 100) * _stats.reactions * (TUmod + _tu)) / _stats.tu;
+    case STATUS_AIMING:
+        return (RNG::nDice(2, 95, 115) * _stats.reactions * (TUmod + _tu)) / _stats.tu;
+    case STATUS_COLLAPSING:
+    case STATUS_DEAD:
+    case STATUS_UNCONSCIOUS:
+        return 0;
+    case STATUS_PANICKING:
+    case STATUS_BERSERK:
+        return RNG::generate(60, 100) * _stats.reactions;
+    }
+
+    return (RNG::nDice(2, 80, 100) * _stats.reactions * (TUmod + _tu)) / _stats.tu;
 }
 
 
@@ -1895,6 +1951,8 @@ void BattleUnit::addMeleeExp()
 /**
 * Check if unit eligible for squaddie promotion. If yes, promote the unit.
 * Increase the mission counter. Calculate the experience increases.
+* Kmod: being wounded counts toward promotion, don't double promote Rookies
+* Kmod: melee counts toward strength, throwing counts (half) toward strength
 * @return True if the soldier was eligible for squaddie promotion.
 */
 bool BattleUnit::postMissionProcedures(SavedGame *geoscape)
@@ -1912,11 +1970,21 @@ bool BattleUnit::postMissionProcedures(SavedGame *geoscape)
 	UnitStats caps = s->getRules()->getStatCaps();
 	int healthLoss = stats->health - _health;
 
-	s->setWoundRecovery(RNG::generate((healthLoss*0.5),(healthLoss*1.5)));
+    if (healthLoss > 0)
+    {
+        const int diff = geoscape->getDifficulty();
+        const float max = healthLoss * (0.83f + diff/6.f);
+        const float min = max / 6.0f;
+        s->setWoundRecovery(RNG::generate(min,max));
+        if (caps.health > stats->health)
+            stats->health += improveStat(s->getWoundRecovery()/3);
+    }
 
-	if (_expBravery && stats->bravery < caps.bravery)
+	if (_expBravery)
 	{
-		if (_expBravery > RNG::generate(0,10)) stats->bravery += 10;
+		stats->bravery += improveStat(_expBravery);
+        if (stats->bravery > caps.bravery)
+            stats->bravery = caps.bravery;
 	}
 	if (_expReactions && stats->reactions < caps.reactions)
 	{
@@ -1929,35 +1997,39 @@ bool BattleUnit::postMissionProcedures(SavedGame *geoscape)
 	if (_expMelee && stats->melee < caps.melee)
 	{
 		stats->melee += improveStat(_expMelee);
+        if (stats->strength < caps.strength)
+            stats->strength += improveStat(_expMelee);
 	}
 	if (_expThrowing && stats->throwing < caps.throwing)
 	{
 		stats->throwing += improveStat(_expThrowing);
+        if (stats->strength < caps.strength)
+            stats->strength += improveStat(_expThrowing)/2;
 	}
 	if (_expPsiSkill && stats->psiSkill < caps.psiSkill)
 	{
 		stats->psiSkill += improveStat(_expPsiSkill);
 	}
 
-	if (_expBravery || _expReactions || _expFiring || _expPsiSkill || _expMelee)
+	if (_expBravery  || _expReactions || _expFiring 
+     || _expPsiSkill || _expMelee     || healthLoss > 0)
 	{
-		if (s->getRank() == RANK_ROOKIE)
-			s->promoteRank();
 		int v;
 		v = caps.tu - stats->tu;
 		if (v > 0) stats->tu += RNG::generate(0, v/10 + 2);
 		v = caps.health - stats->health;
-		if (v > 0) stats->health += RNG::generate(0, v/10 + 2);
+		if (v > 0) stats->health += RNG::generate(healthLoss > 0, v/20 + 1);
 		v = caps.strength - stats->strength;
-		if (v > 0) stats->strength += RNG::generate(0, v/10 + 2);
+		if (v > 0) stats->strength += RNG::generate(0, v/10 + 1);
 		v = caps.stamina - stats->stamina;
 		if (v > 0) stats->stamina += RNG::generate(0, v/10 + 2);
-		return true;
+        return true;
 	}
 	else
 	{
 		return false;
 	}
+    return false;
 }
 
 /**
@@ -2040,20 +2112,48 @@ int BattleUnit::getFatalWound(int part) const
 
 /**
  * Heal a fatal wound of the soldier
+ *  Kmod heal up to half lost health if no fatal wounds,
+ *      if they clicked the wrong body part, find the right one.
  * @param part the body part to heal
  * @param healAmount the amount of fatal wound healed
  * @param healthAmount The amount of health to add to soldier health
+ * @return true if something was done, false if nothing could be done
  */
-void BattleUnit::heal(int part, int healAmount, int healthAmount)
+int BattleUnit::heal(int part, int healAmount, int healthAmount)
 {
-	if (part < 0 || part > 5)
-		return;
-	if(!_fatalWounds[part])
-		return;
-	_fatalWounds[part] -= healAmount;
-	_health += healthAmount;
+    unsigned i;
+    int didHeal = 0;
+
+
+    for(i = 0; i < 6 && healAmount > 0; part++, i++)
+    {
+        if (_fatalWounds[part % 6])
+        {
+            unsigned const tmp = std::min(healAmount, _fatalWounds[part % 6]);
+            _fatalWounds[part % 6] -= tmp;
+            healAmount   -= tmp;
+            _health      += healthAmount;
+            healthAmount  = 0;
+            didHeal = 1;
+        }
+    }
+
 	if (_health > getStats()->health)
 		_health = getStats()->health;
+    else if (healthAmount)
+    {
+        // Diminishing returns - 5 * 0% hurt -> 0 healing
+        //_health += healthAmount * (1 + getStats()->health - _health) / (1 + getStats()->health);
+
+        // Heal up to Half total damage taken
+        int newHealth = std::min(_health + healthAmount, getStats()->health - _dmg/2);
+        if (newHealth > _health)
+        {
+            didHeal = 1;
+            _health = newHealth;
+        }
+    }
+    return didHeal;
 }
 
 /**
@@ -2137,7 +2237,7 @@ std::wstring BattleUnit::getName(Language *lang, bool debugAppendId) const
   * Gets pointer to the unit's stats.
   * @return stats Pointer to the unit's stats.
   */
-UnitStats *BattleUnit::getStats()
+const UnitStats *BattleUnit::getStats() const
 {
 	return &_stats;
 }
@@ -2312,7 +2412,7 @@ void BattleUnit::addKillCount()
 /**
 /// Get unit type.
  */
-std::string BattleUnit::getType() const
+const std::string BattleUnit::getType() const
 {
 	return _type;
 }
@@ -2360,24 +2460,31 @@ int BattleUnit::getAggroSound() const
 	return _aggroSound;
 }
 /**
- * Set a specific number of timeunits.
+ * Set a specific (bounded) amount of energy
  * @param tu
  */
 void BattleUnit::setEnergy(int energy)
 {
-	_energy = energy;
+	_energy = std::min(energy, _stats.stamina);
 }
 
 /**
- * Halve this unit's armor values (for beginner mode)
+ * Adjust this unit's armor values
+ *  0 - 75%         
+ *  2 - 100%       
+ *  4 - 116% (+1/6)
+ *  6 - 128%       
+ *  7 - 133%       
  */
-void BattleUnit::halveArmor()
+void BattleUnit::adjustArmor(int diff = 2)
 {
-	_currentArmor[0] /= 2;
-	_currentArmor[1] /= 2;
-	_currentArmor[2] /= 2;
-	_currentArmor[3] /= 2;
-	_currentArmor[4] /= 2;
+    int over    = diff*2 + 6;
+    int under   = diff   + 8; 
+	_currentArmor[0] *=  over / under; 
+	_currentArmor[1] *=  over / under;
+	_currentArmor[2] *=  over / under;
+	_currentArmor[3] *=  over / under;
+	_currentArmor[4] *=  over / under;
 }
 
 /**
@@ -2553,15 +2660,16 @@ bool BattleUnit::checkViewSector (Position pos) const
 void BattleUnit::adjustStats(const int diff)
 {
 	// adjust the unit's stats according to the difficulty level.
-	_stats.tu += 4 * diff * _stats.tu / 100;
-	_stats.stamina += 4 * diff * _stats.stamina / 100;
-	_stats.reactions += 6 * diff * _stats.reactions / 100;
-	_stats.strength += 2 * diff * _stats.strength / 100;
-	_stats.firing = (_stats.firing + 6 * diff * _stats.firing / 100) / (diff > 0 ? 1 : 2);
-	_stats.strength += 2 * diff * _stats.strength / 100;
-	_stats.melee += 4 * diff * _stats.melee / 100;
-	_stats.psiSkill += 4 * diff * _stats.psiSkill / 100;
-	_stats.psiStrength += 4 * diff * _stats.psiStrength / 100;
+	_stats.tu           += 4 * diff * _stats.tu / 100;
+	_stats.stamina      += 4 * diff * _stats.stamina / 100;
+	_stats.reactions    += 6 * diff * _stats.reactions / 100;
+	_stats.strength     += 2 * diff * _stats.strength / 100;
+	_stats.firing       += 6 * diff * _stats.firing / 100;
+    _stats.firing       /= 1 + (diff == 0);
+	_stats.strength     += 2 * diff * _stats.strength / 100;
+	_stats.melee        += 4 * diff * _stats.melee / 100;
+	_stats.psiSkill     += 4 * diff * _stats.psiSkill / 100;
+	_stats.psiStrength  += 4 * diff * _stats.psiStrength / 100;
 }
 
 }

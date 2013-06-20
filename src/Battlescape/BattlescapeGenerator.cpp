@@ -629,7 +629,7 @@ void BattlescapeGenerator::deployAliens(AlienRace *race, AlienDeployment *deploy
 BattleUnit *BattlescapeGenerator::addAlien(Unit *rules, int alienRank, bool outside)
 {
 	int difficulty = (int)(_game->getSavedGame()->getDifficulty());
-	BattleUnit *unit = new BattleUnit(rules, FACTION_HOSTILE, _unitSequence++, _game->getRuleset()->getArmor(rules->getArmor()), difficulty);
+	BattleUnit *unit = 0;
 	Node *node = 0;
 
 	/* following data is the order in which certain alien ranks spawn on certain node ranks */
@@ -645,6 +645,7 @@ BattleUnit *BattlescapeGenerator::addAlien(Unit *rules, int alienRank, bool outs
 
 	if (node)
 	{
+        unit = new BattleUnit(rules, FACTION_HOSTILE, _unitSequence++, _game->getRuleset()->getArmor(rules->getArmor()), difficulty);
 		_save->setUnitPosition(unit, node->getPosition());
 		unit->setAIState(new PatrolBAIState(_game->getSavedGame()->getBattleGame(), unit, node));
 		unit->setRankInt(alienRank);
@@ -657,21 +658,10 @@ BattleUnit *BattlescapeGenerator::addAlien(Unit *rules, int alienRank, bool outs
 		else
 			unit->setDirection(RNG::generate(0,7));
 
-		if (!difficulty)
-		{
-			unit->halveArmor();
-		}
-
 		// we only add a unit if it has a node to spawn on.
 		// (stops them spawning at 0,0,0)
 		_save->getUnits()->push_back(unit);
 	}
-	else
-	{
-		delete unit;
-		unit = 0;
-	}
-
 	return unit;
 }
 
