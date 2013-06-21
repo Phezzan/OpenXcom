@@ -1009,13 +1009,13 @@ std::list<std::pair <int, BattleUnit*> > TileEngine::getReactingUnits(BattleUnit
                         reactors.push_back(std::make_pair(reaction, *i));
                         doSort = true;
                     }
-				}
-			}
-		}
-	}
+                }
+            }
+        }
+    }
     if (doSort)
         reactors.sort();
-	return reactors;
+    return reactors;
 }
 
 /*
