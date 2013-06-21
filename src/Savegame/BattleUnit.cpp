@@ -116,7 +116,7 @@ BattleUnit::BattleUnit(Soldier *soldier, UnitFaction faction) :
  * @param faction Which faction the units belongs to.
  * @param difficulty level (for stat adjustement)
  */
-BattleUnit::BattleUnit(Unit *unit, UnitFaction faction, int id, Armor *armor, int diff) : 
+BattleUnit::BattleUnit(Unit *unit, UnitFaction faction, int id, Armor *armor, int const diff) : 
     _faction(faction), _originalFaction(faction), _killedBy(faction), 
     _id(id), _pos(Position()), _tile(0), _lastPos(Position()), 
     _direction(0), _toDirection(0), _directionTurret(0), _toDirectionTurret(0),  
@@ -160,15 +160,15 @@ BattleUnit::BattleUnit(Unit *unit, UnitFaction faction, int id, Armor *armor, in
 	_currentArmor[SIDE_REAR] = _armor->getRearArmor();
 	_currentArmor[SIDE_UNDER] = _armor->getUnderArmor();
 
-	if (faction == FACTION_HOSTILE)
-	{
-		adjustStats(diff);
+    if (faction == FACTION_HOSTILE)
+    {
+        adjustStats(diff);
         adjustArmor(diff);
-	}
-	for (int i = 0; i < 6; ++i)
-		_fatalWounds[i] = 0;
-	for (int i = 0; i < 5; ++i)
-		_cache[i] = 0;
+    }
+    for (int i = 0; i < 6; ++i)
+        _fatalWounds[i] = 0;
+    for (int i = 0; i < 5; ++i)
+        _cache[i] = 0;
 
 	_activeHand = "STR_RIGHT_HAND";
 	
@@ -1204,36 +1204,40 @@ int BattleUnit::getActionTUs(BattleActionType actionType, BattleItem * const ite
 	}
 
 	switch (actionType)
-	{
-		case BA_PRIME:
-			return (int)floor(getStats()->tu * 0.50);
-		case BA_THROW:
-			return (int)floor(getStats()->tu * 0.25);
-		case BA_AUTOSHOT:
-			return (int)(getStats()->tu * item->getRules()->getTUAuto() / 100);
-		case BA_SNAPSHOT:
-            if (item->getRules()->getTUSnap())
-                return (int)(getStats()->tu * item->getRules()->getTUSnap() / 100);
-            //Fall
-		case BA_STUN:
-		case BA_HIT:
-			if (item->getRules()->getFlatRate())
-				return item->getRules()->getTUMelee();
-			else
-				return (int)(getStats()->tu * item->getRules()->getTUMelee() / 100);
-		case BA_LAUNCH:
-		case BA_AIMEDSHOT:
-			return (int)(getStats()->tu * item->getRules()->getTUAimed() / 100);
-		case BA_USE:
-		case BA_MINDCONTROL:
-		case BA_PANIC:
-			if (item->getRules()->getFlatRate())
-				return item->getRules()->getTUUse();
-			else
-				return (int)(getStats()->tu * item->getRules()->getTUUse() / 100);
-		default:
-			return 0;
-	}
+    {
+    case BA_PRIME:
+        return (int)floor(getStats()->tu * 0.50);
+    case BA_THROW:
+        return (int)floor(getStats()->tu * 0.25);
+    case BA_AUTOSHOT:
+        return (int)(getStats()->tu * item->getRules()->getTUAuto() / 100);
+    case BA_SNAPSHOT:
+        if (item->getRules()->getTUSnap())
+        {
+            if (item->getRules()->getFlatRate())
+                return (int)(item->getRules()->getTUSnap());
+            return (int)(_stats.tu * item->getRules()->getTUSnap() / 100);
+        }
+        // else fall and use Melee
+    case BA_STUN:
+    case BA_HIT:
+        if (item->getRules()->getFlatRate())
+            return item->getRules()->getTUMelee();
+        else
+            return (int)(getStats()->tu * item->getRules()->getTUMelee() / 100);
+    case BA_LAUNCH:
+    case BA_AIMEDSHOT:
+        return (int)(getStats()->tu * item->getRules()->getTUAimed() / 100);
+    case BA_USE:
+    case BA_MINDCONTROL:
+    case BA_PANIC:
+        if (item->getRules()->getFlatRate())
+            return item->getRules()->getTUUse();
+        else
+            return (int)(getStats()->tu * item->getRules()->getTUUse() / 100);
+    default:
+        return 0;
+    }
 }
 
 
@@ -2470,16 +2474,15 @@ void BattleUnit::setEnergy(int energy)
 
 /**
  * Adjust this unit's armor values
- *  0 - 75%         
+ *  0 - 66%         
  *  2 - 100%       
- *  4 - 116% (+1/6)
- *  6 - 128%       
- *  7 - 133%       
+ *  4 - 120%
+ *  6 - 133%       
  */
 void BattleUnit::adjustArmor(int diff = 2)
 {
-    int over    = diff*2 + 6;
-    int under   = diff   + 8; 
+    int over    = diff*2 + 4;
+    int under   = diff   + 6; 
 	_currentArmor[0] *=  over / under; 
 	_currentArmor[1] *=  over / under;
 	_currentArmor[2] *=  over / under;
@@ -2660,16 +2663,16 @@ bool BattleUnit::checkViewSector (Position pos) const
 void BattleUnit::adjustStats(const int diff)
 {
 	// adjust the unit's stats according to the difficulty level.
-	_stats.tu           += 4 * diff * _stats.tu / 100;
-	_stats.stamina      += 4 * diff * _stats.stamina / 100;
-	_stats.reactions    += 6 * diff * _stats.reactions / 100;
-	_stats.strength     += 2 * diff * _stats.strength / 100;
-	_stats.firing       += 6 * diff * _stats.firing / 100;
+    _stats.tu           += 4 * diff * _stats.tu / 100;
+    _stats.stamina      += 4 * diff * _stats.stamina / 100;
+    _stats.reactions    += 6 * diff * _stats.reactions / 100;
+    _stats.strength     += 2 * diff * _stats.strength / 100;
+    _stats.firing       += 6 * diff * _stats.firing / 100;
     _stats.firing       /= 1 + (diff == 0);
-	_stats.strength     += 2 * diff * _stats.strength / 100;
-	_stats.melee        += 4 * diff * _stats.melee / 100;
-	_stats.psiSkill     += 4 * diff * _stats.psiSkill / 100;
-	_stats.psiStrength  += 4 * diff * _stats.psiStrength / 100;
+    _stats.strength     += 2 * diff * _stats.strength / 100;
+    _stats.melee        += 4 * diff * _stats.melee / 100;
+    _stats.psiSkill     += 4 * diff * _stats.psiSkill / 100;
+    _stats.psiStrength  += 4 * diff * _stats.psiStrength / 100;
 }
 
 }

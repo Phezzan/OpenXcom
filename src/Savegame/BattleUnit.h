@@ -371,8 +371,8 @@ public:
 	int getAggroSound() const;
 	/// Sets the unit's energy level.
 	void setEnergy(int energy);
-	/// Halve the unit's armor values.
-	void adjustArmor(int diff = 0);
+	/// Adjust the unit's armor values based on the difficulty, (default) 2 -> 100%.
+	void adjustArmor(int const diff);
 	/// Gets the unit's faction.
 	UnitFaction killedBy() const;
 	/// Set the faction that killed this unit.
