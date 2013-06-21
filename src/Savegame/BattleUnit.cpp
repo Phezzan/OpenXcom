@@ -51,7 +51,7 @@ BattleUnit::BattleUnit(Soldier *soldier, UnitFaction faction) :
     _pos(Position()), _tile(0), _lastPos(Position()), 
     _direction(0), _toDirection(0), _directionTurret(0), _toDirectionTurret(0),  
     _verticalDirection(0), _status(STATUS_STANDING), 
-    _walkPhase(0), _fallPhase(0), _kneeled(false), _floating(false), _dontReselect(false), 
+    _walkPhase(0), _fallPhase(0), _dmg(0), _kneeled(false), _floating(false), _dontReselect(false), 
     _fire(0), _currentAIState(0), _visible(false), _cacheInvalid(true), 
     _expBravery(0), _expReactions(0), _expFiring(0), _expThrowing(0), _expPsiSkill(0), 
     _expMelee(0), 
@@ -121,7 +121,7 @@ BattleUnit::BattleUnit(Unit *unit, UnitFaction faction, int id, Armor *armor, in
     _id(id), _pos(Position()), _tile(0), _lastPos(Position()), 
     _direction(0), _toDirection(0), _directionTurret(0), _toDirectionTurret(0),  
     _verticalDirection(0), _status(STATUS_STANDING), 
-    _walkPhase(0), _fallPhase(0), _kneeled(false), _floating(false), _dontReselect(false), 
+    _walkPhase(0), _fallPhase(0), _dmg(0), _kneeled(false), _floating(false), _dontReselect(false), 
     _fire(0), _currentAIState(0), _visible(false), _cacheInvalid(true),
     _expBravery(0), _expReactions(0), _expFiring(0), _expThrowing(0), 
     _expPsiSkill(0), _expMelee(0), 
@@ -152,8 +152,6 @@ BattleUnit::BattleUnit(Unit *unit, UnitFaction faction, int id, Armor *armor, in
 	_health = _stats.health;
 	_morale = 100;
 	_stunlevel = 0;
-	_dmg = 0;
-
 	_currentArmor[SIDE_FRONT] = _armor->getFrontArmor();
 	_currentArmor[SIDE_LEFT] = _armor->getSideArmor();
 	_currentArmor[SIDE_RIGHT] = _armor->getSideArmor();
@@ -167,7 +165,7 @@ BattleUnit::BattleUnit(Unit *unit, UnitFaction faction, int id, Armor *armor, in
     }
     for (int i = 0; i < 6; ++i)
         _fatalWounds[i] = 0;
-    for (int i = 0; i < 5; ++i)
+	for (int i = 0; i < 5; ++i)
         _cache[i] = 0;
 
 	_activeHand = "STR_RIGHT_HAND";
@@ -193,7 +191,7 @@ BattleUnit::BattleUnit(BattleUnit &b) :
 	_visibleUnits(b._visibleUnits),
 	_visibleTiles(b._visibleTiles),
 	_tu(b._tu), _energy(b._energy), _health(b._health), _morale(b._morale), _stunlevel(b._stunlevel),
-	_kneeled(b._kneeled), _floating(b._floating), _dontReselect(b._dontReselect),
+	_dmg(0), _kneeled(b._kneeled), _floating(b._floating), _dontReselect(b._dontReselect),
 	//int _currentArmor[5];
 	//int _fatalWounds[6];
 	_fire(b._fire),

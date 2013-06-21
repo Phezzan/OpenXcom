@@ -1,8 +1,6 @@
 maleFirst:
-  - Thomas
   - Andreas
-  - Michael
-  - Frank
+  - Mikl
   - Peter
   - Joerg
   - Uwe
@@ -19,29 +17,30 @@ maleFirst:
   - Martin
   - Dirk
   - Wolfgang
+  - Warner
   - Norbert
+  - Luca
+  - Jonas
+  - Louis
+  - Lucas
   - Holger
   - Kai
-  - Joachim
   - Christian
   - Karsten
   - Dieter
 femaleFirst:
+  - Lena
+  - Anna
+  - Hannah
+  - Lara
+  - Emily
   - Susanne
   - Sabine
-  - Petra
-  - Birgit
-  - Andrea
-  - Gabriele
-  - Martina
   - Heike
   - Ute
   - Barbara
-  - Bettina
   - Karin
   - Angelika
-  - Monika
-  - Angela
 maleLast:
   - Mueller
   - Schmidt

@@ -1,0 +1,131 @@
+items:
+  - type: STR_GRENADE_LAUNCHER
+    size: 0.2
+    costBuy: 5000
+    costSell: 4000
+    weight: 8
+    bigSprite: 60
+    floorSprite: 74
+    handSprite: 128
+    bulletSprite: 3
+    fireSound: 4
+    compatibleAmmo:
+      - STR_LAUNCHER_FRAG
+      - STR_LAUNCHER_INC
+      - STR_LAUNCHER_SMOKE
+    accuracySnap: 60
+    accuracyAimed: 80
+    tuSnap: 33
+    tuAimed: 50
+    battleType: 1
+    twoHanded: true
+    invWidth: 1
+    invHeight: 3
+    armor: 25
+    arcingShot: true
+    listOrder: 3001
+  - type: STR_LAUNCHER_FRAG
+    size: 0.05
+    costBuy: 150
+    costSell: 140
+    weight: 1
+    bigSprite: 61
+    floorSprite: 2
+    hitSound: 0
+    hitAnimation: 0
+    power: 70
+    damageType: 3
+    clipSize: 1
+    battleType: 2
+    armor: 20
+    blastRadius: 7
+    listOrder: 3002
+  - type: STR_LAUNCHER_INC
+    size: 0.05
+    costBuy: 500
+    costSell: 400
+    weight: 1
+    bigSprite: 62
+    floorSprite: 2
+    hitSound: 0
+    hitAnimation: 0
+    power: 90
+    damageType: 2
+    clipSize: 1
+    battleType: 2
+    armor: 20
+    blastRadius: 7
+    listOrder: 3003
+  - type: STR_LAUNCHER_SMOKE
+    size: 0.05
+    costBuy: 150
+    costSell: 150
+    weight: 1
+    bigSprite: 63
+    floorSprite: 2
+    hitSound: 0
+    hitAnimation: 0
+    power: 80
+    damageType: 9
+    clipSize: 1
+    battleType: 2
+    armor: 20
+    blastRadius: 8
+    listOrder: 3004
+ufopaedia:
+  - id: STR_GRENADE_LAUNCHER
+    type_id: 4
+    section: STR_WEAPONS_AND_EQUIPMENT
+    text: STR_GRENADE_LAUNCHER_UFOPEDIA
+    listOrder: 2901
+  - id: STR_LAUNCHER_FRAG
+    type_id: 4
+    section: STR_NOT_AVAILABLE
+  - id: STR_LAUNCHER_INC
+    type_id: 4
+    section: STR_NOT_AVAILABLE
+  - id: STR_LAUNCHER_SMOKE
+    type_id: 4
+    section: STR_NOT_AVAILABLE
+extraSprites:
+  - type: BIGOBS.PCK
+    files:
+      60: Resources/GrenadeLauncher/BigGrenadeLanucher.gif
+      61: Resources/GrenadeLauncher/BigLauncherFrag.gif
+      62: Resources/GrenadeLauncher/BigLauncherInc.gif
+      63: Resources/GrenadeLauncher/BigLauncherSmoke.gif
+  - type: FLOOROB.PCK
+    files:
+      74: Resources/GrenadeLauncher/FloorGrenadeLauncher.gif
+  - type: HANDOB.PCK
+    files:
+      128: Resources/GrenadeLauncher/HANDOB/
+extraStrings:
+  - type: English
+    strings:
+      STR_GRENADE_LAUNCHER: Grenade Launcher
+      STR_LAUNCHER_FRAG: 46mm Grenade (HE)
+      STR_LAUNCHER_INC: 46mm Grenade (INC)
+      STR_LAUNCHER_SMOKE: 46mm Grenade (SMOKE)
+      STR_GRENADE_LAUNCHER_UFOPEDIA: The M-79 Grenade launcher has a variety of different munition types at its disposal, contributing to its effectiveness in a wide range of situations.
+  - type: EnglishUk
+    strings:
+      STR_GRENADE_LAUNCHER: Grenade Launcher
+      STR_LAUNCHER_FRAG: 46mm Grenade (HE)
+      STR_LAUNCHER_INC: 46mm Grenade (INC)
+      STR_LAUNCHER_SMOKE: 46mm Grenade (SMOKE)
+      STR_GRENADE_LAUNCHER_UFOPEDIA: The M-79 Grenade launcher has a variety of different munition types at its disposal, contributing to its effectiveness in a wide range of situations.
+  - type: Spanish
+    strings:
+      STR_GRENADE_LAUNCHER: Lanza Granadas
+      STR_LAUNCHER_FRAG: Granada 46mm (HE)
+      STR_LAUNCHER_INC: Granada 46mm(INC)
+      STR_LAUNCHER_SMOKE: Granada 46mm(SMOKE)
+      STR_GRENADE_LAUNCHER_UFOPEDIA: El lanzador de granadas M-79 tiene distintos tipos de munición a su disposición, contribuyendo a una gran efectividad en las más diversas situaciones.
+  - type: SpanishAl
+    strings:
+      STR_GRENADE_LAUNCHER: Lanza Granadas
+      STR_LAUNCHER_FRAG: Granada 46mm (HE)
+      STR_LAUNCHER_INC: Granada 46mm(INC)
+      STR_LAUNCHER_SMOKE: Granada 46mm(SMOKE)
+      STR_GRENADE_LAUNCHER_UFOPEDIA: El lanzador de granadas M-79 tiene distintos tipos de munición a su disposición, contribuyendo a una gran efectividad en las más diversas situaciones.

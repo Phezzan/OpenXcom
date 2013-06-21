@@ -218,10 +218,10 @@ void TileEngine::addLight(const Position &center, int power, int layer)
 }
 
 /**
-  * Calculates line of sight of a soldier.
-  * @param unit
-  * @return true when new aliens spotted
-  */
+ * Calculates line of sight of a soldier.
+ * @param unit
+ * @return true when new aliens spotted
+ */
 bool TileEngine::calculateFOV(BattleUnit *unit)
 {
 	size_t oldNumVisibleUnits = unit->getUnitsSpottedThisTurn().size();
@@ -287,7 +287,7 @@ bool TileEngine::calculateFOV(BattleUnit *unit)
 								unit->addToVisibleTiles(visibleUnit->getTile());
 								if (unit->getFaction() == FACTION_PLAYER)
 								{
-									//  visibleUnit->getTile()->setDiscovered(true, 2);
+								//  visibleUnit->getTile()->setDiscovered(true, 2);
 									visibleUnit->getTile()->setVisible(+1);
 								}
 							}
@@ -407,7 +407,7 @@ bool TileEngine::surveyXComThreatToTile(Tile *tile, Position &tilePos, BattleUni
 				Tile *tileToSave = _save->getTile(pos);
 				if (!tileToSave) continue; // out of map bounds?
 
-				int index = _save->getTileIndex(pos);               
+				int index = _save->getTileIndex(pos);
 				originalTileUnits[index] = tileToSave->getUnit();
 			}
 		}
@@ -481,7 +481,7 @@ bool TileEngine::surveyXComThreatToTile(Tile *tile, Position &tilePos, BattleUni
 		//if ((*i)->getFaction() == FACTION_PLAYER && calculateLine(originVoxel, targetVoxel, false, 0, *i, false) == 4)
 
 		// this works OK but we don't need to try all those rays for this tactical assessment
-		//if ((*i)->getFaction() == FACTION_PLAYER && canTargetUnit(&originVoxel, tile, &targetVoxel, *i))      
+		//if ((*i)->getFaction() == FACTION_PLAYER && canTargetUnit(&originVoxel, tile, &targetVoxel, *i))
 		// this should be the best, a routine that gives us the degree of exposure while economizing raytraces:
 		int exposure;
 		if ((*i)->getFaction() == FACTION_PLAYER && (exposure = checkVoxelExposure(&originVoxel, tile, *i, &hypotheticalUnit)))
@@ -623,7 +623,7 @@ int TileEngine::checkVoxelExposure(Position *originVoxel, Tile *tile, BattleUnit
 
 	int targetMinHeight = targetVoxel.z - tile->getTerrainLevel();
 	if (otherUnit)
-		targetMinHeight += otherUnit->getFloatHeight();
+	    targetMinHeight += otherUnit->getFloatHeight();
 
 	// if there is an other unit on target tile, we assume we want to check against this unit's height
 	int heightRange;
@@ -910,8 +910,10 @@ void TileEngine::calculateFOV(const Position &position)
 }
 
 /**
- * Checks if of the opposing faction a sniper sees this unit. The unit with the highest reaction score will be compared with the current unit's reaction score.
- * If it's higher, a shot is fired when enough time units a weapon and ammo available.
+ * Checks if of the opposing faction sees this unit. 
+ * Each opposing viewing unit will roll reaction compared to the current unit's reaction.
+ * ALL Reactors who pass that check will attempt to snap shot the unit, from the best reaction to the worst.
+ *
  * @param unit the unit to check reaction fire upon
  * @return whether or not reaction fire took place.
  */
@@ -923,55 +925,64 @@ bool TileEngine::checkReactionFire(BattleUnit *unit)
 		return false;
 	}
 
-	std::vector<BattleUnit *> spotters = getSpottingUnits(unit);
 	bool result = false;
 
 	// not mind controlled, or controlled by the player
 	if (unit->getFaction() == unit->getOriginalFaction()
 		|| unit->getFaction() != FACTION_HOSTILE)
 	{
-		BattleUnit *reactor = getReactor(spotters, unit);
-		if (reactor != unit)
-		{
-			while (true)
-			{
-				if (!tryReactionSnap(reactor, unit))
-					break;
-				reactor = getReactor(spotters, unit);
-				result = true;
-				if (reactor == unit)
-					break;
-			}
-		}
-	}
+        std::list<std::pair <int, BattleUnit*> > reactors = getReactingUnits(unit);
+
+        while (!reactors.empty() && !unit->isOut())
+        {
+            BattleUnit *reactor = reactors.back().second;
+            reactors.pop_back();
+
+            if(tryReactionSnap(reactor, unit))
+            {
+                if (reactor->getOriginalFaction() == FACTION_PLAYER)
+                    reactor->addReactionExp();
+                result = true;
+            }
+        }
+    }
 	return result;
 }
 
+// TODO KMOD - this is a whole truckload of functions for one simple purpose.
+//              This function should return an array of 'reactors' sorted by max reaction.
+//              Units that can't 'react' will be passed over
 /*
  * create a vector of units that can spot this unit.
  * @param unit the unit to check for spotters of
  * @return a vector of units that can see this unit.
  */
-std::vector<BattleUnit *> TileEngine::getSpottingUnits(BattleUnit* unit)
+std::list<std::pair <int, BattleUnit*> > TileEngine::getReactingUnits(BattleUnit* unit)
 {
-	std::vector<BattleUnit*> spotters;
+	std::list <std::pair <int, BattleUnit*> > reactors;
+	int const requiredReaction = unit->getReactionScore();        // the target provides the minimum reaction score
+	int       bestReaction = 0;
+	bool      doSort = false;
 	for (std::vector<BattleUnit*>::iterator i = _save->getUnits()->begin(); i != _save->getUnits()->end(); ++i)
 	{
-			// not dead/unconscious
-		if (!(*i)->isOut() &&
+		// can react
+		if ((*i)->isReady() &&
 			// not a friend
-			(*i)->getFaction() != _save->getSide() &&
-			// closer than 20 tiles
-			distance(unit->getPosition(), (*i)->getPosition()) <= 20)
+			(*i)->getFaction() != _save->getSide() && (*i)->getFaction() != FACTION_NEUTRAL)
 		{
+			int const distBonus = 20 - distance(unit->getPosition(), (*i)->getPosition());
+
+			// closer than 20 tiles
+			if (distBonus < 0)
+				continue;
+
 			AggroBAIState *aggro = dynamic_cast<AggroBAIState*>((*i)->getCurrentAIState());
 				// can actually see the target Tile, or is aggro
 			if (((*i)->checkViewSector(unit->getPosition()) || aggro != 0) &&
 				// can actually see the unit
 				visible(*i, unit->getTile()) &&
 				// aliens can see in the dark, xcom can see at a distance of 18 or less, 2 further if there's enough light.
-				((*i)->getFaction() != FACTION_PLAYER ||
-				distance(unit->getPosition(), (*i)->getPosition()) <= 18 ||
+				((*i)->getFaction() != FACTION_PLAYER || distBonus >= 2  ||
 				unit->getTile()->getShade() <= MAX_DARKNESS_TO_SEE_UNITS))
 			{
 				if ((*i)->getFaction() == FACTION_PLAYER)
@@ -979,16 +990,32 @@ std::vector<BattleUnit *> TileEngine::getSpottingUnits(BattleUnit* unit)
 					unit->setVisible(true);
 				}
 				(*i)->addToVisibleUnits(unit);
+                // KMOD - but shouldn't the aliens kill civilians on terror missions?
+                // Admittedly - if civilians take turns after Aliens, but before XCom, then TUs are 'wasted' killing civvies
+
 				// no reaction on civilian turn.
-				if (_save->getSide() != FACTION_NEUTRAL &&
-					canMakeSnap(*i, unit))
+                int const reaction = (*i)->getReactionScore(distBonus + 12 * (*i)->isKneeled());
+				if (_save->getSide() != FACTION_NEUTRAL
+                 && reaction > requiredReaction 
+                 && canMakeSnap(*i, unit))
 				{
-					spotters.push_back(*i);
+                    if (reaction >= bestReaction)
+                    {
+                        reactors.push_back(std::make_pair(reaction, *i));
+                        bestReaction = reaction;
+                    }
+                    else
+                    {
+                        reactors.push_back(std::make_pair(reaction, *i));
+                        doSort = true;
+                    }
 				}
 			}
 		}
 	}
-	return spotters;
+    if (doSort)
+        reactors.sort();
+	return reactors;
 }
 
 /*
@@ -1097,7 +1124,8 @@ bool TileEngine::tryReactionSnap(BattleUnit *unit, BattleUnit *target)
 				// don't shoot. it's too early in the game or we'll kill ourselves or someone we care about
 				// this will cause the alien to NOT actually fire, but allow the loop to continue in case someone else CAN.
 				// the unit won't get it's time units back, so it won't react again this turn
-				action.targeting = false;
+                action.targeting = false;
+                return false;       // KMOD - I'm not looping forever, so we don't need to waste his TU
 			}
 		}
 
@@ -1156,6 +1184,7 @@ BattleUnit *TileEngine::hit(const Position &center, int power, ItemDamageType ty
 			}
 		}
 
+        // STUN has been moved to the unit's damage routine
 		if (bu && bu->getFaction() == FACTION_HOSTILE && unit->getFaction() == FACTION_PLAYER && type != DT_NONE)
 		{
 			unit->addFiringExp();
@@ -1284,13 +1313,13 @@ void TileEngine::explode(const Position &center, int power, ItemDamageType type,
 							// power 50 - 150%
 							if (dest->getUnit())
 							{
-								dest->getUnit()->damage(Position(0, 0, 0), (int)(RNG::generate(power_*0.666, power_*1.335)), type);
+								dest->getUnit()->damage(Position(0, 0, 0), (int)(RNG::nDice(2, power_/2, power_*3/2)), type);
 							}
 							for (std::vector<BattleItem*>::iterator it = dest->getInventory()->begin(); it != dest->getInventory()->end(); ++it)
 							{
 								if ((*it)->getUnit())
 								{
-									(*it)->getUnit()->damage(Position(0, 0, 0), (int)(RNG::generate(power_*0.666, power_*1.335)), type);
+									(*it)->getUnit()->damage(Position(0, 0, 0), (int)(RNG::nDice(2, power_/2, power_*3/2)), type);
 								}
 							}
 						}
@@ -1299,7 +1328,7 @@ void TileEngine::explode(const Position &center, int power, ItemDamageType type,
 							// power 50 - 150%
 							if (dest->getUnit())
 							{
-								dest->getUnit()->damage(Position(0, 0, 0), (int)(RNG::generate(power_*0.666, power_*1.335)), type);
+								dest->getUnit()->damage(Position(0, 0, 0), (int)(RNG::generate(power_/2.0, power_*1.5)), type);
 							}
 							bool done = false;
 							while (!done)
@@ -1341,7 +1370,7 @@ void TileEngine::explode(const Position &center, int power, ItemDamageType type,
 							if (dest->getUnit())
 							{
 								float resistance = dest->getUnit()->getArmor()->getDamageModifier(DT_IN);
-								if (resistance > 0.0)
+								if (resistance > 0.1)
 								{
 									dest->getUnit()->damage(Position(8, 8, 12-dest->getTerrainLevel()), RNG::generate(5, 10), DT_IN, true);
 									int burnTime = RNG::generate(0, int(5 * resistance));

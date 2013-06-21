@@ -75,3 +75,9 @@ build/
 Dependencies/
 #Ignore Vim swap files
 *.swp
+#Ignore Vim bak files
+*~
+bak/
+.master/
+tags
+xcom.sh
