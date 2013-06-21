@@ -75,3 +75,6 @@ build/
 Dependencies/
 #Ignore Vim swap files
 *.swp
+#Ignore backups, .master directory
+*~
+.master/
