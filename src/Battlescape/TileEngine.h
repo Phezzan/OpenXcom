@@ -130,8 +130,8 @@ public:
 	bool validateThrow(BattleAction *action);
 	/// open any doors this door is connected to.
 	void checkAdjacentDoors(Position pos, int part);
-	/// create a vector of units that can spot this unit.
-	std::vector<BattleUnit *> getSpottingUnits(BattleUnit* unit);
+    /// return a list of spotters that are going to shoot unit
+    std::list<std::pair<int, BattleUnit*> > getReactingUnits(OpenXcom::BattleUnit*);
 	/// given a vector of spotters, and a unit, this will pick the one with the highest reaction score.
 	BattleUnit* getReactor(std::vector<BattleUnit *> spotters, BattleUnit *unit);
 	/// check validity of a snap shot to this position.
