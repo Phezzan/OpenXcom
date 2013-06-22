@@ -1144,7 +1144,7 @@ craftWeapons:
   - type: STR_STINGRAY
     sprite: 0
     sound: 5
-    damage: 70
+    damage: 70			# 70 *.7 / 16 = 3 dpt
     range: 30
     accuracy: 70
     reloadCautious: 32
@@ -1158,7 +1158,7 @@ craftWeapons:
   - type: STR_AVALANCHE
     sprite: 1
     sound: 5
-    damage: 100
+    damage: 100			# 100*.8/24 = 3.33 dpt
     range: 60
     accuracy: 80
     reloadCautious: 48
@@ -1172,7 +1172,7 @@ craftWeapons:
   - type: STR_CANNON_UC
     sprite: 2
     sound: 4
-    damage: 10
+    damage: 10			# 2.5 / 2 = 1.25 dpt
     range: 10
     accuracy: 25
     reloadCautious: 2
@@ -1187,7 +1187,7 @@ craftWeapons:
   - type: STR_LASER_CANNON_UC
     sprite: 4
     sound: 8
-    damage: 70
+    damage: 70			# .35*70/12 = ~2 dpt
     range: 21
     accuracy: 35
     reloadCautious: 12
@@ -1200,7 +1200,7 @@ craftWeapons:
   - type: STR_PLASMA_BEAM_UC
     sprite: 5
     sound: 9
-    damage: 140
+    damage: 140			# .5*140/12 = ~5.8 dpt
     range: 52
     accuracy: 50
     reloadCautious: 12
@@ -1213,7 +1213,7 @@ craftWeapons:
   - type: STR_FUSION_BALL_UC
     sprite: 3
     sound: 7
-    damage: 230
+    damage: 230			# 230 / 16 = 14.375 dpt
     range: 65
     accuracy: 100
     reloadCautious: 32
@@ -2006,6 +2006,10 @@ items:
     invHeight: 3
     armor: 40
     recover: false
+# items: PLASMA # PLASMA
+# PLASMA # PLASMA
+# PLASMA # PLASMA
+# PLASMA # PLASMA
   - type: STR_HEAVY_PLASMA
     requires:
       - STR_HEAVY_PLASMA
@@ -8737,6 +8741,7 @@ startingTime:
   day: 1
   month: 1
   year: 1999
+####	COSTS     #######
 costSoldier: 20000
 costEngineer: 25000
 costScientist: 30000
