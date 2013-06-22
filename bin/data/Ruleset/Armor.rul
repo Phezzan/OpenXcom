@@ -1,0 +1,108 @@
+items:
+  - type: STR_COMBAT_ARMOR
+    size: 0.4
+    costSell: 12500
+  - type: STR_CORPSE_COMBAT_ARMOR
+    name: STR_CORPSE
+    weight: 24
+    bigSprite: 64
+    floorSprite: 77
+    invWidth: 2
+    invHeight: 3
+    armor: 30
+    recover: false
+armors:
+  - type: STR_COMBAT_ARMOR_UC
+    spriteSheet: XCOM_4.PCK
+    spriteInv: MAN_4
+    corpseItem: STR_CORPSE_COMBAT_ARMOR
+    storeItem: STR_COMBAT_ARMOR
+    loftemps: 3
+    frontArmor: 32
+    sideArmor: 24
+    rearArmor: 24
+    underArmor: 15
+    damageModifier:
+      - 1.0
+      - 0.8
+      - 1.0
+      - 0.8
+      - 1.0
+      - 1.0
+      - 0.9
+      - 0.9
+      - 1.0
+      - 1.0
+manufacture:
+  - name: STR_COMBAT_ARMOR
+    requires:
+      - STR_COMBAT_ARMOR
+    category: STR_PERSONAL_ARMOR 
+    space: 4
+    time: 120
+    cost: 8000
+research:
+  - name: STR_COMBAT_ARMOR
+    cost: 200
+    points: 10
+  - name: STR_PERSONAL_ARMOR
+    dependencies:
+      - STR_COMBAT_ARMOR
+      - STR_ALIEN_ALLOYS
+ufopaedia:
+  - id: STR_COMBAT_ARMOR_UC
+    type_id: 5
+    section: STR_WEAPONS_AND_EQUIPMENT
+extraSprites:
+  - type: MAN_4F0.SPK
+    singleImage: true
+    files:
+      0: /Resources/Inventory/man_4f0.gif
+  - type: MAN_4F1.SPK
+    singleImage: true
+    files:
+      0: /Resources/Inventory/man_4f1.gif
+  - type: MAN_4F2.SPK
+    singleImage: true
+    files:
+      0: /Resources/Inventory/man_4f2.gif
+  - type: MAN_4F3.SPK
+    singleImage: true
+    files:
+      0: /Resources/Inventory/man_4f3.gif
+  - type: MAN_4M0.SPK
+    singleImage: true
+    files:
+      0: /Resources/Inventory/man_4m0.gif
+  - type: MAN_4M1.SPK
+    singleImage: true
+    files:
+      0: /Resources/Inventory/man_4m1.gif
+  - type: MAN_4M2.SPK
+    singleImage: true
+    files:
+      0: /Resources/Inventory/man_4m2.gif
+  - type: MAN_4M3.SPK
+    singleImage: true
+    files:
+      0: /Resources/Inventory/man_4m3.gif
+  - type: XCOM_4.PCK
+    width: 32
+    height: 40
+    files:
+      0: /Resources/XCOM_4/
+  - type: BIGOBS.PCK
+    files:
+      64: /Resources/BIGOBS/Kevlar_Inventory_Corpse.gif
+  - type: FLOOROB.PCK
+    files:
+      77: /Resources/FLOOROB/Kevlar_Corpse.gif
+extraStrings:
+  - type: English
+    strings:
+      STR_COMBAT_ARMOR: Combat Armor
+      STR_COMBAT_ARMOR_UC: Combat Armor
+  - type: EnglishUK
+    strings:
+      STR_COMBAT_ARMOR: Combat Armour
+      STR_COMBAT_ARMOR_UC: COMBAT ARMOUR

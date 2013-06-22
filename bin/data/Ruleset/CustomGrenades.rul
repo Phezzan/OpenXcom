@@ -1,0 +1,106 @@
+items:
+  - type: STR_INCENDIARY_GRENADE
+    size: 0.025
+    costSell: 300
+    weight: 3
+    bigSprite: 27
+    floorSprite: 27
+    power: 60
+    damageType: 2
+    battleType: 4
+    armor: 20
+    blastRadius: 6
+    listOrder: 4001
+  - type: STR_STUN_GRENADE
+    size: 0.025
+    costSell: 2500
+    weight: 3
+    bigSprite: 59
+    floorSprite: 37
+    power: 90
+    blastRadius: 6
+    damageType: 6
+    battleType: 4
+    armor: 20
+    listOrder: 5901
+research:
+  - name: STR_INCENDIARY_GRENADE
+    cost: 200
+    points: 10
+    listOrder: 601
+  - name: STR_STUN_GRENADE
+    cost: 15200
+    points: 10
+    dependencies:
+      - STR_SMALL_LAUNCHER
+      - STR_STUN_BOMB
+    listOrder: 4401
+manufacture:
+  - name: STR_INCENDIARY_GRENADE
+    category: STR_WEAPON
+    requires:
+      - STR_INCENDIARY_GRENADE
+    space: 1
+    time: 90
+    cost: 1
+    listOrder: 1101
+  - name: STR_STUN_GRENADE
+    category: STR_WEAPON
+    requires:
+      - STR_STUN_GRENADE
+    space: 1
+    time: 80
+    cost: 1
+    requiredItems:
+      STR_STUN_BOMB: 1
+    listOrder: 2401
+ufopaedia:
+  - id: STR_INCENDIARY_GRENADE
+    type_id: 4
+    section: STR_WEAPONS_AND_EQUIPMENT
+    text: STR_INCENDIARY_GRENADE_UFOPEDIA
+    requires:
+      - STR_INCENDIARY_GRENADE
+    listOrder: 4201
+  - id: STR_STUN_GRENADE
+    type_id: 4
+    section: STR_WEAPONS_AND_EQUIPMENT
+    requires:
+      - STR_STUN_GRENADE
+    text: STR_STUN_GRENADE_UFOPEDIA
+    listOrder: 5801
+extraSprites:
+  - type: BIGOBS.PCK
+    files:
+      59: Resources/CustomGrenades/StunGrenade.png
+extraStrings:
+  - type: English
+    strings:
+      STR_INCENDIARY_GRENADE: Incendiary Grenade
+      STR_STUN_GRENADE: Stun Grenade
+      STR_INCENDIARY_GRENADE_UFOPEDIA: Incendiary grenades are invaluable for lighting up the night and clearing obnoxious vegetation.
+      STR_STUN_GRENADE_UFOPEDIA: Learning how the stun bomb is activated has allowed us to attach a trigger to it, turning it into a grenade that can be primed and thrown normally.
+  - type: EnglishUk
+    strings:
+      STR_INCENDIARY_GRENADE: Incendiary Grenade
+      STR_STUN_GRENADE: Stun Grenade
+      STR_INCENDIARY_GRENADE_UFOPEDIA: Incendiary grenades are invaluable for lighting up the night and clearing obnoxious vegetation.
+      STR_STUN_GRENADE_UFOPEDIA: Learning how the stun bomb is activated has allowed us to attach a trigger to it, turning it into a grenade that can be primed and thrown normally.
+  - type: Russian
+    strings:
+      STR_INCENDIARY_GRENADE: Зажигательная Граната
+      STR_STUN_GRENADE: Парализующая Граната
+      STR_INCENDIARY_GRENADE_UFOPEDIA: Зажигательные гранаты незаменимы для освещения ночи и очистки мешающих зарослей.
+      STR_STUN_GRENADE_UFOPEDIA: Изучение метода активации парализующей бомбы позволило нам оснастить ее взрывателем, тем самым превратив ее в гранату, которую можно взводить и бросать обычным способом.
+  - type: Spanish
+    strings:
+      STR_INCENDIARY_GRENADE: Granada Incendiaria
+      STR_STUN_GRENADE: Granada Aturdidora
+      STR_INCENDIARY_GRENADE_UFOPEDIA: Las granadas incendiarias tienen un gran valor por iluminar en la noche y despejar densas zonas de vegetación.
+      STR_STUN_GRENADE_UFOPEDIA: Aprendiendo el mecanismo de activación de la bomba aturdidora, nos ha permitido agregarle un temporizador, convirtiéndola en una granada que puede ser activada y arrojada con normalidad.
+  - type: SpanishAl
+    strings:
+      STR_INCENDIARY_GRENADE: Granada Incendiaria
+      STR_STUN_GRENADE: Granada Aturdidora
+      STR_INCENDIARY_GRENADE_UFOPEDIA: Las granadas incendiarias tienen un gran valor por iluminar en la noche y despejar densas zonas de vegetación.
+      STR_STUN_GRENADE_UFOPEDIA: Aprendiendo el mecanismo de activación de la bomba aturdidora, nos ha permitido agregarle un temporizador, convirtiéndola en una granada que puede ser activada y arrojada con normalidad.

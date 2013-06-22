@@ -1,0 +1,1981 @@
+---
+countries:
+  - type: STR_USA
+    fundingBase: 600
+    fundingCap: 12500
+    labelLon: 260
+    labelLat: -40
+    areas:   # lonMin lonMax latMin latMax
+      - [235, 255, -49, -32]
+      - [255, 277.5, -49, -29]
+      - [260, 265, -29, -26]
+      - [277, 280, -32, -25]
+      - [277.5, 286, -44, -32]
+      - [286, 292.5, -45.5, -40]
+  - type: STR_RUSSIA
+    fundingBase: 230
+    fundingCap: 10000
+    labelLon: 60
+    labelLat: -60
+    areas:
+      - [30, 50, -70, -45]
+      - [24, 30, -60, -42]
+      - [50, 75, -77, -40]
+      - [75, 165, -80, -50]
+      - [165, 170, -70, -59]
+  - type: STR_UK
+    fundingBase: 240
+    fundingCap: 8000
+    labelLon: 358
+    labelLat: -53.625
+    areas:
+      - [352, 2, -60, -50]
+  - type: STR_FRANCE
+    fundingBase: 320
+    fundingCap: 9000
+    labelLon: 2.5
+    labelLat: -46.5
+    areas:
+      - [355, 7, -50, -43]
+  - type: STR_GERMANY
+    fundingBase: 250
+    fundingCap: 10000
+    labelLon: 11.5
+    labelLat: -50
+    areas:
+      - [6, 15, -55, -47.5]
+  - type: STR_ITALY
+    fundingBase: 160
+    fundingCap: 6500
+    labelLon: 12.5
+    labelLat: -43.875
+    areas:
+      - [7, 15, -46.5, -43]
+      - [11, 18, -43, -37]
+  - type: STR_SPAIN
+    fundingBase: 140
+    fundingCap: 5500
+    labelLon: 357.5
+    labelLat: -42.625
+    areas:
+      - [353, 3, -43, -36.5]
+      - [351, 353, -43, -42.25]
+  - type: STR_CHINA
+    fundingBase: 350
+    fundingCap: 9000
+    labelLon: 100
+    labelLat: -35
+    areas:
+      - [75, 98, -50, -30]
+      - [98, 122, -50, -22]
+      - [122, 133, -54, -40]
+  - type: STR_JAPAN
+    fundingBase: 450
+    fundingCap: 12000
+    labelLon: 138
+    labelLat: -38.25
+    areas:
+      - [130, 143, -40, -30]
+      - [138, 147, -46, -40]
+  - type: STR_INDIA
+    fundingBase: 150
+    fundingCap: 5000
+    labelLon: 80
+    labelLat: -24
+    areas:
+      - [70, 85, -30, -8]
+      - [74, 79, -35, -30]
+      - [85, 95, -27, -20]
+  - type: STR_BRAZIL
+    fundingBase: 300
+    fundingCap: 6000
+    labelLon: 305
+    labelLat: 5
+    areas:
+      - [290, 302, -2.5, 17]
+      - [302, 310, -2.5, 22]
+      - [310, 325, 0, 24]
+      - [305, 313, 22, 32]
+  - type: STR_AUSTRALIA
+    fundingBase: 280
+    fundingCap: 6500
+    labelLon: 135
+    labelLat: 25
+    areas:
+      - [110, 156, 10, 40]
+  - type: STR_NIGERIA
+    fundingBase: 180
+    fundingCap: 2200
+    labelLon: 7.5
+    labelLat: -10
+    areas:
+      - [3, 14, -14, -4]
+  - type: STR_SOUTH_AFRICA
+    fundingBase: 230
+    fundingCap: 3300
+    labelLon: 25
+    labelLat: 30
+    areas:
+      - [15, 25, 26, 35]
+      - [25, 32.5, 22, 35]
+  - type: STR_EGYPT
+    fundingBase: 230
+    fundingCap: 2200
+    labelLon: 29
+    labelLat: -26
+    areas:
+      - [25, 35, -32, -22]
+  - type: STR_CANADA
+    fundingBase: 230
+    fundingCap: 5000
+    labelLon: 260
+    labelLat: -55
+    areas:
+      - [219, 230, -70, -55]
+      - [230, 305, -75, -40]
+facilities:
+  - type: STR_ACCESS_LIFT
+    spriteShape: 2
+    spriteFacility: 17
+    lift: true
+    buildCost: 250000
+    buildTime: 1
+    monthlyCost: 2000
+    mapName: XBASE_00
+  - type: STR_LABORATORY
+    spriteShape: 1
+    spriteFacility: 19
+    buildCost: 750000
+    buildTime: 26
+    monthlyCost: 25000
+    labs: 50
+    mapName: XBASE_02
+  - type: STR_WORKSHOP
+    spriteShape: 1
+    spriteFacility: 20
+    buildCost: 800000
+    buildTime: 32
+    monthlyCost: 30000
+    workshops: 50
+    mapName: XBASE_03
+  - type: STR_SMALL_RADAR_SYSTEM
+    spriteShape: 2
+    spriteFacility: 21
+    buildCost: 500000
+    buildTime: 12
+    monthlyCost: 9000
+    radarRange: 1500
+    radarChance: 10
+    mapName: XBASE_04
+  - type: STR_GENERAL_STORES
+    spriteShape: 1
+    spriteFacility: 24
+    buildCost: 150000
+    buildTime: 10
+    monthlyCost: 1000
+    storage: 50
+    mapName: XBASE_07
+  - type: STR_LASER_DEFENSES
+    requires:
+      - STR_LASER_DEFENSE
+    spriteShape: 3
+    spriteFacility: 26
+    buildCost: 400000
+    buildTime: 24
+    monthlyCost: 8000
+    defense: 600
+    hitRatio: 80
+    fireSound: 8
+    hitSound: 10
+    mapName: XBASE_09
+  - type: STR_PLASMA_DEFENSES
+    requires:
+      - STR_PLASMA_DEFENSE
+    spriteShape: 3
+    spriteFacility: 27
+    buildCost: 600000
+    buildTime: 34
+    monthlyCost: 10000
+    defense: 900
+    hitRatio: 70
+    fireSound: 9
+    hitSound: 10
+    mapName: XBASE_10
+  - type: STR_FUSION_BALL_DEFENSES
+    requires:
+      - STR_FUSION_DEFENSE
+    spriteShape: 3
+    spriteFacility: 28
+    buildCost: 800000
+    buildTime: 34
+    monthlyCost: 12500
+    defense: 1200
+    hitRatio: 80
+    fireSound: 7
+    hitSound: 10
+    mapName: XBASE_11
+  - type: STR_HANGAR
+    spriteShape: 9
+    spriteFacility: 9
+    size: 2
+    buildCost: 200000
+    buildTime: 25
+    monthlyCost: 20000
+    crafts: 1
+    mapName: XBASE_16
+craftWeapons:
+  - type: STR_STINGRAY
+    sprite: 0
+    sound: 5
+    damage: 70			# 70 *.7 / 16 = 3 dpt
+    range: 32
+    accuracy: 70
+    reloadCautious: 32
+    reloadStandard: 24
+    reloadAggressive: 16
+    ammoMax: 6			# 6 * 49 = ~300 dmg
+    launcher: STR_STINGRAY_LAUNCHER
+    clip: STR_STINGRAY_MISSILES
+    projectileType: 0		# 3000 / 3 = $1000
+    projectileSpeed: 8
+  - type: STR_AVALANCHE
+    sprite: 1
+    sound: 5
+    damage: 120			# 120*.8/24 = 4.15 dpt
+    range: 60
+    accuracy: 83
+    reloadCautious: 48
+    reloadStandard: 36
+    reloadAggressive: 24
+    ammoMax: 3			# 3*120*.83 = ~300 dmg
+    launcher: STR_AVALANCHE_LAUNCHER
+    clip: STR_AVALANCHE_MISSILES
+    projectileType: 1		# 9000 / 4.15 = $2170
+    projectileSpeed: 8
+  - type: STR_CANNON_UC
+    sprite: 2
+    sound: 4
+    damage: 16			#.25*16/2 = 2 dpt
+    range: 14
+    accuracy: 25
+    reloadCautious: 4
+    reloadStandard: 3
+    reloadAggressive: 2
+    ammoMax: 200
+    rearmRate: 50
+    launcher: STR_CANNON
+    clip: STR_CANNON_ROUNDS_X50
+    projectileType: 2		# 1240 / (50 * 2 / 2) = $24.8
+    projectileSpeed: 8
+  - type: STR_LASER_CANNON_UC
+    sprite: 4
+    sound: 8
+    damage: 56			# 56*.5/7 = 4 dpt
+    range: 28
+    accuracy: 50
+    reloadCautious: 8
+    reloadStandard: 8
+    reloadAggressive: 7
+    ammoMax: 200
+    rearmRate: 200
+    launcher: STR_LASER_CANNON
+    projectileType: 4
+  - type: STR_PLASMA_BEAM_UC
+    sprite: 5
+    sound: 9
+    damage: 140			# 140 *.45 / 10 = 6.3 dpt
+    range: 42
+    accuracy: 45
+    reloadCautious: 12
+    reloadStandard: 11
+    reloadAggressive: 10
+    ammoMax: 125
+    rearmRate: 125
+    launcher: STR_PLASMA_BEAM
+    projectileType: 5
+  - type: STR_FUSION_BALL_UC
+    sprite: 3
+    sound: 7
+    damage: 250			# 250 /20 = 12.5 dpt
+    range: 65
+    accuracy: 100
+    reloadCautious: 32
+    reloadStandard: 24
+    reloadAggressive: 20
+    ammoMax: 5
+    launcher: STR_FUSION_BALL_LAUNCHER
+    clip: STR_FUSION_BALL
+    projectileType: 3
+    projectileSpeed: 8
+items:
+# Item Definitions:
+#  - type: Item name, reference to string defined in .lng, must be unique. (string)
+#    size: How much space this item takes up in storage. (float) (default 0.0)
+#    costBuy: Cost in purchase menu. undefined/0 = cannot buy. (int) (default 0)
+#    costSell: Value in sell menu. undefined/0 = cannot sell. (int) (default 0)
+#    transferTime: time (in hours) to transfer this item (int) (default factor of distance vs weight)
+#    weight: Weight penalty to soldiers carrying this item. (int) (default 0)
+#    bigSprite: Sprite reference in BigObs.pck. -1 for none. (int) (default -1) (http://www.ufopaedia.org/index.php?title=BIGOBS.PCK)
+#    floorSprite: Sprite reference in FloorOb.pck. -1 for none. (int) (default -1) (http://www.ufopaedia.org/index.php?title=FLOOROB.PCK)
+#    handSprite: Sprite reference in HandOb.pck. -1 for none. (int) (default -1) (http://www.ufopaedia.org/index.php?title=HANDOB.PCK)
+#    bulletSprite: Projectile sprite. (int) 0 = rocket, 1 = pistol bullet, 2 = rifle bullet, 3 = auto cannon bullet, 
+#    4 = heavy cannon bullet, 5 = small laser, 6 = laser rifle, 7 = heavy laser, 8 = plasma, 9 = small launcher, 10 = blaster launcher
+#    fireSound: Sound effect Reference in Sample2.cat. -1 for none (int) (default -1) (http://www.ufopaedia.org/index.php?title=SOUND#SAMPLE2.CAT)
+#    hitSound: Sound effect Reference in Sample2.cat. -1 for none (int) (default -1) (http://www.ufopaedia.org/index.php?title=SOUND#SAMPLE2.CAT)
+#    compatibleAmmo:
+#      - Name of ammo item 1
+#      - Name of ammo item 2
+#      - etc.
+#    accuracyAuto: Auto-Shot accuracy, as a percentage, affected by the unit's firing skill. (int)
+#    accuracySnap: Snap-Shot accuracy, as a percentage, affected by the unit's firing skill. (int)
+#    accuracyAimed: Aimed-Shot accuracy, as a percentage, affected by the unit's firing skill. (int)
+#    accuracyMelee: Melee accuracy, as a percentage, affected by the unit's melee skill. (int)
+#    tuAuto: Auto-Shot time unit usage, as a percentage of the firing unit's TU. (int)
+#    tuSnap: Snap-Shot time unit usage, as a percentage of the firing unit's TU. (int)
+#    tuAimed: Aimed-Shot time unit usage, as a percentage of the firing unit's TU. (int)
+#    tuMelee: Melee time unit usage, as a percentage of the attacking unit's TU. (int)
+#    tuUse: TU usage for "special" actions, ie: psi-amp. flat TU cost. (int)
+#    battleType: What kind of item is this? (int) (default 0)
+#        0 = NONE, 1 = FIREARM, 2 = AMMO, 3 = MELEE, 4 = GRENADE, 5 = PROXIMITYGRENADE, 6 = MEDIKIT,
+#        7 = SCANNER, 8 = MINDPROBE, 9 = PSIAMP, 10 = FLARE, 11 = CORPSE
+#    twoHanded: Is this a two-handed weapon. (boolean) (default false)
+#    invWidth: Width of this item in the inventory screen. (int) (default 1)
+#    invHeight: Height of this item in the inventory screen. (int) (default 1)
+#    armor: How much damage is needed to destoy this item on the ground. (int)
+#    fixedWeapon: can this item be dropped? (boolean) (default true)
+#    turretType: which turret number to use for this tank (0-4) (int) (http://www.ufopaedia.org/index.php?title=TANKS.PCK)
+#    hitAnimation: reference in smoke.pck for "hit" explosion. (0-2) (int) (http://www.ufopaedia.org/index.php?title=SMOKE.PCK)
+#    NOTE - melee and psi-amp weapons use HIT.PCK instead, DO NOT define a hitAnimation for these types.
+#    power: average damage of the weapon, in most cases, the damage will be +- 50% (int)
+#    damageType: What kind of damage does this do? (int)
+#        0 = NONE, 1 = ARMOR PIERCING, 2 = INCENDIARY, 3 = HIGH EXPLOSIVE, 4 = LASER, 5 = PLASMA,
+#        6 = STUN, 7 = MELEE, 8 = ACID, 9 = SMOKE
+#    clipSize: How many bullets in this clip? -1 for infinite. (int) (default 0)
+#    painKiller: 10
+#    heal: 10
+#    stimulant: 10
+#    healAmount: 1
+#    healthAmount: 3
+#    stun: 4
+#    energy: 10
+#    recover: tally this item for end of mission results? (boolean) (default false)
+#    liveAlien: does this require containment? (boolean) (default false)
+#    attraction: represents how likely an alien is to pick this up. values below 5 will be ignored (by design) (int) (default 0)
+  - type: STR_FUSION_BALL_LAUNCHER
+    size: 2.4
+    costSell: 160000
+  - type: STR_LASER_CANNON
+    size: 1.8
+    costSell: 84000
+  - type: STR_PLASMA_BEAM
+    size: 1.6
+    costSell: 256000
+  - type: STR_STINGRAY_MISSILES
+    size: 0.3
+    costBuy: 2700
+    costSell: 2500
+    transferTime: 48
+  - type: STR_AVALANCHE_MISSILES
+    size: 0.5
+    costBuy: 6600
+    costSell: 6250
+    transferTime: 48
+  - type: STR_CANNON_ROUNDS_X50
+    size: 0
+    costBuy: 800
+    costSell: 756
+    transferTime: 48
+  - type: STR_FUSION_BALL
+    size: 0.5
+    costSell: 36000
+    transferTime: 48
+  - type: STR_TANK_CANNON
+    size: 4
+    costBuy: 384000
+    costSell: 320000
+    transferTime: 96
+    weight: 1
+    bigSprite: 43
+    floorSprite: 0
+    handSprite: 0
+    bulletSprite: 4
+    fireSound: 2
+    compatibleAmmo:
+      - STR_HWP_CANNON_SHELLS
+    accuracySnap: 50	# (3@60 -> 6.4% miss chance), 4@50 -> 6.25%)
+    accuracyAimed: 90
+    tuSnap: 24
+    tuAimed: 55
+    battleType: 1
+    fixedWeapon: true
+    invWidth: 2
+    invHeight: 3
+    armor: 20
+    turretType: 0
+  - type: STR_HWP_CANNON_SHELLS
+    size: 0
+    costBuy: 200
+    costSell: 100
+    transferTime: 48
+    weight: 1
+    bigSprite: -1 		# It must be -1 to avoid putting it to the base-defense battlescape. Original value: 12
+    floorSprite: 12
+    hitSound: 13
+    hitAnimation: 26
+    power: 60
+    damageType: 1
+    clipSize: 30
+    battleType: 2
+    invWidth: 2
+    invHeight: 1
+    armor: 20
+  - type: STR_TANK_ROCKET_LAUNCHER
+    size: 4
+    costBuy: 425000
+    costSell: 340000
+    transferTime: 96
+    weight: 1
+    bigSprite: 42
+    floorSprite: 0
+    handSprite: 0
+    bulletSprite: 0
+    fireSound: 52
+    compatibleAmmo:
+      - STR_HWP_ROCKETS
+    accuracySnap: 66
+    accuracyAimed: 95
+    tuSnap: 45
+    tuAimed: 75
+    battleType: 1
+    fixedWeapon: true
+    invWidth: 2
+    invHeight: 3
+    armor: 20
+    turretType: 1
+  - type: STR_HWP_ROCKETS
+    size: 0.25
+    costBuy: 1200
+    costSell: 960
+    transferTime: 48
+    weight: 1
+    bigSprite: -1 	# It must be -1 to avoid putting it to the base-defense battlescape. Original value: 16
+    floorSprite: 16
+    hitSound: 0
+    hitAnimation: 0
+    power: 85
+    damageType: 3
+    clipSize: 8
+    battleType: 2
+    invWidth: 1
+    invHeight: 3
+    armor: 20
+  - type: STR_TANK_LASER_CANNON
+    size: 4
+    costSell: 450000
+    transferTime: 96
+    weight: 1
+    bigSprite: 54
+    floorSprite: 0
+    handSprite: 0
+    bulletSprite: 5
+    fireSound: 11
+    hitSound: 19
+    hitAnimation: 36
+    power: 90
+    damageType: 4
+    accuracySnap: 50
+    accuracyAimed: 85
+    tuSnap: 33
+    tuAimed: 75
+    battleType: 1
+    fixedWeapon: true
+    clipSize: -1
+    invWidth: 2
+    invHeight: 3
+    armor: 50
+    turretType: 2
+  - type: STR_HOVERTANK_PLASMA
+    size: 4
+    costSell: 980000
+    transferTime: 96
+    weight: 1
+    bigSprite: 40
+    floorSprite: 0
+    handSprite: 0
+    bulletSprite: 8
+    fireSound: 18
+    hitSound: 19
+    power: 110
+    damageType: 5
+    hitAnimation: 46
+    accuracySnap: 85
+    accuracyAimed: 100
+    tuSnap: 30
+    tuAimed: 60
+    battleType: 1
+    fixedWeapon: true
+    clipSize: -1
+    invWidth: 2
+    invHeight: 3
+    armor: 20
+    turretType: 3
+  - type: STR_HOVERTANK_LAUNCHER
+    size: 4
+    costSell: 1000000
+    transferTime: 96
+    weight: 1
+    bigSprite: 40
+    floorSprite: 0
+    handSprite: 0
+    bulletSprite: 10
+    fireSound: 53
+    compatibleAmmo:
+      - STR_HWP_FUSION_BOMB
+    accuracyAimed: 99
+    tuAimed: 66
+    battleType: 1
+    fixedWeapon: true
+    waypoint: true
+    invWidth: 2
+    invHeight: 3
+    armor: 25
+    turretType: 4
+  - type: STR_HWP_FUSION_BOMB
+    size: 0.6
+    costSell: 31500
+    transferTime: 48
+    weight: 3
+    bigSprite: -1 # It must be -1 to avoid putting it to the base-defense battlescape. Original value: 36
+    floorSprite: 35
+    hitSound: 0
+    hitAnimation: 0
+    power: 140
+    damageType: 3
+    clipSize: 8
+    battleType: 2
+    invWidth: 1
+    invHeight: 1
+    armor: 20
+    blastRadius: 11
+  - type: STR_PISTOL
+    size: 0.1
+    costBuy: 800
+    costSell: 600
+    weight: 4
+    bigSprite: 3
+    floorSprite: 3
+    handSprite: 96
+    bulletSprite: 1
+    fireSound: 4
+    compatibleAmmo:
+      - STR_PISTOL_CLIP
+    accuracySnap: 60
+    accuracyAimed: 78
+    tuSnap: 18
+    tuAimed: 30
+    battleType: 1
+    invWidth: 1
+    invHeight: 2
+    armor: 20
+    attraction: 1
+  - type: STR_PISTOL_CLIP
+    size: 0.1
+    costBuy: 70
+    costSell: 52
+    weight: 1
+    bigSprite: 4
+    floorSprite: 4
+    hitSound: 22
+    hitAnimation: 26
+    power: 26
+    damageType: 1
+    clipSize: 12
+    battleType: 2
+    armor: 12
+    attraction: 1
+  - type: STR_RIFLE
+    size: 0.2
+    costBuy: 3000
+    costSell: 2500
+    weight: 6
+    bigSprite: 1
+    floorSprite: 1
+    handSprite: 0
+    bulletSprite: 2
+    fireSound: 4
+    compatibleAmmo:
+      - STR_RIFLE_CLIP
+    accuracyAuto: 35
+    accuracySnap: 60
+    accuracyAimed: 110
+    tuAuto: 35
+    tuSnap: 25
+    tuAimed: 80
+    battleType: 1
+    twoHanded: true
+    invWidth: 1
+    invHeight: 3
+    armor: 25
+  - type: STR_RIFLE_CLIP
+    size: 0.1
+    costBuy: 200
+    costSell: 150
+    weight: 2
+    bigSprite: 2
+    floorSprite: 2
+    hitSound: 22
+    hitAnimation: 26
+    power: 30
+    damageType: 1
+    clipSize: 30
+    battleType: 2
+    armor: 25
+  - type: STR_HEAVY_CANNON
+    size: 0.25
+    costBuy: 6000
+    costSell: 4800
+    weight: 16
+    bigSprite: 11
+    floorSprite: 11
+    handSprite: 24
+    bulletSprite: 4
+    fireSound: 2
+    compatibleAmmo:
+      - STR_HC_AP_AMMO
+      - STR_HC_HE_AMMO
+      - STR_HC_I_AMMO
+    accuracySnap: 60
+    accuracyAimed: 90
+    tuSnap: 33
+    tuAimed: 80
+    battleType: 1
+    twoHanded: true
+    invWidth: 2
+    invHeight: 3
+    armor: 20
+  - type: STR_HC_AP_AMMO
+    size: 0.08
+    costBuy: 300
+    costSell: 225
+    weight: 7
+    bigSprite: 12
+    floorSprite: 12
+    hitSound: 13
+    hitAnimation: 26
+    power: 60
+    damageType: 1
+    clipSize: 6
+    battleType: 2
+    invWidth: 2
+    invHeight: 1
+    armor: 30
+    attraction: 1
+  - type: STR_HC_HE_AMMO
+    size: 0.08
+    costBuy: 500
+    costSell: 275
+    weight: 6
+    bigSprite: 13
+    floorSprite: 13
+    hitSound: 0
+    hitAnimation: 0
+    power: 52
+    damageType: 3
+    clipSize: 6
+    battleType: 2
+    invWidth: 2
+    invHeight: 1
+    armor: 20
+    attraction: 1
+  - type: STR_HC_I_AMMO
+    size: 0.08
+    costBuy: 400
+    costSell: 300
+    weight: 5
+    bigSprite: 14
+    floorSprite: 14
+    hitSound: 0
+    hitAnimation: 0
+    power: 60
+    damageType: 2
+    clipSize: 6
+    battleType: 2
+    invWidth: 2
+    invHeight: 1
+    armor: 20
+    attraction: 1
+  - type: STR_AUTO_CANNON
+    size: 0.3
+    costBuy: 13500
+    costSell: 10125
+    weight: 19
+    bigSprite: 7
+    floorSprite: 7
+    handSprite: 32
+    bulletSprite: 3
+    fireSound: 2
+    compatibleAmmo:
+      - STR_AC_AP_AMMO
+      - STR_AC_HE_AMMO
+      - STR_AC_I_AMMO
+    accuracyAuto: 32
+    accuracySnap: 56
+    accuracyAimed: 82
+    tuAuto: 40
+    tuSnap: 33
+    tuAimed: 80
+    battleType: 1
+    twoHanded: true
+    invWidth: 2
+    invHeight: 3
+    armor: 20
+  - type: STR_AC_AP_AMMO
+    size: 0.1
+    costBuy: 500
+    costSell: 400
+    weight: 5
+    bigSprite: 8
+    floorSprite: 8
+    hitSound: 13
+    hitAnimation: 26
+    power: 45
+    damageType: 1
+    clipSize: 14
+    battleType: 2
+    invWidth: 2
+    invHeight: 1
+    armor: 20
+  - type: STR_AC_HE_AMMO
+    size: 0.1
+    costBuy: 700
+    costSell: 560
+    weight: 5
+    bigSprite: 9
+    floorSprite: 9
+    hitSound: 0
+    hitAnimation: 0
+    power: 43
+    damageType: 3
+    clipSize: 14
+    battleType: 2
+    invWidth: 2
+    invHeight: 1
+    armor: 20
+  - type: STR_AC_I_AMMO
+    size: 0.1
+    costBuy: 650
+    costSell: 520
+    weight: 5
+    bigSprite: 10
+    floorSprite: 10
+    hitSound: 0
+    hitAnimation: 0
+    power: 42
+    damageType: 2
+    clipSize: 14
+    battleType: 2
+    invWidth: 2
+    invHeight: 1
+    armor: 20
+    attraction: 1
+  - type: STR_SMALL_ROCKET
+    size: 0.2
+    costBuy: 560
+    costSell: 500
+    weight: 6
+    bigSprite: 16
+    floorSprite: 16
+    hitSound: 0
+    hitAnimation: 0
+    power: 75
+    damageType: 3
+    clipSize: 1
+    battleType: 2
+    invWidth: 1
+    invHeight: 3
+    armor: 20
+  - type: STR_LARGE_ROCKET
+    size: 0.2
+    costBuy: 820
+    costSell: 750
+    weight: 8
+    bigSprite: 17
+    floorSprite: 17
+    hitSound: 0
+    hitAnimation: 0
+    power: 100
+    damageType: 3
+    clipSize: 1
+    battleType: 2
+    invWidth: 1
+    invHeight: 3
+    armor: 20
+  - type: STR_LASER_PISTOL
+    size: 0.1
+    costSell: 20000
+    weight: 7
+    bigSprite: 5
+    floorSprite: 5
+    handSprite: 112
+    bulletSprite: 5
+    fireSound: 11
+    hitSound: 19
+    hitAnimation: 36
+    power: 46
+    damageType: 4
+    accuracyAuto: 28
+    accuracySnap: 40
+    accuracyAimed: 68
+    tuAuto: 25
+    tuSnap: 20
+    tuAimed: 55
+    clipSize: -1
+    battleType: 1
+    invWidth: 1
+    invHeight: 2
+    armor: 20
+  - type: STR_LASER_RIFLE
+    size: 0.2
+    costSell: 37000
+    weight: 8
+    bigSprite: 0
+    floorSprite: 0
+    handSprite: 8
+    bulletSprite: 6
+    fireSound: 11
+    hitSound: 19
+    hitAnimation: 36
+    power: 60
+    damageType: 4
+    accuracyAuto: 46
+    accuracySnap: 65
+    accuracyAimed: 100
+    tuAuto: 34
+    tuSnap: 25
+    tuAimed: 50
+    clipSize: -1
+    battleType: 1
+    twoHanded: true
+    invWidth: 1
+    invHeight: 3
+    armor: 20
+  - type: STR_HEAVY_LASER
+    size: 0.3
+    costSell: 60000
+    weight: 18
+    bigSprite: 6
+    floorSprite: 6
+    handSprite: 16
+    bulletSprite: 7
+    fireSound: 11
+    hitSound: 19
+    hitAnimation: 36
+    power: 85
+    damageType: 4
+    accuracySnap: 50
+    accuracyAimed: 84
+    tuSnap: 33
+    tuAimed: 75
+    clipSize: -1
+    battleType: 1
+    twoHanded: true
+    invWidth: 2
+    invHeight: 3
+    armor: 20
+  - type: STR_GRENADE
+    size: 0.025
+    costBuy: 275
+    costSell: 240
+    weight: 3
+    bigSprite: 19
+    floorSprite: 19
+    power: 50
+    damageType: 3
+    battleType: 4
+    armor: 20
+    blastRadius: 6
+  - type: STR_SMOKE_GRENADE
+    size: 0.03
+    costBuy: 150
+    costSell: 120
+    weight: 3
+    bigSprite: 20
+    floorSprite: 20
+    power: 60
+    damageType: 9
+    battleType: 4
+    armor: 20
+    blastRadius: 6
+  - type: STR_HIGH_EXPLOSIVE
+    size: 0.1
+    costBuy: 400
+    costSell: 375
+    weight: 6
+    bigSprite: 22
+    floorSprite: 22
+    power: 110
+    damageType: 3
+    battleType: 4
+    invWidth: 2
+    invHeight: 1
+    armor: 20
+    blastRadius: 5
+  - type: STR_MOTION_SCANNER
+    size: 0.075
+    costSell: 42500
+    weight: 3
+    bigSprite: 23
+    floorSprite: 23
+    battleType: 7
+    tuUse: 25
+    armor: 20
+  - type: STR_MEDI_KIT
+    size: 0.1
+    costSell: 36000
+    weight: 5
+    bigSprite: 24
+    floorSprite: 24
+    battleType: 6
+    invWidth: 1
+    invHeight: 2
+    painKiller: 10
+    heal: 10
+    stimulant: 10
+    healAmount: 1
+    healthAmount: 5
+    stun: 4
+    energy: 10
+    tuUse: 10
+    flatRate: true
+    armor: 20
+  - type: STR_ADV_MEDI_KIT
+    size: 0.1
+    costSell: 50000
+    weight: 6
+    bigSprite: 24
+    floorSprite: 24
+    battleType: 6
+    invWidth: 1
+    invHeight: 2
+    painKiller: 12
+    heal: 12
+    stimulant: 12
+    healAmount: 1
+    healthAmount: 10
+    stun: 4
+    energy: 10
+    tuUse: 10
+    flatRate: true
+    armor: 30
+  - type: STR_PSI_AMP
+    requires:
+      - STR_PSI_AMP
+    size: 0.05
+    costSell: 195000
+    weight: 10
+    bigSprite: 33
+    floorSprite: 32
+    handSprite: 88
+    hitSound: 36
+    battleType: 9
+    twoHanded: true
+    invWidth: 1
+    invHeight: 3
+    tuUse: 25
+    flatRate: true
+    armor: 20
+  - type: STR_ELECTRO_FLARE
+    size: 0.025
+    costBuy: 60
+    costSell: 40
+    weight: 2
+    armor: 16
+# items: PLASMA # PLASMA
+# PLASMA # PLASMA
+# PLASMA # PLASMA
+# PLASMA # PLASMA
+  - type: STR_HEAVY_PLASMA
+    requires:
+      - STR_HEAVY_PLASMA
+    size: 0.2
+    costSell: 132000
+    weight: 8
+    accuracyAuto: 45
+    accuracySnap: 70
+    accuracyAimed: 90
+    tuAuto: 35
+    tuSnap: 30
+    tuAimed: 60
+    battleType: 1
+    twoHanded: true
+    invWidth: 2
+    invHeight: 3
+    recoveryPoints: 5
+    armor: 50
+    attraction: 1
+  - type: STR_HEAVY_PLASMA_CLIP
+    requires:
+      - STR_HEAVY_PLASMA_CLIP
+    size: 0.1
+    costSell: 24000
+    weight: 3
+    power: 110
+    damageType: 5
+    clipSize: 36
+    armor: 20
+  - type: STR_PLASMA_RIFLE
+    requires:
+      - STR_PLASMA_RIFLE
+    size: 0.2
+    costSell: 98000
+    weight: 5
+    compatibleAmmo:
+      - STR_PLASMA_RIFLE_CLIP
+    accuracyAuto: 55
+    accuracySnap: 83
+    accuracyAimed: 96
+    tuAuto: 36
+    tuSnap: 30
+    tuAimed: 60
+    battleType: 1
+    twoHanded: true
+    invWidth: 1
+    invHeight: 3
+    recoveryPoints: 4
+    armor: 50
+    attraction: 1
+  - type: STR_PLASMA_RIFLE_CLIP
+    size: 0.1
+    costSell: 18000
+    weight: 3
+    bigSprite: 41
+    floorSprite: 33
+    hitSound: 19
+    hitAnimation: 46
+    power: 75
+    damageType: 5
+    clipSize: 36
+    battleType: 2
+    recoveryPoints: 1
+    armor: 25
+    attraction: 1
+  - type: STR_PLASMA_PISTOL
+    size: 0.1
+    costSell: 66600
+    weight: 3
+    accuracyAuto: 50
+    accuracySnap: 65
+    accuracyAimed: 85
+    tuAuto: 30
+    tuSnap: 30
+    tuAimed: 60
+    recoveryPoints: 3
+    armor: 45
+    attraction: 1
+  - type: STR_PLASMA_PISTOL_CLIP
+    requires:
+      - STR_PLASMA_PISTOL_CLIP
+    size: 0.1
+    costSell: 9000
+    weight: 3
+    power: 52
+    damageType: 5
+    clipSize: 26
+    battleType: 2
+    recoveryPoints: 1
+    armor: 25
+    attraction: 1
+  - type: STR_BLASTER_LAUNCHER
+    requires:
+      - STR_BLASTER_LAUNCHER
+    size: 0.3
+    costSell: 144000
+    weight: 16
+    bigSprite: 35
+    floorSprite: 34
+    handSprite: 56
+    bulletSprite: 10
+    fireSound: 53
+    compatibleAmmo:
+      - STR_BLASTER_BOMB
+    accuracyAimed: 120
+    tuAimed: 80
+    battleType: 1
+    twoHanded: true
+    waypoint: true
+    invWidth: 2
+    invHeight: 3
+    recoveryPoints: 5
+    armor: 40
+    attraction: 1
+  - type: STR_BLASTER_BOMB
+    requires:
+      - STR_BLASTER_BOMB
+    size: 0.2
+    costSell: 26000
+    weight: 3
+    bigSprite: 36
+    floorSprite: 35
+    hitSound: 0
+    hitAnimation: 0
+    power: 200
+    damageType: 3
+    clipSize: 1
+    battleType: 2
+    invWidth: 1
+    invHeight: 2
+    recoveryPoints: 1
+    armor: 25
+    blastRadius: 11
+    attraction: 1
+  - type: STR_SMALL_LAUNCHER
+    requires:
+      - STR_SMALL_LAUNCHER
+    size: 0.2
+    costSell: 80000
+    weight: 10
+    bigSprite: 37
+    floorSprite: 36
+    handSprite: 64
+    bulletSprite: 9
+    fireSound: 53
+    compatibleAmmo:
+      - STR_STUN_BOMB
+    accuracySnap: 65
+    accuracyAimed: 110
+    tuSnap: 40
+    tuAimed: 75
+    battleType: 1
+    twoHanded: true
+    invWidth: 2
+    invHeight: 2
+    recoveryPoints: 4
+    armor: 20
+    attraction: 1
+  - type: STR_STUN_BOMB
+    requires:
+      - STR_STUN_BOMB
+    size: 0.1
+    costSell: 15200
+    weight: 3
+    bigSprite: 38
+    floorSprite: 37
+    hitSound: 0
+    hitAnimation: 0
+    power: 90
+    damageType: 6
+    clipSize: 1
+    battleType: 2
+    recoveryPoints: 1
+    armor: 20
+    attraction: 1
+  - type: STR_ALIEN_GRENADE
+    requires:
+      - STR_ALIEN_GRENADE
+    size: 0.1
+    costSell: 14850
+    weight: 3
+    bigSprite: 39
+    floorSprite: 38
+    power: 90
+    damageType: 3
+    battleType: 4
+    recoveryPoints: 1
+    armor: 20
+    blastRadius: 6
+    attraction: 1
+  - type: STR_ELERIUM_115
+    size: 0.1
+    costSell: 10000
+    weight: 3
+    bigSprite: 56
+    floorSprite: 37
+    invWidth: 1
+    invHeight: 1
+    armor: 25
+    attraction: 4
+  - type: STR_MIND_PROBE
+    requires:
+      - STR_MIND_PROBE
+    size: 0.1
+    costSell: 280000
+    weight: 5
+    bigSprite: 29
+    floorSprite: 28
+    hitSound: 37
+    battleType: 8
+    invWidth: 2
+    invHeight: 2
+    tuUse: 50
+    recoveryPoints: 1
+    armor: 20
+    attraction: 1
+  - type: STR_ALIEN_ALLOYS
+    size: 0.05
+    costSell: 6500
+  - type: STR_PERSONAL_ARMOR
+    size: 0.5
+    costSell: 60000
+  - type: STR_POWER_SUIT
+    size: 0.8
+    costSell: 90000
+  - type: STR_FLYING_SUIT
+    size: 0.8
+    costSell: 120000
+############ END ITEMS #####################
+############ BEGIN UFO #####################
+ufos:
+  - type: STR_LARGE_SCOUT
+    range: 32
+invs:
+  - id: STR_LEFT_HAND
+    x: 128
+    y: 63
+    type: 1
+    costs:
+      STR_BACK_PACK: 14
+      STR_BELT: 6
+      STR_GROUND: 0
+      STR_LEFT_LEG: 6
+      STR_LEFT_SHOULDER: 10
+      STR_RIGHT_HAND: 2
+      STR_RIGHT_LEG: 10
+      STR_RIGHT_SHOULDER: 10
+  - id: STR_LEFT_LEG
+    x: 128
+    y: 120
+    slots:
+      - [0, 0]
+      - [1, 0]
+    costs:
+      STR_BACK_PACK: 18
+      STR_BELT: 10
+      STR_GROUND: 3
+      STR_LEFT_HAND: 3
+      STR_LEFT_SHOULDER: 10
+      STR_RIGHT_HAND: 5
+      STR_RIGHT_LEG: 10
+      STR_RIGHT_SHOULDER: 10
+  - id: STR_LEFT_SHOULDER
+    x: 112
+    y: 37
+    slots:
+      - [0, 0]
+      - [1, 0]
+    costs:
+      STR_BACK_PACK: 16
+      STR_BELT: 10
+      STR_GROUND: 3
+      STR_LEFT_HAND: 3
+      STR_LEFT_LEG: 12
+      STR_RIGHT_HAND: 3
+      STR_RIGHT_LEG: 12
+      STR_RIGHT_SHOULDER: 8
+  - id: STR_RIGHT_HAND
+    x: 0
+    y: 63
+    type: 1
+    costs:
+      STR_BACK_PACK: 14
+      STR_BELT: 6
+      STR_GROUND: 0
+      STR_LEFT_HAND: 2
+      STR_LEFT_LEG: 10
+      STR_LEFT_SHOULDER: 10
+      STR_RIGHT_LEG: 6
+      STR_RIGHT_SHOULDER: 10
+  - id: STR_RIGHT_LEG
+    x: 0
+    y: 120
+    slots:
+      - [0, 0]
+      - [1, 0]
+    costs:
+      STR_BACK_PACK: 18
+      STR_BELT: 10
+      STR_GROUND: 4
+      STR_LEFT_HAND: 6
+      STR_LEFT_LEG: 10
+      STR_LEFT_SHOULDER: 10
+      STR_RIGHT_HAND: 4
+      STR_RIGHT_SHOULDER: 10
+armors:
+  - type: STR_PERSONAL_ARMOR_UC
+    frontArmor: 64
+    sideArmor: 48
+    rearArmor: 48
+    underArmor: 35
+    damageModifier:
+      - 1.0	#		DT_NONE
+      - 1.0	# AmrPierce	DT_AP
+      - 0.66	# Fire		DT_IN
+      - 1.0	# HiEx		DT_HE
+      - 0.9	# Laser		DT_LASER
+      - 1.0	# Plasma	DT_PLASMA
+      - 0.9	# Stun		DT_STUN
+      - 1.0	# Melee		DT_MELEE
+      - 1.1	# Acid		DT_ACID
+      - 0.8	# Smoke 	DT_SMOKE
+  - type: STR_POWER_SUIT_UC
+    frontArmor: 100
+    sideArmor: 80
+    rearArmor: 75
+    underArmor: 64
+    damageModifier:
+      - 1.0   	#		DT_NONE
+      - 1.0   	# ArmorP	DT_AP
+      - 0.0   	# Fire		DT_IN
+      - 1.0   	# HiEx		DT_HE          
+      - 1.0   	# Laser		DT_LASER
+      - 1.0   	# Plasma	DT_PLASMA
+      - 0.8   	# Stun		DT_STUN         
+      - 1.0   	# Melee		DT_MELEE         
+      - 1.0   	# Acid		DT_ACID         
+      - 0.0   	# Smoke 	DT_SMOKE
+  - type: STR_FLYING_SUIT_UC
+    frontArmor: 110
+    sideArmor: 95
+    rearArmor: 85
+    underArmor: 75
+    movementType: 1
+    damageModifier:
+      - 1.0   	#		DT_NONE
+      - 1.0   	# ArmorP	DT_AP
+      - 0.0   	# Fire		DT_IN
+      - 1.0   	# HiEx		DT_HE          
+      - 1.0   	# Laser		DT_LASER
+      - 1.0   	# Plasma	DT_PLASMA
+      - 0.8   	# Stun		DT_STUN         
+      - 1.0   	# Melee		DT_MELEE         
+      - 1.0   	# Acid		DT_ACID         
+      - 0.0   	# Smoke 	DT_SMOKE
+  - type: CYBERDISC_ARMOR
+    frontArmor: 34
+    sideArmor: 34
+    rearArmor: 34
+    underArmor: 30
+    damageModifier:
+      - 1.0	#		DT_NONE
+      - 0.8     # ArmorP	DT_AP
+      - 1.0     # Fire		DT_IN
+      - 0.66    # HiEx		DT_HE          
+      - 1.0     # Laser		DT_LASER
+      - 1.0     # Plasma	DT_PLASMA
+      - 1.0     # Stun		DT_STUN         
+      - 1.0     # Melee		DT_MELEE         
+      - 1.0     # Acid		DT_ACID         
+      - 0.0     # Smoke 	DT_SMOKE
+  - type: SECTOPOD_ARMOR
+    frontArmor: 145
+    sideArmor: 130
+    rearArmor: 100
+    underArmor: 90
+    damageModifier:
+      - 1.0    	#		DT_NONE
+      - 1.0    	# ArmorP	DT_AP
+      - 1.0    	# Fire		DT_IN
+      - 0.8    	# HiEx		DT_HE          
+      - 1.66   	# Laser		DT_LASER
+      - 0.75   	# Plasma	DT_PLASMA
+      - 1.0    	# Stun		DT_STUN         
+      - 1.0    	# Melee		DT_MELEE         
+      - 1.0    	# Acid		DT_ACID         
+      - 0.0    	# Smoke 	DT_SMOKE
+# SOLDIERS ######
+soldiers:
+  - type: XCOM
+    minStats:
+      tu: 50
+      stamina: 40
+      health: 26
+      bravery: 20
+      reactions: 30
+      firing: 40
+      throwing: 50
+      strength: 20
+      psiStrength: 0
+# psiSkill here is treated as the initial stat
+      psiSkill: 0
+      melee: 20
+    maxStats:
+      tu: 60
+      stamina: 70
+      health: 40
+      bravery: 60
+      reactions: 60
+      firing: 70
+      throwing: 80
+      strength: 40
+      psiStrength: 100
+# psiSkill here is treated as the minimum value for the initial month of training using
+# a random number between (this) and (150% of this)
+      psiSkill: 20
+      melee: 40
+# Note: caps are not absolute, it IS possible to go one or two points over (at most)
+# this is NOT a bug, it is a design choice, for variety's sake.
+# bravery is ALWAYS treated in multiples of 10, and cannot go above the cap. 101 will be treated as 110
+# psi strength is NEVER increased.
+    statCaps:
+      tu: 99
+      stamina: 100
+      health: 99
+      bravery: 100
+      reactions: 100
+      firing: 120
+      throwing: 120
+      strength: 80
+      psiStrength: 0
+      psiSkill: 100
+      melee: 120
+    armor: STR_NONE_UC
+    standHeight: 22
+    kneelHeight: 14
+### UNITS UNITS UNITS ############
+research:
+  - name: STR_ADV_MEDI_KIT
+    cost: 240
+    points: 25
+    dependencies:
+      - STR_MEDI_KIT
+      - STR_ALIEN_SURGERY
+#654 MANUFACTURE START # # # # # #
+#654 MANUFACTURE START # # # # # #
+#654 MANUFACTURE START # # # # # #
+#654 MANUFACTURE START # # # # # #
+#654 MANUFACTURE START # # # # # #
+#654 MANUFACTURE START # # # # # #
+#654 MANUFACTURE START # # # # # #
+#654 MANUFACTURE START # # # # # #
+#654 MANUFACTURE START # # # # # #
+#654 MANUFACTURE START # # # # # #
+manufacture:
+###### BEGIN KMOD New Manufacture Items ########
+  - name: STR_HIGH_EXPLOSIVE
+    category: STR_WEAPON
+    requires:
+      []
+    space: 1			# -2  : 60 * (.5) - 26 
+    time: 12
+    cost: 1
+  - name: STR_STINGRAY_MISSILES
+    category: STR_CRAFT_AMMUNITION
+    requires:
+      []
+    space: 4			# -13/-14 : 6 * (3 - .5) - 28
+    time: 120
+    cost: 100
+    requiredItems:
+      STR_HIGH_EXPLOSIVE: 1
+  - name: STR_AVALANCHE_MISSILES
+    category: STR_CRAFT_AMMUNITION
+    requires:
+      []
+    space: 7			# 2 / -4  : 4 * (7.5 - 1) - 30 
+    time: 180
+    cost: 200
+    requiredItems:
+      STR_HIGH_EXPLOSIVE: 2
+######    END OF NEW MANUFACTURE ITEMS ########
+  - name: STR_FUSION_BALL_LAUNCHER
+    category: STR_CRAFT_WEAPON
+    requires:
+      - STR_FUSION_MISSILE
+    space: 8
+    time: 1200
+    cost: 87500			# $17.5
+    requiredItems:
+      STR_ALIEN_ALLOYS: 1
+  - name: STR_LASER_CANNON
+    category: STR_CRAFT_WEAPON
+    requires:
+      - STR_LASER_CANNON
+    space: 6
+    time: 720
+    cost: 50000			# $14
+  - name: STR_PLASMA_BEAM
+    category: STR_CRAFT_WEAPON
+    requires:
+      - STR_PLASMA_CANNON
+    space: 8
+    time: 1200
+    cost: 90000			# $19
+    requiredItems:
+      STR_ELERIUM_115: 10
+  - name: STR_FUSION_BALL
+    category: STR_CRAFT_AMMUNITION
+    requires:
+      - STR_FUSION_MISSILE
+    space: 8
+    time: 400			# $4k
+    cost: 2500
+    requiredItems:
+      STR_ELERIUM_115: 2
+  - name: STR_TANK_LASER_CANNON
+    category: STR_HEAVY_WEAPONS_PLATFORM
+    requires:
+      - STR_LASER_CANNON
+    space: 25
+    time: 960
+    cost: 335000		# $12
+    requiredItems:
+      STR_LASER_CANNON: 1
+  - name: STR_HOVERTANK_PLASMA
+    category: STR_HEAVY_WEAPONS_PLATFORM
+    requires:
+      - STR_PLASMA_CANNON
+      - STR_NEW_FIGHTER_CRAFT
+    space: 30
+    time: 1200
+    cost: 500000		# $14
+    requiredItems:
+      STR_PLASMA_BEAM: 1
+      STR_ALIEN_ALLOYS: 10
+      STR_ELERIUM_115: 13
+  - name: STR_HOVERTANK_LAUNCHER
+    category: STR_HEAVY_WEAPONS_PLATFORM
+    requires:
+      - STR_FUSION_MISSILE
+      - STR_NEW_FIGHTER_CRAFT
+    space: 30
+    time: 1500
+    cost: 580000		# $18
+    requiredItems:
+      STR_FUSION_BALL_LAUNCHER: 1
+      STR_ALIEN_ALLOYS: 10
+      STR_ELERIUM_115: 13
+  - name: STR_HWP_FUSION_BOMB
+    category: STR_HWP_CANNON_SHELLS
+    requires:
+      - STR_FUSION_MISSILE
+      - STR_NEW_FIGHTER_CRAFT
+    space: 5
+    time: 240
+    cost: 1000			# $1k
+    requiredItems:
+      STR_ALIEN_ALLOYS: 2
+      STR_ELERIUM_115: 1
+  - name: STR_LASER_PISTOL
+    category: STR_WEAPON
+    requires:
+      - STR_LASER_PISTOL
+    space: 2			# $5k/month, 31.2 - (25+1.2)
+    time: 300
+    cost: 8000
+  - name: STR_LASER_RIFLE
+    category: STR_WEAPON
+    requires:
+      - STR_LASER_RIFLE
+    space: 3			# $5.6k (18*1.8 - 25+1.8)
+    time: 400
+    cost: 20000
+  - name: STR_HEAVY_LASER
+    category: STR_WEAPON
+    requires:
+      - STR_HEAVY_LASER
+    space: 5			# $8k ((62-30)*72/64 - 25+3)
+    time: 666
+    cost: 30000
+  - name: STR_MOTION_SCANNER
+    category: STR_EQUIPMENT
+    requires:
+      - STR_MOTION_SCANNER
+    space: 3
+    time: 240
+    cost: 32500			# $10k
+  - name: STR_MEDI_KIT
+    category: STR_EQUIPMENT
+    requires:
+      - STR_MEDI_KIT
+    space: 5
+    time: 360			# $7k
+    cost: 22500
+  - name: STR_ADV_MEDI_KIT
+    category: STR_EQUIPMENT
+    requires:
+      - STR_ADV_MEDI_KIT
+    space: 6
+    time: 720
+    cost: 25000
+  - name: STR_PSI_AMP
+    category: STR_EQUIPMENT
+    requires:
+      - STR_PSI_AMP
+    space: 5			# 17.28 : 720/500 * (45 - 33)
+    time: 500
+    cost: 150000
+    requiredItems:
+      STR_ELERIUM_115: 1
+  - name: STR_HEAVY_PLASMA
+    category: STR_WEAPON
+    requires:
+      - STR_HEAVY_PLASMA
+    space: 5			# $15
+    time: 960
+    cost: 80000
+    requiredItems:
+      STR_ALIEN_ALLOYS: 1
+  - name: STR_HEAVY_PLASMA_CLIP
+    category: STR_AMMUNITION
+    requires:
+      - STR_HEAVY_PLASMA_CLIP
+    space: 4
+    time: 88
+    cost: 600
+    requiredItems:
+      STR_ELERIUM_115: 3
+  - name: STR_PLASMA_RIFLE
+    category: STR_WEAPON
+    requires:
+      - STR_PLASMA_RIFLE
+    space: 4
+    time: 666			# 7.25 : .9 * 38.5 - 25 - 2.4
+    cost: 62000
+    requiredItems:
+      STR_ALIEN_ALLOYS: 1
+  - name: STR_PLASMA_RIFLE_CLIP
+    category: STR_AMMUNITION
+    requires:
+      - STR_PLASMA_RIFLE_CLIP
+    space: 4
+    time: 72
+    cost: 500
+    requiredItems:
+      STR_ELERIUM_115: 2
+  - name: STR_PLASMA_PISTOL
+    category: STR_WEAPON
+    requires:
+      - STR_PLASMA_PISTOL
+    space: 3			# 6.8	: 1.2 * (28 - 25 - 1.8)
+    time: 480
+    cost: 40000
+    requiredItems:
+      STR_ALIEN_ALLOYS: 1
+  - name: STR_PLASMA_PISTOL_CLIP
+    category: STR_AMMUNITION
+    requires:
+      - STR_PLASMA_PISTOL_CLIP
+    space: 4
+    time: 60
+    cost: 400
+    requiredItems:
+      STR_ELERIUM_115: 1
+  - name: STR_BLASTER_LAUNCHER
+    category: STR_WEAPON
+    requires:
+      - STR_BLASTER_LAUNCHER
+    space: 5
+    time: 1200
+    cost: 72000
+    requiredItems:
+      STR_ALIEN_ALLOYS: 1
+  - name: STR_BLASTER_BOMB
+    category: STR_AMMUNITION
+    requires:
+      - STR_BLASTER_BOMB
+    space: 3
+    time: 220
+    cost: 1800
+    requiredItems:
+      STR_ELERIUM_115: 3
+  - name: STR_SMALL_LAUNCHER
+    category: STR_WEAPON
+    requires:
+      - STR_SMALL_LAUNCHER
+    space: 3
+    time: 900
+    cost: 36000
+    requiredItems:
+      STR_ALIEN_ALLOYS: 1
+  - name: STR_STUN_BOMB
+    category: STR_AMMUNITION
+    requires:
+      - STR_STUN_BOMB
+    space: 2
+    time: 180
+    cost: 200			# $0
+    requiredItems:
+      STR_ELERIUM_115: 1
+  - name: STR_ALIEN_GRENADE
+    category: STR_WEAPON
+    requires:
+      - STR_ALIEN_GRENADE
+    space: 2
+    time: 120
+    cost: 400			# $6.4 : the elerium kills it
+    requiredItems:
+      STR_ELERIUM_115: 1
+  - name: STR_MIND_PROBE
+    category: STR_EQUIPMENT
+    requires:
+      - STR_MIND_PROBE
+    space: 5
+    time: 1200
+    cost: 200000
+    requiredItems:
+      STR_ELERIUM_115: 1
+  - name: STR_PERSONAL_ARMOR
+    category: STR_PERSONAL_ARMOR
+    requires:
+      - STR_PERSONAL_ARMOR
+    space: 12	  		# 2	: 32 * .9 - 25 - 7.2
+    time: 800
+    cost: 22000
+    requiredItems:
+      STR_ALIEN_ALLOYS: 3
+  - name: STR_POWER_SUIT
+    category: STR_PERSONAL_ARMOR
+    requires:
+      - STR_POWER_SUIT
+    space: 15
+    time: 1000
+    cost: 42000
+    requiredItems:
+      STR_ALIEN_ALLOYS: 6
+      STR_ELERIUM_115: 5
+  - name: STR_FLYING_SUIT
+    category: STR_PERSONAL_ARMOR
+    requires:
+      - STR_FLYING_SUIT
+    space: 18
+    time: 1400
+    cost: 58000
+    requiredItems:
+      STR_ALIEN_ALLOYS: 6
+      STR_ELERIUM_115: 16
+  - name: STR_ALIEN_ALLOYS
+    category: STR_UFO_COMPONENT
+    requires:
+      - STR_ALIEN_ALLOYS
+    space: 10
+    time: 100
+    cost: 3000
+  - name: STR_UFO_POWER_SOURCE
+    category: STR_UFO_COMPONENT
+    requires:
+      - STR_UFO_POWER_SOURCE
+    space: 22
+    time: 1400
+    cost: 130000
+    requiredItems:
+      STR_ALIEN_ALLOYS: 5
+      STR_ELERIUM_115: 16
+  - name: STR_UFO_NAVIGATION
+    category: STR_UFO_COMPONENT
+    requires:
+      - STR_UFO_NAVIGATION
+    space: 18
+    time: 1600
+    cost: 150000
+    requiredItems:
+      STR_ALIEN_ALLOYS: 3
+  - name: STR_FIRESTORM
+    category: STR_CRAFT
+    requires:
+      - STR_NEW_FIGHTER_CRAFT
+    space: 30
+    time: 14000
+    cost: 400000
+    requiredItems:
+      STR_ALIEN_ALLOYS: 65
+      STR_UFO_POWER_SOURCE: 1
+      STR_UFO_NAVIGATION: 1
+  - name: STR_LIGHTNING
+    category: STR_CRAFT
+    requires:
+      - STR_NEW_FIGHTER_TRANSPORTER
+    space: 34
+    time: 18000
+    cost: 600000
+    requiredItems:
+      STR_ALIEN_ALLOYS: 85
+      STR_UFO_POWER_SOURCE: 1
+      STR_UFO_NAVIGATION: 1
+  - name: STR_AVENGER
+    category: STR_CRAFT
+    requires:
+      - STR_ULTIMATE_CRAFT
+    space: 36
+    time: 34000
+    cost: 900000
+    requiredItems:
+      STR_ALIEN_ALLOYS: 120
+      STR_UFO_POWER_SOURCE: 2
+      STR_UFO_NAVIGATION: 1
+ufopaedia:
+  - id: STR_ADV_MEDI_KIT
+    type_id: 4
+    section: STR_WEAPONS_AND_EQUIPMENT
+    requires:
+      - STR_ADV_MEDI_KIT
+    text: STR_ADV_MEDI_KIT_UFOPEDIA
+startingBase:
+  - lon: 0.0
+    lat: 0.0
+    name: ""
+    inBattlescape: false
+    facilities:
+      - type: STR_ACCESS_LIFT
+        x: 2
+        y: 2
+        buildTime: 0
+      - type: STR_HANGAR
+        x: 2
+        y: 0
+        buildTime: 0
+      - type: STR_HANGAR
+        x: 0
+        y: 4
+        buildTime: 0
+      - type: STR_HANGAR
+        x: 4
+        y: 4
+        buildTime: 0
+      - type: STR_LIVING_QUARTERS
+        x: 3
+        y: 2
+        buildTime: 0
+      - type: STR_GENERAL_STORES
+        x: 2
+        y: 3
+        buildTime: 0
+      - type: STR_LABORATORY
+        x: 3
+        y: 3
+        buildTime: 0
+      - type: STR_WORKSHOP
+        x: 4
+        y: 3
+        buildTime: 0
+      - type: STR_SMALL_RADAR_SYSTEM
+        x: 1
+        y: 3
+        buildTime: 0
+    randomSoldiers: 10
+    soldiers:
+      []
+    crafts:
+      - lon: 0.0
+        lat: 0.0
+        speedLon: 0
+        speedLat: 0
+        speedRadian: 0
+        speed: 0
+        type: STR_SKYRANGER
+        id: 1
+        fuel: 1500
+        damage: 0
+        weapons:
+          []
+        items:
+          STR_GRENADE: 8
+          STR_HC_AP_AMMO: 2
+          STR_HC_HE_AMMO: 2
+          STR_HEAVY_CANNON: 1
+          STR_PISTOL: 3
+          STR_PISTOL_CLIP: 5
+          STR_RIFLE: 6
+          STR_RIFLE_CLIP: 12
+        vehicles:
+          []
+        status: STR_READY
+        lowFuel: false
+        inBattlescape: false
+        inDogfight: false
+        interceptionOrder: 0
+      - lon: 0.0
+        lat: 0.0
+        speedLon: 0
+        speedLat: 0
+        speedRadian: 0
+        speed: 0
+        type: STR_INTERCEPTOR
+        id: 1
+        fuel: 1000
+        damage: 0
+        weapons:
+          - type: STR_STINGRAY
+            ammo: 6
+            rearming: false
+          - type: STR_CANNON_UC
+            ammo: 200
+            rearming: false
+        items:
+          {}
+        vehicles:
+          []
+        status: STR_READY
+        lowFuel: false
+        inBattlescape: false
+        inDogfight: false
+        interceptionOrder: 0
+      - lon: 0.0
+        lat: 0.0
+        speedLon: 0
+        speedLat: 0
+        speedRadian: 0
+        speed: 0
+        type: STR_INTERCEPTOR
+        id: 2
+        fuel: 1000
+        damage: 0
+        weapons:
+          - type: STR_STINGRAY
+            ammo: 6
+            rearming: false
+          - type: STR_CANNON_UC
+            ammo: 200
+            rearming: false
+        items:
+          {}
+        vehicles:
+          []
+        status: STR_READY
+        lowFuel: false
+        inBattlescape: false
+        inDogfight: false
+        interceptionOrder: 0
+    items:
+      STR_AC_AP_AMMO: 6
+      STR_AUTO_CANNON: 1
+      STR_AVALANCHE_LAUNCHER: 1
+      STR_AVALANCHE_MISSILES: 12
+      STR_CANNON: 2
+      STR_CANNON_ROUNDS_X50: 6
+      STR_GRENADE: 10
+      STR_HC_AP_AMMO: 6
+      STR_HEAVY_CANNON: 1
+      STR_PISTOL: 2
+      STR_PISTOL_CLIP: 6
+      STR_RIFLE: 3
+      STR_RIFLE_CLIP: 12
+      STR_ROCKET_LAUNCHER: 1
+      STR_SMALL_ROCKET: 4
+      STR_SMOKE_GRENADE: 10
+      STR_STINGRAY_LAUNCHER: 1
+      STR_STINGRAY_MISSILES: 25
+    scientists: 10
+    engineers: 10
+    transfers:
+      []
+    research:
+      []
+    productions:
+      []
+startingTime:
+  second: 0
+  minute: 0
+  hour: 12
+  weekday: 6
+  day: 1
+  month: 1
+  year: 1999
+####	COSTS     #######
+costSoldier: 15000
+costEngineer: 20000
+costScientist: 25000
+timePersonnel: 72
+extraStrings:
+  - type: English
+    strings:
+      STR_ADV_MEDI_KIT: Medikit+
+      STR_ADV_MEDI_KIT_UFOPEDIA: Our research on alien medical technology has given us some ideas on improving the MEDKIT.
