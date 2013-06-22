@@ -32,6 +32,9 @@
 #include "../Ruleset/MCDPatch.h"
 #include "../Battlescape/Pathfinding.h"
 #include "../Battlescape/TileEngine.h"
+#include "../Battlescape/BattlescapeState.h"
+#include "../Battlescape/BattlescapeGame.h"
+#include "../Battlescape/EndBattleBState.h"
 #include "../Battlescape/Position.h"
 #include "../Resource/ResourcePack.h"
 #include "../Ruleset/Ruleset.h"
@@ -343,10 +346,7 @@ void SavedBattleGame::loadMapResources(Game *game)
 	getTileEngine()->calculateSunShading();
 	getTileEngine()->calculateTerrainLighting();
 	getTileEngine()->calculateUnitLighting();
-	for (std::vector<BattleUnit*>::iterator bu = _units.begin(); bu != _units.end(); ++bu)
-	{
-		_tileEngine->calculateFOV(*bu);
-	}
+	getTileEngine()->recalculateFOV();
 }
 
 /**
@@ -871,10 +871,7 @@ void SavedBattleGame::endTurn()
 	}
 	
 	// re-run calculateFOV() *after* all aliens have been set not-visible
-	for (std::vector<BattleUnit*>::iterator i = _units.begin(), end = _units.end(); i != end; ++i)
-	{
-		_tileEngine->calculateFOV(*i);
-	}
+	_tileEngine->recalculateFOV();
 
 	if (_side != FACTION_PLAYER)
 		selectNextPlayerUnit();
@@ -1027,6 +1024,11 @@ bool SavedBattleGame::isAborted() const
 void SavedBattleGame::setObjectiveDestroyed(bool flag)
 {
 	_objectiveDestroyed = flag;
+	if (flag && Options::getBool("battleAutoEnd"))
+	{
+		// doesn't really matter what number we push here, as long as it's not 0. the player already won, so let's push 1.
+		_battleState->getBattleGame()->statePushBack(new EndBattleBState(_battleState->getBattleGame(), 1, _battleState));
+	}
 }
 
 /**
@@ -1195,21 +1197,36 @@ void SavedBattleGame::prepareNewTurn()
 		}
 
 		Tile *t = getTile(Position(x+spreadX, y+spreadY, z));
-		if (t && !t->getSmoke() && getTileEngine()->horizontalBlockage((*i), t, DT_SMOKE) == 0)
+		if (t && !t->getSmoke() && !t->getFire() && getTileEngine()->horizontalBlockage((*i), t, DT_SMOKE) == 0)
 		{
 			t->addSmoke((*i)->getSmoke()/2);
+			if (t->getUnit() && !t->getUnit()->isOut())
+			{
+				// units in smoke suffer stun
+				t->getUnit()->damage(Position(), (t->getSmoke()/5)+1, DT_SMOKE, true);
+			}
 		}
 		Tile *t2 = getTile(Position(x+spreadX+spreadX, y+spreadY+spreadY, z));
-		if (t && t2 && !t2->getSmoke() && getTileEngine()->horizontalBlockage(t, t2, DT_SMOKE) == 0)
+		if (t && t2 && !t2->getSmoke() && !t2->getFire() && getTileEngine()->horizontalBlockage(t, t2, DT_SMOKE) == 0)
 		{
 			t2->addSmoke((*i)->getSmoke()/4);
+			if (t2->getUnit() && !t2->getUnit()->isOut())
+			{
+				// units in smoke suffer stun
+				t2->getUnit()->damage(Position(), (t2->getSmoke()/5)+1, DT_SMOKE, true);
+			}
 		}
 
 		// smoke also spreads upwards
 		t = getTile(Position(x, y, z+1));
-		if (t && !t->getSmoke() && getTileEngine()->verticalBlockage((*i), t, DT_SMOKE) == 0)
+		if (t && !t->getSmoke() && !t->getFire() && getTileEngine()->verticalBlockage((*i), t, DT_SMOKE) == 0)
 		{
 			t->addSmoke((*i)->getSmoke()/2);
+			if (t->getUnit() && !t->getUnit()->isOut())
+			{
+				// units in smoke suffer stun
+				t->getUnit()->damage(Position(), (t->getSmoke()/5)+1, DT_SMOKE, true);
+			}
 		}
 
 		(*i)->prepareNewTurn();
@@ -1217,7 +1234,7 @@ void SavedBattleGame::prepareNewTurn()
 
 	for (std::vector<Tile*>::iterator i = tilesOnFire.begin(); i != tilesOnFire.end(); ++i)
 	{
-		if ((*i)->getUnit())
+		if ((*i)->getUnit() && !(*i)->getUnit()->isOut())
 		{
 			float resistance = (*i)->getUnit()->getArmor()->getDamageModifier(DT_IN);
 			if (resistance > 0.0)
@@ -1237,27 +1254,44 @@ void SavedBattleGame::prepareNewTurn()
 		}
 
 		int z = (*i)->getPosition().z;
-		for (int x = (*i)->getPosition().x-1; x <= (*i)->getPosition().x+1; ++x)
+		for (int dir = 0; dir <= 6; dir += 2)
 		{
-			for (int y = (*i)->getPosition().y-1; y <= (*i)->getPosition().y+1; ++y)
+			Position pos;
+			Pathfinding::directionToVector(dir, &pos);
+			Tile *t = getTile(Position(pos.x, pos.y, z));
+			if (t && t->getFire() == 0)
 			{
-				Tile *t = getTile(Position(x, y, z));
-				if (t && t->getFire() == 0)
+				// check adjacent tiles - if they have a flammability of < 255, there is a chance...
+				if (getTileEngine()->horizontalBlockage((*i), t, DT_IN) == 0)
 				{
-					// check adjacent tiles - if they have a flammability of < 255, there is a chance...
-					if (getTileEngine()->horizontalBlockage((*i), t, DT_IN) == 0)
+					int flam = t->getFlammability();
+					if (flam < 255)
 					{
-						int flam = t->getFlammability();
-						if (flam < 255)
-						{
-							double base = RNG::boxMuller(0,126);
-							if (base < 0) base *= -1;
+						double base = RNG::boxMuller(0,126);
+						if (base < 0) base *= -1;
 
-							if (flam < base)
+						if (flam < base)
+						{
+							if (RNG::generate(0, flam) < 2)
 							{
-								if (RNG::generate(0, flam) < 2)
+								t->ignite();
+								if (t->getUnit())
 								{
-									t->ignite();
+									float resistance = t->getUnit()->getArmor()->getDamageModifier(DT_IN);
+									if (resistance > 0.0)
+									{
+										// units on a flaming tile suffer damage
+										t->getUnit()->damage(Position(8, 8, 12 - t->getTerrainLevel()), RNG::generate(0, 5) + 5, DT_IN, true);
+										// units on a flaming tile can catch fire 33% chance
+										if (RNG::generate(0,2) == 1)
+										{
+											int burnTime = RNG::generate(0, int(5 * resistance));
+											if (t->getUnit()->getFire() < burnTime)
+											{
+												t->getUnit()->setFire(burnTime); // catch fire and burn
+											}
+										}
+									}
 								}
 							}
 						}
@@ -1269,13 +1303,13 @@ void SavedBattleGame::prepareNewTurn()
 			_objectiveDestroyed = (*i)->prepareNewTurn();
 	}
 
-	if (!tilesOnFire.empty())
-	{
-		getTileEngine()->calculateTerrainLighting(); // fires could have been stopped
-	}
-
 	reviveUnconsciousUnits();
 
+	if (!tilesOnFire.empty() || !tilesOnSmoke.empty())
+	{
+		// fires could have been started, stopped or smoke could reveal/conceal units.
+		getTileEngine()->calculateTerrainLighting();
+	}
 }
 
 /**

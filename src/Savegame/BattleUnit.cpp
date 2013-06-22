@@ -1976,8 +1976,8 @@ bool BattleUnit::postMissionProcedures(SavedGame *geoscape)
     {
         const int diff = geoscape->getDifficulty();
         const float max = healthLoss * (0.83f + diff/6.f);
-        const float min = max / 6.0f;
-        s->setWoundRecovery(RNG::generate(min,max));
+
+        s->setWoundRecovery(RNG::generate(max/5,max));
         if (caps.health > stats->health)
             stats->health += improveStat(s->getWoundRecovery()/3);
     }
