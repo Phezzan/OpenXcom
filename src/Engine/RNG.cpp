@@ -89,6 +89,8 @@ void save(YAML::Emitter &out)
  */
 int generate(int min, int max)
 {
+    if (max <= min)
+        return min;
 	_count++;
 	int num = rand();
 	return (num % (max - min + 1) + min);

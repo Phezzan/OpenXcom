@@ -91,6 +91,10 @@ void SoldierNamePool::load(const std::string &filename)
 		_femaleLast = _maleLast;
 	}
 
+    if (_maleLast.empty() || _maleFirst.empty() || _femaleFirst.empty())
+	{
+		throw Exception(filename + " missing name group");
+	}
 	fin.close();
 }
 
