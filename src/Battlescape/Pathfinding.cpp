@@ -481,6 +481,25 @@ void Pathfinding::directionToVector(const int direction, Position *vector)
 }
 
 /*
+ * Converts direction to a vector. Direction starts north = 0 and goes clockwise.
+ * @param vector pointer to a position (which acts as a vector)
+ * @return direction
+ */
+void Pathfinding::vectorToDirection(const Position &vector, int &dir)
+{
+	dir = -1;
+	int x[8] = {0, 1, 1, 1, 0, -1, -1, -1};
+	int y[8] = {-1, -1, 0, 1, 1, 1, 0, -1};
+	for (int i = 0; i < 8; ++i)
+	{
+		if (x[i] == vector.x && y[i] == vector.y)
+		{
+			dir = i;
+			return;
+		}
+	}
+}
+/*
  * Check whether a path is ready and gives first direction.
  * @return direction where the unit needs to go next, -1 if it's the end of the path.
  */
@@ -560,6 +579,14 @@ bool Pathfinding::isBlocked(Tile *tile, const int part, BattleUnit *missileTarge
 		BattleUnit *unit = tile->getUnit();
 		if (unit == 0 || unit == _unit || unit == missileTarget || unit->isOut()) return false;
 		if (_unit && _unit->getFaction() == FACTION_PLAYER && unit->getVisible()) return true;		// player know all visible units
+	}
+	// missiles can't pathfind through closed doors.
+	if (missileTarget != 0 && tile->getMapData(part) &&
+		(tile->getMapData(part)->isDoor() ||
+		(tile->getMapData(part)->isUFODoor() &&
+		!tile->isUfoDoorOpen(part))))
+	{
+		return true;
 	}
 	if (tile->getTUCost(part, _movementType) == 255) return true; // blocking part
 	return false;

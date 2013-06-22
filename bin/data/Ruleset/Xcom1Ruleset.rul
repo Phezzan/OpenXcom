@@ -4564,7 +4564,7 @@ units:
     standHeight: 21
     kneelHeight: 16
     floatHeight: 2
-    value: 12
+    value: 18
     deathSound: 10
     moveSound: 15
     intelligence: 7
@@ -4588,7 +4588,7 @@ units:
     standHeight: 21
     kneelHeight: 16
     floatHeight: 2
-    value: 12
+    value: 14
     deathSound: 10
     moveSound: 15
     intelligence: 5
@@ -9333,6 +9333,13 @@ extraSprites:
     height: 80
     files:
       0: Resources/Pathfinding/
+  - type: Projectiles
+    width: 105
+    height: 33
+    subX: 3
+    subY: 3
+    files:
+      0: Resources/BulletSprites/BulletSprites.png
 #New spritesheet Example:
 #  - type: GIANTBUNNY.PCK
 #    width: 32
