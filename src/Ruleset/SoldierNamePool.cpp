@@ -32,7 +32,7 @@ namespace OpenXcom
 /**
  * Initializes a new pool with blank lists of names.
  */
-SoldierNamePool::SoldierNamePool() : _maleFirst(), _femaleFirst(), _maleLast(), _femaleLast()
+SoldierNamePool::SoldierNamePool() : _maleFirst(), _femaleFirst(), _maleLast(), _femaleLast(), _look()
 {
 }
 
@@ -91,6 +91,16 @@ void SoldierNamePool::load(const std::string &filename)
 		_femaleLast = _maleLast;
 	}
 
+	if (const YAML::Node *pName = doc.FindValue("look"))
+	{
+		for (YAML::Iterator i = pName->begin(); i != pName->end(); ++i)
+		{
+			unsigned look;
+			*i >> look;
+			_look.push_back((unsigned char)look);
+		}
+	}
+
     if (_maleLast.empty() || _maleFirst.empty() || _femaleFirst.empty())
 	{
 		throw Exception(filename + " missing name group");
@@ -104,26 +114,39 @@ void SoldierNamePool::load(const std::string &filename)
  * @param gender Returned gender of the name.
  * @return Soldier name.
  */
-std::wstring SoldierNamePool::genName(SoldierGender *gender) const
+std::wstring SoldierNamePool::genName(SoldierGender *gender, SoldierLook *look) const
 {
 	std::wstringstream name;
-	int gen = RNG::generate(1, 10);
-	if (gen <= 5)
+
+	unsigned const lastMaleName= _maleFirst.size() - 1;
+	unsigned const pick        = RNG::generate(0, lastMaleName + _femaleFirst.size() - 1);
+	if (pick <= lastMaleName)
 	{
 		*gender = GENDER_MALE;
-		size_t first = RNG::generate(0, _maleFirst.size() - 1);
-		name << _maleFirst[first];
+		name << _maleFirst[pick];
 		size_t last = RNG::generate(0, _maleLast.size() - 1);
 		name << " " << _maleLast[last];
 	}
 	else
 	{
 		*gender = GENDER_FEMALE;
-		size_t first = RNG::generate(0, _femaleFirst.size() - 1);
-		name << _femaleFirst[first];
+		name << _femaleFirst[pick - lastMaleName];
 		size_t last = RNG::generate(0, _femaleLast.size() - 1);
 		name << " " << _femaleLast[last];
 	}
+
+	// enum SoldierLook { LOOK_BLONDE, LOOK_BROWNHAIR, LOOK_ORIENTAL, LOOK_AFRICAN }
+	if (NULL != look)
+	{
+		if (_look.empty())
+			*look = (SoldierLook) RNG::generate(LOOK_BLONDE, LOOK_AFRICAN);
+		else
+		{
+			size_t index = RNG::generate(0, _look.size() - 1);
+			*look = (SoldierLook)_look[index];
+		}
+	}
+
 	return name.str();
 }
 

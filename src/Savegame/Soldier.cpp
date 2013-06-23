@@ -46,7 +46,7 @@ Soldier::Soldier(RuleSoldier *rules, Armor *armor, const std::vector<SoldierName
 		_initialStats.tu = RNG::generate(minStats.tu, maxStats.tu);
 		_initialStats.stamina = RNG::generate(minStats.stamina, maxStats.stamina);
 		_initialStats.health = RNG::generate(minStats.health, maxStats.health);
-		_initialStats.bravery = RNG::generate(minStats.bravery/10, maxStats.bravery/10)*10;
+		_initialStats.bravery = RNG::generate(minStats.bravery, maxStats.bravery);
 		_initialStats.reactions = RNG::generate(minStats.reactions, maxStats.reactions);
 		_initialStats.firing = RNG::generate(minStats.firing, maxStats.firing);
 		_initialStats.throwing = RNG::generate(minStats.throwing, maxStats.throwing);
@@ -59,14 +59,14 @@ Soldier::Soldier(RuleSoldier *rules, Armor *armor, const std::vector<SoldierName
 
 		if (!names->empty())
 		{
-			_name = names->at(RNG::generate(0, names->size()-1))->genName(&_gender);
+			_name = names->at(RNG::generate(0, names->size()-1))->genName(&_gender, &_look);
 		}
 		else
 		{
 			_name = L"";
 			_gender = (SoldierGender)RNG::generate(0, 1);
+            _look = (SoldierLook)RNG::generate(0, 3);
 		}
-		_look = (SoldierLook)RNG::generate(0, 3);
 	}
 	if (id != 0)
 	{

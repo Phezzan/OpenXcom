@@ -36,6 +36,8 @@ class SoldierNamePool
 {
 private:
 	std::vector<std::wstring> _maleFirst, _femaleFirst, _maleLast, _femaleLast;
+	std::vector<unsigned char> _look;
+
 public:
 	/// Creates a blank pool.
 	SoldierNamePool();
@@ -44,7 +46,7 @@ public:
 	/// Loads the pool from YAML.
 	void load(const std::string &filename);
 	/// Generates a new name from the pool.
-	std::wstring genName(SoldierGender *gender) const;
+	std::wstring genName(SoldierGender *gender, SoldierLook *look = NULL) const;
 };
 
 }
