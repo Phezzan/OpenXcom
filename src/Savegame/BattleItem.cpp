@@ -430,7 +430,7 @@ void BattleItem::setUnit(BattleUnit *unit)
  */
 void BattleItem::setHealQuantity (int heal)
 {
-	_heal = heal;
+	_heal = std::max(heal, 0);
 }
 
 /**
@@ -448,7 +448,7 @@ int BattleItem::getHealQuantity () const
  */
 void BattleItem::setPainKillerQuantity (int pk)
 {
-	_painKiller = pk;
+	_painKiller = std::max(0 ,pk);
 }
 
 /**
@@ -466,7 +466,7 @@ int BattleItem::getPainKillerQuantity () const
  */
 void BattleItem::setStimulantQuantity (int stimulant)
 {
-	_stimulant = stimulant;
+	_stimulant = std::max(0, stimulant);
 }
 
 /**

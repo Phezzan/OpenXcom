@@ -89,7 +89,7 @@ private:
 	int _motionPoints;
 	int _kills;
 	int _faceDirection;                // used only during strafeing moves
-	unsigned char _pain;
+	signed short _pain;
 	
 	// static data
 	std::string const _type;

@@ -198,7 +198,7 @@ void MedikitState::onHealClick(Action *)
 {
 	int heal = _item->getHealQuantity();
 	RuleItem *rule = _item->getRules();
-	if (heal == 0)
+	if (heal <= 0)
 	{
 		return;
 	}
@@ -268,7 +268,9 @@ void MedikitState::onPainKillerClick(Action *)
 	}
 	if (_unit->spendTimeUnits (rule->getTUUse()))
 	{
-        if (_unit->painKillers())
+        if (_targetUnit->painKillers())
+            _item->setPainKillerQuantity(--pk);
+        else if (_unit->painKillers())
             _item->setPainKillerQuantity(--pk);
 		update();
 	}

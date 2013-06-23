@@ -55,7 +55,7 @@ BattleUnit::BattleUnit(Soldier *soldier, UnitFaction faction) :
     _fire(0), _currentAIState(0), _visible(false), _cacheInvalid(true), 
     _expBravery(0), _expReactions(0), _expFiring(0), _expThrowing(0), _expPsiSkill(0), 
     _expMelee(0), 
-    _turretType(-1), _motionPoints(0), _kills(0), 
+    _turretType(-1), _motionPoints(0), _kills(0), _pain(0),
     _type("SOLDIER"), _geoscapeSoldier(soldier), 
     _charging(0), _turnsExposed(0), _unitRules(0), _rankInt(-1), _hidingForTurn(false)
 {
@@ -125,7 +125,7 @@ BattleUnit::BattleUnit(Unit *unit, UnitFaction faction, int id, Armor *armor, in
     _fire(0), _currentAIState(0), _visible(false), _cacheInvalid(true),
     _expBravery(0), _expReactions(0), _expFiring(0), _expThrowing(0), 
     _expPsiSkill(0), _expMelee(0), 
-    _turretType(-1), _motionPoints(0), _kills(0), 
+    _turretType(-1), _motionPoints(0), _kills(0), _pain(0),
     _type(unit->getType()), _race(unit->getRace()), _armor(armor), _geoscapeSoldier(0), 
     _charging(0), _turnsExposed(0), _unitRules(unit), _rankInt(-1), _hidingForTurn(false)
 {
@@ -191,7 +191,7 @@ BattleUnit::BattleUnit(BattleUnit &b) :
 	_visibleUnits(b._visibleUnits),
 	_visibleTiles(b._visibleTiles),
 	_tu(b._tu), _energy(b._energy), _health(b._health), _morale(b._morale), _stunlevel(b._stunlevel),
-	_dmg(0), _kneeled(b._kneeled), _floating(b._floating), _dontReselect(b._dontReselect),
+	_dmg(b._dmg), _kneeled(b._kneeled), _floating(b._floating), _dontReselect(b._dontReselect),
 	//int _currentArmor[5];
 	//int _fatalWounds[6];
 	_fire(b._fire),
@@ -238,6 +238,9 @@ BattleUnit::BattleUnit(BattleUnit &b) :
 	{
 		_fatalWounds[i] = b._fatalWounds[i];
 	}
+
+    if (_dmg < (b._stats.health - b._health))
+        _dmg = (b._stats.health - b._health);
 }
 
 
@@ -272,6 +275,7 @@ void BattleUnit::load(const YAML::Node &node)
 	node["health"] >> _health;
 	node["stunlevel"] >> _stunlevel;
 	node["dmg"] >> _dmg;
+	node["pain"] >> _pain;
 	node["energy"] >> _energy;
 	node["morale"] >> _morale;
 	node["kneeled"] >> _kneeled;
@@ -341,6 +345,7 @@ void BattleUnit::save(YAML::Emitter &out) const
 	out << YAML::Key << "health" << YAML::Value << _health;
 	out << YAML::Key << "stunlevel" << YAML::Value << _stunlevel;
 	out << YAML::Key << "dmg" << YAML::Value << _dmg;
+	out << YAML::Key << "pain" << YAML::Value << _pain;
 	out << YAML::Key << "energy" << YAML::Value << _energy;
 	out << YAML::Key << "morale" << YAML::Value << _morale;
 	out << YAML::Key << "kneeled" << YAML::Value << _kneeled;
@@ -1414,26 +1419,26 @@ double BattleUnit::getFiringAccuracy(BattleActionType actionType, BattleItem *it
  * 
  * @return modifier
  */
-double BattleUnit::getAccuracyModifier(UnitBodyPart const p)
+double BattleUnit::getAccuracyModifier(UnitBodyPart const part)
 {
     if (_dmg == 0)
         return 1.0;
 
     // pain% + 10% * wounds
     // pain# / hp + wounds# / 10
-	unsigned const total = 100*_pain / _stats.health +
-        10*(_fatalWounds[BODYPART_HEAD] + _fatalWounds[p]);
+	unsigned const total = 100 * _pain / _stats.health +
+        10 * (_fatalWounds[BODYPART_HEAD] + _fatalWounds[part]);
 
-	return (100 - std::min(99u, total)) / 100.0;
+	return (double)(100 - std::min(95u, total)) / 100.0;
 }
 
 /**
  * Calculate throwing accuracy.
  * @return throwing Accuracy
  */
-double BattleUnit::getThrowingAccuracy(UnitBodyPart const p)
+double BattleUnit::getThrowingAccuracy(UnitBodyPart const part)
 {
-	return (double)(getStats()->throwing/100.0) * getAccuracyModifier(p);
+	return (double)(getStats()->throwing/100.0) * getAccuracyModifier(part);
 }
 
 /**
@@ -1535,25 +1540,35 @@ void BattleUnit::prepareNewTurn()
 			_energy = getStats()->stamina;
 	}
 
-	// suffer from fatal wounds
-	_health -= std::min(_pain, (unsigned char)getFatalWounds());   // Bleeding ramps with pain.
-
-    _pain = std::min((3*_pain + _dmg)/4, _stats.health);  // pain is the moving average of _dmg
-	// suffer from fire
-	if (_fire > 0)
+	// suffer from wounds, fire, etc
+    if(_status != STATUS_DEAD)
 	{
-        int const burn = _armor->getDamageModifier(DT_IN) * RNG::generate(5, 10);
-		_health -= burn;
-        _dmg    += burn;
-        _pain   += burn;        // Fire is immediately painful
-		_fire--;
+		_health -= getFatalWounds() * _pain / _stats.health;   // Bleeding ramps with pain.
+
+		// pain is the moving average of _dmg
+		if (_dmg > 0)
+		{
+			int const painDelta = ((_stats.health - _health) - _pain);
+			_pain = _pain + (painDelta - painDelta * 3/4);      //Average pain over several turns, Round away from zero
+		}
+
+		// suffer from fire
+		if (_fire > 0)
+		{
+			int const burn = _armor->getDamageModifier(DT_IN) * RNG::generate(5, 10);
+			_health -= burn;
+			_dmg    += burn;
+			_pain   += burn;        // Fire is immediately painful
+			_fire--;
+		}
+
+		// Turn into a zombie?  (Kmod - fight zombification with painkillers and healing!)
+		if (_spawnUnit != "" && _specab == SPECAB_RESPAWN)
+		{
+			_health -= _pain;
+		}
 	}
 
-    // Turn into a zombie?  (Kmod - fight zombification with painkillers and healing!)
-	if (_spawnUnit != "" && _specab == SPECAB_RESPAWN)
-    {
-        _health -= _pain;
-    }
 
 	if (_health < 0)
 		_health = 0;
@@ -1577,12 +1592,11 @@ void BattleUnit::prepareNewTurn()
 			int type = RNG::generate(0,100);
 			_status = (type<=33?STATUS_BERSERK:STATUS_PANICKING); // 33% chance of berserk, panic can mean freeze or flee, but that is determined later
 		}
-		else
+		else if (chance > 0)
 		{
 			// successfully avoided panic
 			// increase bravery experience counter
-			if (chance > 1)
-				_expBravery++;
+            _expBravery += 1 + chance / 25;
 		}
 	}
 
@@ -1939,7 +1953,7 @@ void BattleUnit::addFiringExp()
 }
 
 /**
-* Adds one to the firing exp counter.
+* Adds one to the throwing exp counter.
 */
 void BattleUnit::addThrowingExp()
 {
@@ -2690,3 +2704,4 @@ void BattleUnit::adjustStats(const int diff)
 }
 
 }
+/* vim:set noet */
