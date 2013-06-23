@@ -142,6 +142,45 @@ SavedGame::~SavedGame()
 	delete _battleGame;
 }
 
+struct SaveGameNameAndTime
+{
+	SaveGameNameAndTime(std::wstring& wstr, GameTime& time ):
+		m_wstr(wstr),
+		m_time(time)
+	{
+	}
+	std::wstring m_wstr;
+	GameTime m_time;
+
+	bool operator< (const SaveGameNameAndTime &rhs) const
+	{
+		if (m_time.getYear() > rhs.m_time.getYear())
+			return 0;
+		if (m_time.getYear() < rhs.m_time.getYear())
+			return 1;
+		if (m_time.getMonth() > rhs.m_time.getMonth())
+			return 0;
+		if (m_time.getMonth() < rhs.m_time.getMonth())
+			return 1;
+		if (m_time.getDay()  > rhs.m_time.getDay())
+			return 0;
+		if (m_time.getDay()  < rhs.m_time.getDay())
+			return 1;
+		if (m_time.getHour() > rhs.m_time.getHour())
+			return 0;
+		if (m_time.getHour() < rhs.m_time.getHour())
+			return 1;
+		if (m_time.getMinute() > rhs.m_time.getMinute())
+			return 0;
+		if (m_time.getMinute() < rhs.m_time.getMinute())
+			return 1;
+		if (m_time.getSecond() > rhs.m_time.getSecond())
+			return 0;
+		return 1;
+
+	}
+};
+
 /**
  * Gets all the saves found in the user folder
  * and adds them to a text list.
@@ -151,6 +190,8 @@ SavedGame::~SavedGame()
 void SavedGame::getList(TextList *list, Language *lang)
 {
 	std::vector<std::string> saves = CrossPlatform::getFolderContents(Options::getUserFolder(), "sav");
+
+	std::vector<SaveGameNameAndTime> timedSaves;
 
 	for (std::vector<std::string>::iterator i = saves.begin(); i != saves.end(); ++i)
 	{
@@ -169,12 +210,8 @@ void SavedGame::getList(TextList *list, Language *lang)
 			parser.GetNextDocument(doc);
 			GameTime time = GameTime(6, 1, 1, 1999, 12, 0, 0);
 			time.load(doc["time"]);
-			std::stringstream saveTime;
-			std::wstringstream saveDay, saveMonth, saveYear;
-			saveTime << time.getHour() << ":" << std::setfill('0') << std::setw(2) << time.getMinute();
-			saveDay << time.getDay() << lang->getString(time.getDayString());
-			saveMonth << lang->getString(time.getMonthString());
-			saveYear << time.getYear();
+
+
 
 			std::string s = file.substr(0, file.length()-4);
 #ifdef _WIN32
@@ -182,7 +219,10 @@ void SavedGame::getList(TextList *list, Language *lang)
 #else
 			std::wstring wstr = Language::utf8ToWstr(s);
 #endif
-			list->addRow(5, wstr.c_str(), Language::utf8ToWstr(saveTime.str()).c_str(), saveDay.str().c_str(), saveMonth.str().c_str(), saveYear.str().c_str());
+			SaveGameNameAndTime saveWithTime(wstr,time);
+
+			timedSaves.push_back(saveWithTime);
+
 			fin.close();
 		}
 		catch (Exception &e)
@@ -195,6 +235,24 @@ void SavedGame::getList(TextList *list, Language *lang)
 			Log(LOG_ERROR) << e.what();
 			continue;
 		}
+	}
+
+	std::sort(timedSaves.begin(),timedSaves.end());
+
+	for (std::vector<SaveGameNameAndTime>::iterator i = timedSaves.begin(); i != timedSaves.end(); ++i)
+	{
+		GameTime time = i->m_time;
+		std::wstring wstr = i->m_wstr;
+
+		std::stringstream saveTime;
+		std::wstringstream saveDay, saveMonth, saveYear;
+		saveTime << time.getHour() << ":" << std::setfill('0') << std::setw(2) << time.getMinute();
+		saveDay << time.getDay() << lang->getString(time.getDayString());
+		saveMonth << lang->getString(time.getMonthString());
+		saveYear << time.getYear();
+
+
+		list->addRow(5, wstr.c_str(), Language::utf8ToWstr(saveTime.str()).c_str(), saveDay.str().c_str(), saveMonth.str().c_str(), saveYear.str().c_str());
 	}
 }
 
