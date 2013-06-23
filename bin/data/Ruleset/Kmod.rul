@@ -1307,9 +1307,9 @@ armors:
     underArmor: 35
     damageModifier:
       - 1.0	#		DT_NONE
-      - 1.0	# AmrPierce	DT_AP
+      - 0.9	# AmrPierce	DT_AP
       - 0.66	# Fire		DT_IN
-      - 1.0	# HiEx		DT_HE
+      - 0.9	# HiEx		DT_HE
       - 0.9	# Laser		DT_LASER
       - 1.0	# Plasma	DT_PLASMA
       - 0.9	# Stun		DT_STUN
@@ -1324,7 +1324,7 @@ armors:
     damageModifier:
       - 1.0   	#		DT_NONE
       - 1.0   	# ArmorP	DT_AP
-      - 0.0   	# Fire		DT_IN
+      - 0.1   	# Fire		DT_IN
       - 1.0   	# HiEx		DT_HE          
       - 1.0   	# Laser		DT_LASER
       - 1.0   	# Plasma	DT_PLASMA
@@ -1341,11 +1341,11 @@ armors:
     damageModifier:
       - 1.0   	#		DT_NONE
       - 1.0   	# ArmorP	DT_AP
-      - 0.0   	# Fire		DT_IN
+      - 0.1   	# Fire		DT_IN
       - 1.0   	# HiEx		DT_HE          
       - 1.0   	# Laser		DT_LASER
       - 1.0   	# Plasma	DT_PLASMA
-      - 0.8   	# Stun		DT_STUN         
+      - 0.75  	# Stun		DT_STUN         
       - 1.0   	# Melee		DT_MELEE         
       - 1.0   	# Acid		DT_ACID         
       - 0.0   	# Smoke 	DT_SMOKE
@@ -1356,14 +1356,14 @@ armors:
     underArmor: 30
     damageModifier:
       - 1.0	#		DT_NONE
-      - 0.8     # ArmorP	DT_AP
-      - 1.0     # Fire		DT_IN
+      - 0.83    # ArmorP	DT_AP
+      - 0.75    # Fire		DT_IN
       - 0.66    # HiEx		DT_HE          
       - 1.0     # Laser		DT_LASER
       - 1.0     # Plasma	DT_PLASMA
-      - 1.0     # Stun		DT_STUN         
+      - 0.8     # Stun		DT_STUN         
       - 1.0     # Melee		DT_MELEE         
-      - 1.0     # Acid		DT_ACID         
+      - 1.2     # Acid		DT_ACID         
       - 0.0     # Smoke 	DT_SMOKE
   - type: SECTOPOD_ARMOR
     frontArmor: 145
@@ -1381,6 +1381,86 @@ armors:
       - 1.0    	# Melee		DT_MELEE         
       - 1.0    	# Acid		DT_ACID         
       - 0.0    	# Smoke 	DT_SMOKE
+  - type: TANK_ARMOR
+    frontArmor: 90
+    sideArmor: 75
+    rearArmor: 60
+    underArmor: 60
+    damageModifier:
+      - 1.0     #		DT_NONE
+      - 0.9     # ArmorP	DT_AP
+      - 0.1     # Fire		DT_IN
+      - 0.75    # HiEx		DT_HE          
+      - 1.0     # Laser		DT_LASER
+      - 1.0     # Plasma	DT_PLASMA
+      - 0.0     # Stun		DT_STUN         
+      - 0.9     # Melee		DT_MELEE         
+      - 0.4     # Acid		DT_ACID         
+      - 0.0     # Smoke 	DT_SMOKE
+  - type: HOVERTANK_ARMOR
+    frontArmor: 135
+    sideArmor: 135
+    rearArmor: 130
+    underArmor: 100
+    damageModifier:
+      - 1.0    	#		DT_NONE
+      - 1.0    	# ArmorP	DT_AP
+      - 0.1    	# Fire		DT_IN
+      - 0.75   	# HiEx		DT_HE          
+      - 1.0    	# Laser		DT_LASER
+      - 1.0    	# Plasma	DT_PLASMA
+      - 0.0    	# Stun		DT_STUN         
+      - 0.9    	# Melee		DT_MELEE         
+      - 0.4    	# Acid		DT_ACID         
+      - 0.0    	# Smoke 	DT_SMOKE
+  - type: MUTON_ARMOR0
+    frontArmor: 20
+    sideArmor: 20
+    rearArmor: 20
+    underArmor: 10
+    damageModifier:
+      - 0.9    #		DT_NONE
+      - 0.83   # ArmorP	DT_AP
+      - 0.9    # Fire		DT_IN
+      - 0.7    # HiEx		DT_HE          
+      - 0.8    # Laser		DT_LASER
+      - 1.0    # Plasma	DT_PLASMA
+      - 0.9    # Stun		DT_STUN         
+      - 0.8    # Melee		DT_MELEE         
+      - 0.9    # Acid		DT_ACID         
+      - 0.9    # Smoke 	DT_SMOKE
+  - type: MUTON_ARMOR1
+    frontArmor: 25
+    sideArmor: 25
+    rearArmor: 25
+    underArmor: 15
+    damageModifier:
+      - 0.8    #		DT_NONE
+      - 0.8    # ArmorP	DT_AP
+      - 0.8    # Fire		DT_IN
+      - 0.6    # HiEx		DT_HE          
+      - 0.7    # Laser		DT_LASER
+      - 0.9    # Plasma	DT_PLASMA
+      - 0.8    # Stun		DT_STUN         
+      - 0.7    # Melee		DT_MELEE         
+      - 0.8    # Acid		DT_ACID         
+      - 0.8    # Smoke 	DT_SMOKE
+  - type: MUTON_ARMOR2
+    frontArmor: 30
+    sideArmor: 30
+    rearArmor: 30
+    underArmor: 20
+    damageModifier:
+      - 0.7    #		DT_NONE
+      - 0.75   # ArmorP	DT_AP
+      - 0.7    # Fire		DT_IN
+      - 0.5    # HiEx		DT_HE          
+      - 0.6    # Laser		DT_LASER
+      - 0.8    # Plasma	DT_PLASMA
+      - 0.7    # Stun		DT_STUN         
+      - 0.6    # Melee		DT_MELEE         
+      - 0.7    # Acid		DT_ACID         
+      - 0.7    # Smoke 	DT_SMOKE           
 # SOLDIERS ######
 soldiers:
   - type: XCOM
@@ -1431,6 +1511,70 @@ soldiers:
     standHeight: 22
     kneelHeight: 14
 ### UNITS UNITS UNITS ############
+units:
+  - type: STR_TANK_LASER_CANNON
+    race: STR_TANK_LASER_CANNON
+    stats:
+      tu: 75
+      stamina: 100
+      health: 100
+      bravery: 110
+      reactions: 25
+      firing: 65
+      throwing: 0
+      strength: 60
+      psiStrength: 100
+      psiSkill: 0
+      melee: 7
+    armor: TANK_ARMOR
+    standHeight: 16
+    kneelHeight: 16
+    value: 20
+    deathSound: 23
+    moveSound: 14
+  - type: STR_HOVERTANK_PLASMA
+    race: STR_HOVERTANK_PLASMA
+    stats:
+      tu: 100
+      stamina: 100
+      health: 120
+      bravery: 110
+      reactions: 30
+      firing: 70
+      throwing: 0
+      strength: 60
+      psiStrength: 100
+      psiSkill: 0
+      melee: 70
+    armor: HOVERTANK_ARMOR
+    standHeight: 12
+    kneelHeight: 12
+    floatHeight: 6
+    value: 20
+    deathSound: 23
+    moveSound: 40
+  - type: STR_HOVERTANK_LAUNCHER
+    race: STR_HOVERTANK_LAUNCHER
+    stats:
+      tu: 100
+      stamina: 100
+      health: 120
+      bravery: 110
+      reactions: 30
+      firing: 70
+      throwing: 0
+      strength: 60
+      psiStrength: 100
+      psiSkill: 0
+      melee: 60
+    armor: HOVERTANK_ARMOR
+    standHeight: 12
+    kneelHeight: 12
+    floatHeight: 6
+    value: 20
+    deathSound: 23
+    moveSound: 40
+
 research:
   - name: STR_ADV_MEDI_KIT
     cost: 240
