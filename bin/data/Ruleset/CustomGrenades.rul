@@ -8,13 +8,13 @@ items:
     power: 60
     damageType: 2
     battleType: 4
-    armor: 20
+    armor: 25
     blastRadius: 6
     listOrder: 4001
   - type: STR_STUN_GRENADE
     size: 0.025
     costSell: 2500
-    weight: 3
+    weight: 2
     bigSprite: 59
     floorSprite: 37
     power: 90
@@ -25,11 +25,11 @@ items:
     listOrder: 5901
 research:
   - name: STR_INCENDIARY_GRENADE
-    cost: 200
+    cost: 100
     points: 10
     listOrder: 601
   - name: STR_STUN_GRENADE
-    cost: 15200
+    cost: 50
     points: 10
     dependencies:
       - STR_SMALL_LAUNCHER
@@ -41,7 +41,7 @@ manufacture:
     requires:
       - STR_INCENDIARY_GRENADE
     space: 1
-    time: 90
+    time: 60
     cost: 1
     listOrder: 1101
   - name: STR_STUN_GRENADE
@@ -49,7 +49,7 @@ manufacture:
     requires:
       - STR_STUN_GRENADE
     space: 1
-    time: 80
+    time: 50
     cost: 1
     requiredItems:
       STR_STUN_BOMB: 1

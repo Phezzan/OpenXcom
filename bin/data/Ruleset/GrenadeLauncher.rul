@@ -13,6 +13,7 @@ items:
       - STR_LAUNCHER_FRAG
       - STR_LAUNCHER_INC
       - STR_LAUNCHER_SMOKE
+      - STR_LAUNCHER_STUN
     accuracySnap: 60
     accuracyAimed: 80
     tuSnap: 33
@@ -21,7 +22,7 @@ items:
     twoHanded: true
     invWidth: 1
     invHeight: 3
-    armor: 25
+    armor: 33
     arcingShot: true
     listOrder: 3001
   - type: STR_LAUNCHER_FRAG
@@ -72,6 +73,40 @@ items:
     armor: 20
     blastRadius: 8
     listOrder: 3004
+  - type: STR_LAUNCHER_STUN
+    size: 0.05
+    costSell: 4000
+    weight: 1
+    bigSprite: 64
+    floorSprite: 2
+    hitSound: 0
+    hitAnimation: 0
+    power: 90
+    damageType: 6
+    clipSize: 1
+    battleType: 2
+    armor: 20
+    blastRadius: 8
+    listOrder: 3005
+research:
+  - name: STR_LAUNCHER_STUN
+    cost: 50
+    points: 10
+    dependencies:
+      - STR_SMALL_LAUNCHER
+      - STR_STUN_BOMB
+    listOrder: 9002
+manufacture:
+  - name: STR_LAUNCHER_STUN
+    category: STR_AMMUNITION
+    requires:
+      - STR_STUN_GRENADE
+    space: 1
+    time: 8
+    cost: 1
+    requiredItems:
+      STR_STUN_BOMB: 1
+    listOrder: 9001
 ufopaedia:
   - id: STR_GRENADE_LAUNCHER
     type_id: 4
@@ -87,6 +122,9 @@ ufopaedia:
   - id: STR_LAUNCHER_SMOKE
     type_id: 4
     section: STR_NOT_AVAILABLE
+  - id: STR_LAUNCHER_STUN
+    type_id: 4
+    section: STR_NOT_AVAILABLE
 extraSprites:
   - type: BIGOBS.PCK
     files:
@@ -94,6 +132,7 @@ extraSprites:
       61: Resources/GrenadeLauncher/BigLauncherFrag.gif
       62: Resources/GrenadeLauncher/BigLauncherInc.gif
       63: Resources/GrenadeLauncher/BigLauncherSmoke.gif
+      64: Resources/GrenadeLauncher/BigLauncherStun.gif
   - type: FLOOROB.PCK
     files:
       74: Resources/GrenadeLauncher/FloorGrenadeLauncher.gif
@@ -107,6 +146,7 @@ extraStrings:
       STR_LAUNCHER_FRAG: 46mm Grenade (HE)
       STR_LAUNCHER_INC: 46mm Grenade (INC)
       STR_LAUNCHER_SMOKE: 46mm Grenade (SMOKE)
+      STR_LAUNCHER_STUN: 46mm Grenade (STUN)
       STR_GRENADE_LAUNCHER_UFOPEDIA: The M-79 Grenade launcher has a variety of different munition types at its disposal, contributing to its effectiveness in a wide range of situations.
   - type: EnglishUk
     strings:
@@ -114,6 +154,7 @@ extraStrings:
       STR_LAUNCHER_FRAG: 46mm Grenade (HE)
       STR_LAUNCHER_INC: 46mm Grenade (INC)
       STR_LAUNCHER_SMOKE: 46mm Grenade (SMOKE)
+      STR_LAUNCHER_STUN: 46mm Grenade (STUN)
       STR_GRENADE_LAUNCHER_UFOPEDIA: The M-79 Grenade launcher has a variety of different munition types at its disposal, contributing to its effectiveness in a wide range of situations.
   - type: Spanish
     strings:

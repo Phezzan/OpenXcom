@@ -200,12 +200,13 @@ BattleUnit::BattleUnit(BattleUnit &b) :
 	_visible(b._visible),
 	//Surface *_cache[5];
 	_cacheInvalid(b._cacheInvalid),
-	_expBravery(b._expBravery), _expReactions(b._expReactions), _expFiring(b._expFiring), _expThrowing(b._expThrowing), _expPsiSkill(b._expPsiSkill), _expMelee(b._expMelee),
+	_expBravery(b._expBravery), _expReactions(b._expReactions), _expFiring(b._expFiring), 
+    _expThrowing(b._expThrowing), _expPsiSkill(b._expPsiSkill), _expMelee(b._expMelee),
 	_turretType(b._expMelee),
-	_needPainKiller(b._needPainKiller),
 	_motionPoints(b._motionPoints),
 	_kills(b._kills),
 	_faceDirection(b._faceDirection),
+	_pain(b._pain),
 	_type(b._type),
 	_rank(b._rank),
 	_race(b._race),
@@ -1096,7 +1097,6 @@ int BattleUnit::damage(Position position, int power, ItemDamageType type, bool i
 				// armor damage
 				setArmor(getArmor(side) - (power/10) - 1, side);
             }
-			_needPainKiller = true;
 		}
 	}
 
@@ -1142,7 +1142,7 @@ void BattleUnit::keepFalling()
 	if (_fallPhase == endFrame)
 	{
 		_fallPhase--;
-		if (_health == 0)
+		if (_health <= 0)
 			_status = STATUS_DEAD;
 		else
 			_status = STATUS_UNCONSCIOUS;
@@ -1409,28 +1409,31 @@ double BattleUnit::getFiringAccuracy(BattleActionType actionType, BattleItem *it
 /**
  * To calculate firing accuracy. Takes health and fatal wounds into account.
  * Formula = accuracyStat * woundsPenalty(% health) * critWoundsPenalty (-10%/wound)
+ *
+ * Kmod - bah - new formula:
+ * 
  * @return modifier
  */
-double BattleUnit::getAccuracyModifier()
+double BattleUnit::getAccuracyModifier(UnitBodyPart const p)
 {
-	double result = ((double)_health/(double)getStats()->health);
+    if (_dmg == 0)
+        return 1.0;
 
-	int wounds = _fatalWounds[BODYPART_HEAD] + _fatalWounds[BODYPART_RIGHTARM];
-	if (wounds > 9)
-		wounds = 9;
+    // pain% + 10% * wounds
+    // pain# / hp + wounds# / 10
+	unsigned const total = 100*_pain / _stats.health +
+        10*(_fatalWounds[BODYPART_HEAD] + _fatalWounds[p]);
 
-	result *= 1 + (-0.1*wounds);
-
-	return result;
+	return (100 - std::min(99u, total)) / 100.0;
 }
 
 /**
  * Calculate throwing accuracy.
  * @return throwing Accuracy
  */
-double BattleUnit::getThrowingAccuracy()
+double BattleUnit::getThrowingAccuracy(UnitBodyPart const p)
 {
-	return (double)(getStats()->throwing/100.0) * getAccuracyModifier();
+	return (double)(getStats()->throwing/100.0) * getAccuracyModifier(p);
 }
 
 /**
@@ -1533,20 +1536,29 @@ void BattleUnit::prepareNewTurn()
 	}
 
 	// suffer from fatal wounds
-	_health -= getFatalWounds();
+	_health -= std::min(_pain, (unsigned char)getFatalWounds());   // Bleeding ramps with pain.
 
+    _pain = std::min((3*_pain + _dmg)/4, _stats.health);  // pain is the moving average of _dmg
 	// suffer from fire
 	if (_fire > 0)
 	{
-		_health -= _armor->getDamageModifier(DT_IN) * RNG::generate(5, 10);
+        int const burn = _armor->getDamageModifier(DT_IN) * RNG::generate(5, 10);
+		_health -= burn;
+        _dmg    += burn;
+        _pain   += burn;        // Fire is immediately painful
 		_fire--;
 	}
+
+    // Turn into a zombie?  (Kmod - fight zombification with painkillers and healing!)
+	if (_spawnUnit != "" && _specab == SPECAB_RESPAWN)
+    {
+        _health -= _pain;
+    }
 
 	if (_health < 0)
 		_health = 0;
 
-	// if unit is dead, AI state should be gone
-	if (_health == 0 && _currentAIState)
+    if (_health <= 0 && _currentAIState)// if unit is dead, AI state should be gone
 	{
 		_currentAIState->exit();
 		delete _currentAIState;
@@ -2121,56 +2133,60 @@ int BattleUnit::getFatalWound(int part) const
  * @param healthAmount The amount of health to add to soldier health
  * @return true if something was done, false if nothing could be done
  */
-int BattleUnit::heal(int part, int healAmount, int healthAmount)
+unsigned BattleUnit::heal(int part, int healAmount, int healthAmount)
 {
     unsigned i;
-    int didHeal = 0;
+    unsigned didHeal = 0;
 
 
     for(i = 0; i < 6 && healAmount > 0; part++, i++)
     {
         if (_fatalWounds[part % 6])
         {
-            unsigned const tmp = std::min(healAmount, _fatalWounds[part % 6]);
-            _fatalWounds[part % 6] -= tmp;
-            healAmount   -= tmp;
-            _health      += healthAmount;
-            healthAmount  = 0;
-            didHeal = 1;
+            int const            tmp = std::min(healAmount, _fatalWounds[part % 6]);
+            _fatalWounds[part % 6]  -= tmp;
+            healAmount              -= tmp;
+            didHeal                 += tmp * 3u;
+            _health                 += std::min(_dmg, tmp * 3);
+            _dmg                    -= std::min(_dmg, tmp * 3);     // only reduce dmg when healing a fatal wound.
         }
     }
 
-	if (_health > getStats()->health)
-		_health = getStats()->health;
-    else if (healthAmount)
+    if (healthAmount > 0)
     {
-        // Diminishing returns - 5 * 0% hurt -> 0 healing
-        //_health += healthAmount * (1 + getStats()->health - _health) / (1 + getStats()->health);
+        int const statHealth = getStats()->health;
+        int const maxHealth  = statHealth - (healthAmount <= 4 ? _dmg*3/5 : _dmg * 1/2);
 
-        // Heal up to Half total damage taken
-        int newHealth = std::min(_health + healthAmount, getStats()->health - _dmg/2);
-        if (newHealth > _health)
+        int newHealth = std::min(_health + healthAmount, maxHealth);
+        if (newHealth > _health)                                    // Simple, but capped healing
         {
-            didHeal = 1;
-            _health = newHealth;
+            healthAmount -= newHealth - _health;
+            didHeal += newHealth - _health;
+            _health  = newHealth;
+        }
+
+        if (healthAmount > 0)                                       // Diminishing returns - 5 * 0% hurt -> 0 healing
+        {
+            int const heal = healthAmount * (1 + statHealth - _health) / (1 + statHealth);
+            _health += heal;
+            didHeal += heal;
         }
     }
     return didHeal;
 }
 
-/**
- * Restore soldier morale
+/** 
+ * Restore soldier morale, and temporarily relieve pain (pain reduces accuracy)
  */
-void BattleUnit::painKillers ()
+unsigned BattleUnit::painKillers ()
 {
-	if (!getFatalWounds() || !_needPainKiller)
+	if (0 == _pain)
 	{
-		return ;
+		return 0;
 	}
-	_needPainKiller = false;
-	int lostHealth = getStats()->health - _health;
-	_morale += lostHealth;
-	if (_morale > 100) _morale = 100;
+	_morale += std::min(100, _morale + _stats.health - _health);
+	_pain = 0;
+    return 1;
 }
 
 /**

@@ -939,34 +939,34 @@ items:
     invWidth: 1
     invHeight: 2
     painKiller: 10
-    heal: 10
+    heal: 30
     stimulant: 10
     healAmount: 1
-    healthAmount: 5
+    healthAmount: 4
     stun: 4
     energy: 10
     tuUse: 10
     flatRate: true
-    armor: 20
+    armor: 25
   - type: STR_ADV_MEDI_KIT
     size: 0.1
     costSell: 50000
-    weight: 6
+    weight: 5
     bigSprite: 24
     floorSprite: 24
     battleType: 6
     invWidth: 1
     invHeight: 2
-    painKiller: 12
-    heal: 12
-    stimulant: 12
-    healAmount: 1
-    healthAmount: 10
-    stun: 4
-    energy: 10
+    painKiller: 15
+    heal: 60
+    stimulant: 15
+    healAmount: 2
+    healthAmount: 8
+    stun: 8
+    energy: 20
     tuUse: 10
     flatRate: true
-    armor: 30
+    armor: 40
   - type: STR_PSI_AMP
     requires:
       - STR_PSI_AMP
@@ -1393,7 +1393,7 @@ soldiers:
       firing: 40
       throwing: 50
       strength: 20
-      psiStrength: 0
+      psiStrength: 0		# psiStrength 0 is magical.  Unit is totally unaffected by psi and cannot use psi.
 # psiSkill here is treated as the initial stat
       psiSkill: 0
       melee: 20
@@ -1416,16 +1416,16 @@ soldiers:
 # bravery is ALWAYS treated in multiples of 10, and cannot go above the cap. 101 will be treated as 110
 # psi strength is NEVER increased.
     statCaps:
-      tu: 99
+      tu: 100
       stamina: 100
       health: 99
       bravery: 100
-      reactions: 100
+      reactions: 120
       firing: 120
       throwing: 120
       strength: 80
       psiStrength: 0
-      psiSkill: 100
+      psiSkill: 120
       melee: 120
     armor: STR_NONE_UC
     standHeight: 22

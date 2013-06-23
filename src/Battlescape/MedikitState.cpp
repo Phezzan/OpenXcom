@@ -204,11 +204,11 @@ void MedikitState::onHealClick(Action *)
 	}
 	if (_unit->getTimeUnits() >= rule->getTUUse())
 	{
-		if (_targetUnit->heal(_medikitView->getSelectedPart(), 
-				rule->getHealAmount(), rule->getHealthAmount()))
+        unsigned healed = _targetUnit->heal(_medikitView->getSelectedPart(), rule->getHealAmount(), rule->getHealthAmount());
+		if (healed)
 		{
 			_unit->spendTimeUnits (rule->getTUUse());
-			_item->setHealQuantity(--heal);
+			_item->setHealQuantity(heal - healed);
 		}
 		_medikitView->invalidate();
 		update();
@@ -268,7 +268,8 @@ void MedikitState::onPainKillerClick(Action *)
 	}
 	if (_unit->spendTimeUnits (rule->getTUUse()))
 	{
-		_item->setPainKillerQuantity(--pk);
+        if (_unit->painKillers())
+            _item->setPainKillerQuantity(--pk);
 		update();
 	}
 	else

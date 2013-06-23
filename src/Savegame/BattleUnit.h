@@ -86,10 +86,10 @@ private:
 	int _expBravery, _expReactions, _expFiring, _expThrowing, _expPsiSkill, _expMelee;
 	int improveStat(int exp);
 	int _turretType;
-	bool _needPainKiller;
 	int _motionPoints;
 	int _kills;
-	int _faceDirection; // used only during strafeing moves
+	int _faceDirection;                // used only during strafeing moves
+	unsigned char _pain;
 	
 	// static data
 	std::string const _type;
@@ -111,6 +111,7 @@ private:
 	std::vector<int> _loftempsSet;
 	Unit *_unitRules;
 	int _rankInt;
+
 public:
 	static const int MAX_SOLDIER_ID = 1000000;
 	/// Creates a BattleUnit.
@@ -232,9 +233,9 @@ public:
 	/// Calculate firing accuracy.
 	double getFiringAccuracy(BattleActionType actionType, BattleItem *item);
 	/// Calculate accuracy modifier.
-	double getAccuracyModifier();
+	double getAccuracyModifier(UnitBodyPart const part = BODYPART_RIGHTARM);
 	/// Calculate throwing accuracy.
-	double getThrowingAccuracy();
+	double getThrowingAccuracy(UnitBodyPart const part = BODYPART_RIGHTARM);
 	/// Set armor value.
 	void setArmor(int armor, UnitSide side);
 	/// Get armor value.
@@ -308,9 +309,9 @@ public:
 	/// Get fatal wound amount of a body part
 	int getFatalWound(int part) const;
 	/// Heal one fatal wound
-	int heal(int part, int healAmount, int healthAmount);
+	unsigned heal(int part, int healAmount, int healthAmount);
 	/// Give pain killers to this unit
-	void painKillers ();
+	unsigned painKillers ();
 	/// Give stimulant to this unit
 	void stimulant (int energy, int stun);
 	/// Get motion points for the motion scanner.
