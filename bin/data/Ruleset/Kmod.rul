@@ -483,10 +483,10 @@ items:
     hitAnimation: 36
     power: 90
     damageType: 4
-    accuracySnap: 50
-    accuracyAimed: 85
-    tuSnap: 33
-    tuAimed: 75
+    accuracySnap: 60
+    accuracyAimed: 95
+    tuSnap: 25
+    tuAimed: 55
     battleType: 1
     fixedWeapon: true
     clipSize: -1
@@ -517,7 +517,7 @@ items:
     clipSize: -1
     invWidth: 2
     invHeight: 3
-    armor: 20
+    armor: 70
     turretType: 3
   - type: STR_HOVERTANK_LAUNCHER
     size: 4
@@ -538,7 +538,7 @@ items:
     waypoint: true
     invWidth: 2
     invHeight: 3
-    armor: 25
+    armor: 75
     turretType: 4
   - type: STR_HWP_FUSION_BOMB
     size: 0.6
@@ -990,6 +990,11 @@ items:
     costSell: 40
     weight: 2
     armor: 16
+#  - type: STR_ELECTRO_FLARE2
+#    size: 0.025				# 'Advanced' electro flares, manufacture with 1 elerium, hard to lose, TODO ? add prox grenade logic?
+#    costSell: 300			# could be 'fusion' grenade - always glows, prox function... Explodes if next to movement other than xcom
+#    weight: 1				# explosion bigger than Alien ? middle click radius trigger setting?
+#    armor: 70
 # items: PLASMA # PLASMA
 # PLASMA # PLASMA
 # PLASMA # PLASMA
@@ -1125,7 +1130,7 @@ items:
     invWidth: 1
     invHeight: 2
     recoveryPoints: 1
-    armor: 25
+    armor: 30
     blastRadius: 11
     attraction: 1
   - type: STR_SMALL_LAUNCHER
@@ -1192,7 +1197,7 @@ items:
     floorSprite: 37
     invWidth: 1
     invHeight: 1
-    armor: 25
+    armor: 30
     attraction: 4
   - type: STR_MIND_PROBE
     requires:
@@ -1535,7 +1540,7 @@ units:
   - type: STR_HOVERTANK_PLASMA
     race: STR_HOVERTANK_PLASMA
     stats:
-      tu: 100
+      tu: 120
       stamina: 100
       health: 120
       bravery: 110
@@ -1556,7 +1561,7 @@ units:
   - type: STR_HOVERTANK_LAUNCHER
     race: STR_HOVERTANK_LAUNCHER
     stats:
-      tu: 100
+      tu: 120
       stamina: 100
       health: 120
       bravery: 110
