@@ -1,0 +1,94 @@
+units:
+  - type: STR_TANK_2_LASER_CANNON
+    race: STR_TANK_2_LASER_CANNON
+    stats:
+      tu: 90
+      stamina: 100
+      health: 100
+      bravery: 110
+      reactions: 30
+      firing: 65
+      throwing: 0
+      strength: 60
+      psiStrength: 100
+      psiSkill: 0
+      melee: 7
+    armor: TANK_2_ARMOR
+    standHeight: 16
+    kneelHeight: 16
+    value: 20
+    deathSound: 23
+    moveSound: 14
+items:
+  - type: STR_TANK_2_LASER_CANNON
+    size: 4
+    costSell: 550000
+    transferTime: 96
+    weight: 1
+    bigSprite: 54
+    floorSprite: 0
+    handSprite: 0
+    bulletSprite: 5
+    fireSound: 11
+    hitSound: 19
+    hitAnimation: 36
+    power: 98
+    damageType: 4
+    accuracySnap: 64
+    accuracyAimed: 98
+    tuSnap: 24
+    tuAimed: 55
+    battleType: 1
+    fixedWeapon: true
+    clipSize: -1
+    invWidth: 2
+    invHeight: 3
+    armor: 80
+    turretType: 0
+armors:
+  - type: TANK_2_ARMOR
+    spriteSheet: TANK_2.PCK
+    corpseItem: TANK_CORPSE_
+    frontArmor: 110
+    sideArmor: 100
+    rearArmor: 80
+    underArmor: 80
+    drawingRoutine: 2
+    size: 2
+    damageModifier:
+      - 1.0
+      - 1.0
+      - 0.4
+      - 0.75
+      - 1.0
+      - 1.0
+      - 0.0
+      - 0.9
+      - 0.4
+      - 0.0
+    loftempsSet: [ 92, 89, 90, 91 ]
+manufacture:
+  - name: STR_TANK_2_LASER_CANNON
+    category: STR_HEAVY_WEAPONS_PLATFORM
+    requires:
+      - STR_PERSONAL_ARMOR
+      - STR_LASER_CANNON
+    space: 25
+    time: 1020
+    cost: 335000		# $12
+    requiredItems:
+      STR_ALIEN_ALLOYS: 10	# It's blue !
+      STR_LASER_CANNON: 1
+extraSprites:
+  - type: TANK_2.PCK
+    width: 32
+    height: 40
+    files:
+      0: /Resources/TANK_2/
+extraStrings:
+  - type: English
+    strings:
+      STR_TANK_2_LASER_CANNON: Tank Adv/Laser Cannon
+  - type: EnglishUK
+    strings:
+      STR_TANK_2_LASER_CANNON: Tank Adv/Laser Cannon
