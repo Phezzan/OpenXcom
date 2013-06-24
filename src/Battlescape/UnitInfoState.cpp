@@ -461,7 +461,7 @@ void UnitInfoState::init()
 	_barStrength->setMax(_unit->getStats()->strength);
 	_barStrength->setValue(_unit->getStats()->strength);
 
-	if (_unit->getStats()->psiSkill > _unit->getGeoscapeSoldier()->getRules()->getMaxStats().psiSkill)
+	if (!_unit->getGeoscapeSoldier() || _unit->getStats()->psiSkill > _unit->getGeoscapeSoldier()->getRules()->getMaxStats().psiSkill)
 	{
 		ss.str(L"");
 		ss << _unit->getStats()->psiStrength;
