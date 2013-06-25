@@ -362,9 +362,12 @@ void Ufo::setAltitude(const std::string &altitude)
  * to cause it to crash.
  * @return Crashed status.
  */
-bool Ufo::isCrashed() const
+int Ufo::isCrashed() const
 {
-	return (_damage > _rules->getMaxDamage() / 2);
+	int const crash = _rules->getMaxDamage() / 2;
+	if (_damage <= crash)
+		return 0;
+	return 100 * (_damage - crash) / crash;
 }
 
 /**

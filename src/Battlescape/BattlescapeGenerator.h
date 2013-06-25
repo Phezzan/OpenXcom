@@ -87,7 +87,7 @@ private:
 	/// loads an XCOM RMP file
 	void loadRMP(MapBlock *mapblock, int xoff, int yoff, int segment);
 	void fuelPowerSources();
-	void explodePowerSources();
+	void explodePowerSources(int overkill = 25);
 	void deployAliens(AlienRace *race, AlienDeployment *deployment);
 	void deployCivilians(int max);
 	RuleTerrain *getTerrain(int tex, double lat);

@@ -435,7 +435,7 @@ void BattlescapeGenerator::run()
 
 	if (_save->getMissionType() ==  "STR_UFO_CRASH_RECOVERY")
 	{
-		explodePowerSources();
+		explodePowerSources(_ufo->isCrashed());
 	}
 
 	if (_save->getMissionType() == "STR_BASE_DEFENSE")
@@ -571,24 +571,22 @@ void BattlescapeGenerator::deployAliens(AlienRace *race, AlienDeployment *deploy
 {
 	for (std::vector<DeploymentData>::iterator d = deployment->getDeploymentData()->begin(); d != deployment->getDeploymentData()->end(); ++d)
 	{
-		std::string alienName = race->getMember((*d).alienRank);
+		int const diff = _game->getSavedGame()->getDifficulty();
+		DeploymentData const & dd = *d;
+		std::string alienName = race->getMember(dd.alienRank);
 
-		int quantity = (*d).lowQty + RNG::generate(0, (*d).dQty); // beginner/experienced
-		if( _game->getSavedGame()->getDifficulty() > DIFF_EXPERIENCED )
-			quantity = (*d).lowQty+(((*d).highQty-(*d).lowQty)/2) + RNG::generate(0, (*d).dQty); // veteran/genius
-		else if( _game->getSavedGame()->getDifficulty() > DIFF_GENIUS )
-			quantity = (*d).highQty + RNG::generate(0, (*d).dQty); // super
+		int const quantity = (dd.lowQty * (DIFF_SUPERHUMAN - diff) + dd.highQty * diff)/DIFF_SUPERHUMAN		// scale with difficulty
+							+ RNG::generate(0, dd.dQty);	// Random units
 
 		for (int i = 0; i < quantity; i++)
 		{
-			bool outside = RNG::generate(0,99) < (*d).percentageOutsideUfo;
-			if (_ufo == 0)
-				outside = false;
+			bool const outside = _ufo && (RNG::generate(0,99) < dd.percentageOutsideUfo);
 			Unit *rule = _game->getRuleset()->getUnit(alienName);
-			BattleUnit *unit = addAlien(rule, (*d).alienRank, outside);
+			BattleUnit *unit = addAlien(rule, dd.alienRank, outside);
 			if (unit)
 			{
-				for (std::vector<std::string>::iterator it = (*d).itemSets.at(_alienItemLevel).items.begin(); it != (*d).itemSets.at(_alienItemLevel).items.end(); ++it)
+				ItemSet const &set = dd.itemSets.at(_alienItemLevel);
+				for (std::vector<std::string>::const_iterator it = set.items.begin(); it != set.items.end(); ++it)
 				{
 					RuleItem *ruleItem = _game->getRuleset()->getItem((*it));
 					if (ruleItem)
@@ -597,7 +595,7 @@ void BattlescapeGenerator::deployAliens(AlienRace *race, AlienDeployment *deploy
 					}
 				}
 				// terrorist alien's equipment is a special case - they are fitted with a weapon which is the alien's name with suffix _WEAPON
-				if ((*d).alienRank == AR_TERRORIST || (*d).alienRank == AR_TERRORIST2)
+				if (dd.alienRank == AR_TERRORIST || dd.alienRank == AR_TERRORIST2)
 				{
 					std::string terroristWeapon = rule->getRace().substr(4);
 					terroristWeapon += "_WEAPON";
@@ -623,7 +621,7 @@ void BattlescapeGenerator::deployAliens(AlienRace *race, AlienDeployment *deploy
  */
 BattleUnit *BattlescapeGenerator::addAlien(Unit *rules, int alienRank, bool outside)
 {
-	int difficulty = (int)(_game->getSavedGame()->getDifficulty());
+	int const difficulty = (int)(_game->getSavedGame()->getDifficulty());
 	BattleUnit *unit = new BattleUnit(rules, FACTION_HOSTILE, _unitSequence++, _game->getRuleset()->getArmor(rules->getArmor()), difficulty);
 	Node *node = 0;
 
@@ -1684,12 +1682,12 @@ void BattlescapeGenerator::fuelPowerSources()
 /**
  * When a UFO crashes, there is a 75% chance for each powersource to explode.
  */
-void BattlescapeGenerator::explodePowerSources()
+void BattlescapeGenerator::explodePowerSources(int overkill)
 {
 	for (int i = 0; i < _save->getMapSizeXYZ(); ++i)
 	{
 		if (_save->getTiles()[i]->getMapData(MapData::O_OBJECT) 
-			&& _save->getTiles()[i]->getMapData(MapData::O_OBJECT)->getSpecialType() == UFO_POWER_SOURCE && RNG::generate(0,100) < 75)
+			&& _save->getTiles()[i]->getMapData(MapData::O_OBJECT)->getSpecialType() == UFO_POWER_SOURCE && RNG::generate(0,100) < 50 + overkill)
 		{
 			Position pos;
 			pos.x = _save->getTiles()[i]->getPosition().x*16;

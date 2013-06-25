@@ -98,8 +98,8 @@ public:
 	enum UfoStatus getStatus() const { return _status; }
 	/// Set the UFO's status.
 	void setStatus(enum UfoStatus status) {_status = status; }
-	/// Gets if the UFO has crashed.
-	bool isCrashed() const;
+	/// Gets if the UFO has crashed, and how badly
+	int isCrashed() const;
 	/// Gets if the UFO has been destroyed.
 	bool isDestroyed() const;
 	/// Handles UFO logic.
