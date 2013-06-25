@@ -1108,6 +1108,13 @@ int BattleUnit::damage(Position position, int power, ItemDamageType type, bool i
 	return power < 0 ? 0:power;
 }
 
+void BattleUnit::healStun()
+{
+	if (_stunlevel > 1)
+		_stunlevel -= _stats.stamina / 40;
+	else
+		_stunlevel = 0;
+}
 /**
  * Do an amount of stun recovery.
  * @param power
@@ -1532,7 +1539,7 @@ void BattleUnit::prepareNewTurn()
 	// recover energy
 	if (!isOut())
 	{
-		int ENRecovery = getStats()->tu / 3;
+		int ENRecovery = getStats()->stamina / 3 - _stunlevel;
 		// Each fatal wound to the body reduces the soldier's energy recovery by 10%.
 		ENRecovery -= (_energy * (_fatalWounds[BODYPART_TORSO] * 10))/100;
 		_energy += ENRecovery;
@@ -1545,8 +1552,12 @@ void BattleUnit::prepareNewTurn()
 	{
 		_health -= getFatalWounds() * _pain / _stats.health;   // Bleeding ramps with pain.
 
-		// pain is the moving average of _dmg
-		if (_dmg > 0)
+		// Turn into a zombie?  (Kmod - fight zombification with painkillers and healing!)
+		if (_spawnUnit.empty() && _specab == SPECAB_RESPAWN)
+			_health -= _pain;
+
+		// pain is the moving average of _dmg - non-woundable units (tanks) are less likely to take penalties.
+		if (_dmg > 0 && (isWoundable() || RNG::generate(0,100) < _dmg))
 		{
 			int const painDelta = ((_stats.health - _health) - _pain);
 			_pain = _pain + (painDelta - painDelta * 3/4);      //Average pain over several turns, Round away from zero
@@ -1561,13 +1572,9 @@ void BattleUnit::prepareNewTurn()
 			_pain   += burn;        // Fire is immediately painful
 			_fire--;
 		}
-
-		// Turn into a zombie?  (Kmod - fight zombification with painkillers and healing!)
-		if (_spawnUnit != "" && _specab == SPECAB_RESPAWN)
-		{
-			_health -= _pain;
-		}
 	}
+	else
+		_fire = 0;
 
 
 	if (_health < 0)
@@ -1580,9 +1587,8 @@ void BattleUnit::prepareNewTurn()
 		_currentAIState = 0;
 	}
 
-	// recover stun 1pt/turn
-	if (_stunlevel > 0)
-		healStun(1);
+	// recover stun based on stamina
+	healStun();
 
 	if (!isOut())
 	{
@@ -1596,7 +1602,7 @@ void BattleUnit::prepareNewTurn()
 		{
 			// successfully avoided panic
 			// increase bravery experience counter
-            _expBravery += 1 + chance / 25;
+			_expBravery += 1 + chance / 15;
 		}
 	}
 
@@ -1616,7 +1622,7 @@ void BattleUnit::moraleChange(int change)
 	_morale += change;
 	if (_morale > 100)
 		_morale = 100;
-	if (_morale < 0)
+	else if (_morale < 0)
 		_morale = 0;
 }
 
@@ -2001,7 +2007,7 @@ bool BattleUnit::postMissionProcedures(SavedGame *geoscape)
     if (healthLoss > 0)
     {
         const int diff = geoscape->getDifficulty();
-        const float max = healthLoss * (0.83f + diff/6.f);
+        const float max = healthLoss * (0.75f + diff/8.f);
 
         s->setWoundRecovery(RNG::generate(max/5,max));
         if (caps.health > stats->health)
@@ -2011,8 +2017,8 @@ bool BattleUnit::postMissionProcedures(SavedGame *geoscape)
 	if (_expBravery)
 	{
 		stats->bravery += improveStat(_expBravery);
-        if (stats->bravery > caps.bravery)
-            stats->bravery = caps.bravery;
+		if (stats->bravery > caps.bravery)
+			stats->bravery = caps.bravery;
 	}
 	if (_expReactions && stats->reactions < caps.reactions)
 	{
@@ -2194,13 +2200,13 @@ unsigned BattleUnit::heal(int part, int healAmount, int healthAmount)
  */
 unsigned BattleUnit::painKillers ()
 {
-	if (0 == _pain)
+	if (0 == _pain or !isWoundable())
 	{
 		return 0;
 	}
 	_morale += std::min(100, _morale + _stats.health - _health);
 	_pain = 0;
-    return 1;
+	return 1;
 }
 
 /**
@@ -2502,10 +2508,11 @@ void BattleUnit::setEnergy(int energy)
 
 /**
  * Adjust this unit's armor values
- *  0 - 66%         
- *  2 - 100%       
- *  4 - 120%
- *  6 - 133%       
+ *  0 - 66%     BEGINNER 	-> Cyberdisc = 22 armor
+ *  1 - 85%		Experienced	-> Cyberdisc = 29 armor
+ *  2 - 100%    VETERAN		-> Cyberdisc = 34 armor
+ *  3 - 111%    GENIUS		-> Cyberdisc = 37 armor
+ *  4 - 120%    SUPERHUMAN 	-> Cyberdisc = 40 armor!! GOOD LUCK
  */
 void BattleUnit::adjustArmor(int diff = 2)
 {
@@ -2704,4 +2711,4 @@ void BattleUnit::adjustStats(const int diff)
 }
 
 }
-/* vim:set noet */
+// vim: noet
