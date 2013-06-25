@@ -28,7 +28,7 @@ items:
     bigSprite: 54
     floorSprite: 0
     handSprite: 0
-    bulletSprite: 5
+    bulletSprite: 7
     fireSound: 11
     hitSound: 19
     hitAnimation: 36
@@ -44,7 +44,8 @@ items:
     invWidth: 2
     invHeight: 3
     armor: 80
-    turretType: 0
+    turretType: 2
+    listOrder: 0		# Tanks should be at the top
 armors:
   - type: TANK_2_ARMOR
     spriteSheet: TANK_2.PCK
@@ -75,7 +76,7 @@ manufacture:
       - STR_LASER_CANNON
     space: 25
     time: 1020
-    cost: 335000		# $12
+    cost: 335000		# ? $12
     requiredItems:
       STR_ALIEN_ALLOYS: 10	# It's blue !
       STR_LASER_CANNON: 1
