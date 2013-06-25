@@ -199,7 +199,7 @@ void UnitWalkBState::think()
 							if (t)
 							for (std::vector<BattleItem*>::iterator i = t->getInventory()->begin(); i != t->getInventory()->end(); ++i)
 							{
-								if ((*i)->getRules()->getBattleType() == BT_PROXIMITYGRENADE && (*i)->getExplodeTurn() > 0)
+								if ((*i)->getRules()->getBattleType() == BT_PROXIMITYGRENADE && (*i)->willDetonate(_parent->getSave()->getTurn()))
 								{
 									Position p;
 									p.x = t->getPosition().x*16 + 8;
@@ -598,3 +598,4 @@ void UnitWalkBState::playMovementSound()
 }
 
 }
+// vim: noet

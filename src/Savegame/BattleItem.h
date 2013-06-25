@@ -70,6 +70,12 @@ public:
 	int getExplodeTurn() const;
 	/// Sets the turn to explode on.
 	void setExplodeTurn(int turn);
+	/// Sets the turn to explode on.
+	void prime(int turn = 1);
+	/// Checks if the explosive will detonate on or after turn
+	int willDetonate(int turn) const;
+	/// Checks if the explosive will detonate on or after turn, for unit
+	int willDetonate(int turn, BattleUnit const &unit) const;
 	/// Spend one bullet.
 	bool spendBullet();
 	/// Gets the item's owner.

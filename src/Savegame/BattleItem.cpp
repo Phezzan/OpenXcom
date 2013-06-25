@@ -172,6 +172,40 @@ void BattleItem::setExplodeTurn(int turn)
 }
 
 /**
+ * Set the turn to explode on.
+ * @param turn Turn to explode on.
+ */
+void BattleItem::prime(int turn)
+{
+	_explodeTurn = turn;
+}
+
+/** 
+ * Checks if the explosive will detonate on or after turn
+ * @param turn Current game turn
+ */
+int BattleItem::willDetonate(int turn) const
+{
+    if (_explodeTurn && _explodeTurn <= turn)
+        return 1 + _explodeTurn - turn;
+    return 0;
+}
+
+/** 
+ * Checks if the explosive will detonate on or after turn, for unit
+ * @param turn Current game turn
+ * @param unit Unit that might trigger detonation
+ */
+int BattleItem::willDetonate(int turn, BattleUnit const &unit) const
+{
+    if (!_explodeTurn || _explodeTurn > turn)
+        return 0;
+    return 1;
+    // Smart ProxGrenade
+//    return !_XCOMProperty || unit.getFaction() != FACTION_PLAYER;
+}
+
+/**
  * Returns the quantity of ammo in this item.
  * @return Ammo quantity.
  */

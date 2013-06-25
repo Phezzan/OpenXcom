@@ -1687,7 +1687,7 @@ void BattlescapeGenerator::explodePowerSources(int overkill)
 	for (int i = 0; i < _save->getMapSizeXYZ(); ++i)
 	{
 		if (_save->getTiles()[i]->getMapData(MapData::O_OBJECT) 
-			&& _save->getTiles()[i]->getMapData(MapData::O_OBJECT)->getSpecialType() == UFO_POWER_SOURCE && RNG::generate(0,100) < 50 + overkill)
+			&& _save->getTiles()[i]->getMapData(MapData::O_OBJECT)->getSpecialType() == UFO_POWER_SOURCE && RNG::generate(0,100) < 20 + overkill)
 		{
 			Position pos;
 			pos.x = _save->getTiles()[i]->getPosition().x*16;
