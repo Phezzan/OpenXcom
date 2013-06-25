@@ -41,7 +41,7 @@ manufacture:
     requires:
       - STR_INCENDIARY_GRENADE
     space: 1
-    time: 60
+    time: 24
     cost: 1
     listOrder: 1101
   - name: STR_STUN_GRENADE
@@ -49,7 +49,7 @@ manufacture:
     requires:
       - STR_STUN_GRENADE
     space: 1
-    time: 50
+    time: 48
     cost: 1
     requiredItems:
       STR_STUN_BOMB: 1
