@@ -2832,6 +2832,7 @@ items:
     battleType: 9
     tuUse: 25
     flatRate: true
+    fixedWeapon: true
     recover: false
 ufos:
   - type: STR_SMALL_SCOUT
@@ -6582,6 +6583,9 @@ alienDeployments:
     height: 2
     terrain: UBASE
     shade: 5
+# RESEARCH #
+# RESEARCH #
+# RESEARCH #
 research:
   - name: STR_LASER_WEAPONS
     cost: 50

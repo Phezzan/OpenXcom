@@ -1277,7 +1277,7 @@ void BattlescapeGame::primaryAction(const Position &pos)
 				statePushBack(new ProjectileFlyBState(this, _currentAction));
 				if (_currentAction.TU <= _currentAction.actor->getTimeUnits())
 				{
-					if (getTileEngine()->psiAttack(&_currentAction))
+					if (getTileEngine()->psiAttack(&_currentAction) > 0)
 					{
 						// show a little infobox if it's successful
 						std::wstringstream ss;
@@ -1295,6 +1295,11 @@ void BattlescapeGame::primaryAction(const Position &pos)
 						_currentAction.targeting = false;
 						_currentAction.type = BA_NONE;
 						setupCursor();
+					}
+					else if (_currentAction.result.length() > 0)
+					{
+						_parentState->warning(_currentAction.result);
+						_currentAction.result = "";
 					}
 					if (builtinpsi)
 					{
@@ -1337,7 +1342,7 @@ void BattlescapeGame::primaryAction(const Position &pos)
 				_save->getPathfinding()->removePreview();
 			_currentAction.run = false;
 			_currentAction.strafe = _save->getStrafeSetting() && (SDL_GetModState() & KMOD_CTRL) != 0 && _save->getSelectedUnit()->getTurretType() == -1;
-			if (_currentAction.strafe && _save->getTileEngine()->distance(_currentAction.actor->getPosition(), pos) > 1)
+			if (_currentAction.strafe && _save->getTileEngine()->distance(_currentAction.actor->getPosition(), pos) > 2)
 			{
 				_currentAction.run = true;
 				_currentAction.strafe = false;
@@ -1969,6 +1974,12 @@ void BattlescapeGame::tallyUnits(int &liveAliens, int &liveSoldiers, bool conver
 			{
 				liveSoldiers++;
 			}
+		}
+		else if (FACTION_PLAYER == (*j)->getOriginalFaction()						// Perhaps he's just resting
+			&& STATUS_DEAD != (*j)->getStatus() 
+			&& (*j)->getStunlevel() < ((*j)->getHealth() / (*j)->getFatalWounds()))
+		{
+			liveSoldiers++;
 		}
 	}
 }

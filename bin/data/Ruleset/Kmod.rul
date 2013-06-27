@@ -494,6 +494,31 @@ items:
     invHeight: 3
     armor: 50
     turretType: 2
+  - type: REAPER_WEAPON
+    hitSound: 48
+    power: 85
+    damageType: 7
+    accuracyMelee: 80
+    tuMelee: 15
+    battleType: 3
+  - type: CHRYSSALID_WEAPON
+    hitSound: 48
+    power: 75
+    damageType: 7
+    accuracyMelee: 90
+    tuMelee: 15
+    battleType: 3
+  - type: ZOMBIE_WEAPON
+    weight: 0
+    bigSprite: 26
+    floorSprite: 31
+    handSprite: 104
+    hitSound: 48
+    power: 24
+    damageType: 7
+    accuracyMelee: 60
+    tuMelee: 20
+    battleType: 3
   - type: SECTOPOD_WEAPON
     weight: 3
     bigSprite: 40
@@ -1551,7 +1576,7 @@ units:
       firing: 65
       throwing: 0
       strength: 60
-      psiStrength: 100
+      psiStrength: 0
       psiSkill: 0
       melee: 7
     armor: TANK_ARMOR
@@ -1571,7 +1596,7 @@ units:
       firing: 70
       throwing: 0
       strength: 60
-      psiStrength: 100
+      psiStrength: 0
       psiSkill: 0
       melee: 70
     armor: HOVERTANK_ARMOR
@@ -1592,7 +1617,7 @@ units:
       firing: 70
       throwing: 0
       strength: 60
-      psiStrength: 100
+      psiStrength: 0
       psiSkill: 0
       melee: 60
     armor: HOVERTANK_ARMOR
@@ -1602,8 +1627,42 @@ units:
     value: 20
     deathSound: 23
     moveSound: 40
-
-
+  - type: STR_CHRYSSALID_TERRORIST
+    stats:
+      tu: 110
+      stamina: 140
+      health: 96
+      bravery: 100
+      reactions: 50	# lower reactions means more reaction fire
+      firing: 0
+      throwing: 0
+      strength: 110
+      psiStrength: 50
+      psiSkill: 0
+      melee: 80
+    intelligence: 4
+    aggression: 1
+    zombieUnit: STR_ZOMBIE
+  - type: STR_ZOMBIE
+    stats:
+      tu: 40
+      stamina: 110
+      health: 84
+      bravery: 110
+      reactions: 40
+      firing: 0
+      throwing: 0
+      strength: 84
+      psiStrength: 80
+      psiSkill: 0
+      melee: 80
+    value: 18
+    intelligence: 3
+    aggression: 2
+    spawnUnit: STR_CHRYSSALID_TERRORIST
+# RESEARCH #
+# RESEARCH #
+# RESEARCH #
 research:
   - name: STR_ADV_MEDI_KIT
     cost: 240
