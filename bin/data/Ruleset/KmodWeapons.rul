@@ -1,0 +1,66 @@
+items:
+  - type: STR_PULSE_LASER
+    size: 0.3
+    costSell: 75000
+    weight: 20
+    bigSprite: 80
+    floorSprite: 6		## OK?
+    handSprite: 16		## ?
+    bulletSprite: 7		## Good?
+    fireSound: 11
+    hitSound: 19
+    hitAnimation: 36
+    power: 80
+    damageType: 4
+    accuracyAuto: 50
+    accuracySnap: 62
+    accuracyAimed: 95
+    tuAuto: 38
+    tuSnap: 30
+    tuAimed: 66
+    clipSize: -1
+    battleType: 1
+    twoHanded: true
+    invWidth: 2
+    invHeight: 3
+    armor: 40
+    listOrder: 3001
+research:
+  - name: STR_PULSE_LASER
+    cost: 360
+    points: 15
+    dependencies:
+      - STR_LASER_CANNON
+    listOrder: 9002
+manufacture:
+  - name: STR_PULSE_LASER
+    category: STR_WEAPON
+    requires:
+      - STR_PULSE_LASER
+    space: 4
+    time: 920
+    cost: 48000
+    listOrder: 9001
+ufopaedia:
+  - id: STR_PULSE_LASER
+    type_id: 4
+    section: STR_WEAPONS_AND_EQUIPMENT
+    text: STR_PULSE_LASER_UFO
+    listOrder: 2901
+extraSprites:
+  - type: BIGOBS.PCK
+    files:
+      5: Resources/Kmod/LaserPistol.gif
+      6: Resources/Kmod/HeavyLaser.gif
+      7: Resources/Kmod/AutoCannon.gif
+      11: Resources/Kmod/HeavyCannon.gif
+      80: Resources/Kmod/PulseLaser.gif
+extraStrings:
+  - type: English
+    strings:
+      STR_PULSE_LASER: Pulse Laser Cannon
+      STR_PULSE_LASER_UFO: An improved ergonomic handle and a rapid fire chamber make this ultimate laser weapon a favorite of squaddies everywhere.
+  - type: EnglishUk
+    strings:
+      STR_PULSE_LASER: An improved ergonomic handle and a rapid fire chamber make this ultimate laser weapon a favorite of squaddies everywhere.
+      STR_PULSE_LASER_UFO: An improved ergonomic handle and a rapid fire chamber make this ultimate laser weapon a favorite of squaddies everywhere.
