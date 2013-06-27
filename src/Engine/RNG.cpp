@@ -146,15 +146,13 @@ double boxMuller(double m, double s)
 
 unsigned nDice(int const n, unsigned min, unsigned max)
 {
-    unsigned num;
     unsigned long long result = 0;
     unsigned long long const delta = max - min;
     int i = n;
     do
     {
         _count++;
-        num = rand();
-        result += (num * delta / RAND_MAX + min);
+        result += (rand() * delta / RAND_MAX + min);
     }while (--i > 0);
 
     return result / n;

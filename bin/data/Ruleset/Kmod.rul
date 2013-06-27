@@ -477,7 +477,7 @@ items:
     bigSprite: 54
     floorSprite: 0
     handSprite: 0
-    bulletSprite: 5
+    bulletSprite: 7
     fireSound: 11
     hitSound: 19
     hitAnimation: 36
@@ -494,6 +494,29 @@ items:
     invHeight: 3
     armor: 50
     turretType: 2
+  - type: SECTOPOD_WEAPON
+    weight: 3
+    bigSprite: 40
+    floorSprite: 31
+    handSprite: 104
+    fireSound: 18
+    hitSound: 19
+    hitAnimation: 46
+    power: 100
+    damageType: 4
+    accuracyAuto: 50
+    accuracySnap: 75
+    accuracyAimed: 110
+    tuAuto: 35
+    tuSnap: 30
+    tuAimed: 60
+    battleType: 1
+    fixedWeapon: true
+    invWidth: 2
+    invHeight: 3
+    clipSize: -1
+    bulletSprite: 7
+    recover: false
   - type: STR_HOVERTANK_PLASMA
     size: 4
     costSell: 980000
@@ -870,10 +893,10 @@ items:
     fireSound: 11
     hitSound: 19
     hitAnimation: 36
-    power: 85
+    power: 90
     damageType: 4
-    accuracySnap: 50
-    accuracyAimed: 84
+    accuracySnap: 55
+    accuracyAimed: 90
     tuSnap: 33
     tuAimed: 75
     clipSize: -1
@@ -1336,7 +1359,7 @@ armors:
       - 0.8   	# Stun		DT_STUN         
       - 1.0   	# Melee		DT_MELEE         
       - 1.0   	# Acid		DT_ACID         
-      - 0.0   	# Smoke 	DT_SMOKE
+      - 0.1   	# Smoke 	DT_SMOKE
   - type: STR_FLYING_SUIT_UC
     frontArmor: 110
     sideArmor: 95
@@ -1353,7 +1376,7 @@ armors:
       - 0.75  	# Stun		DT_STUN         
       - 1.0   	# Melee		DT_MELEE         
       - 1.0   	# Acid		DT_ACID         
-      - 0.0   	# Smoke 	DT_SMOKE
+      - 0.1   	# Smoke 	DT_SMOKE
   - type: CYBERDISC_ARMOR
     frontArmor: 34
     sideArmor: 34
@@ -1579,6 +1602,7 @@ units:
     value: 20
     deathSound: 23
     moveSound: 40
+
 
 research:
   - name: STR_ADV_MEDI_KIT

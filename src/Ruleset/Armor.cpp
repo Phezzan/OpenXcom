@@ -273,7 +273,7 @@ int Armor::getSize() const
  * @param dt DamageType
  * @return damage modifier 0->1
  */
-float Armor::getDamageModifier(ItemDamageType dt)
+float Armor::getDamageModifier(ItemDamageType dt) const
 {
 	return _damageModifier[(int)dt];
 }
