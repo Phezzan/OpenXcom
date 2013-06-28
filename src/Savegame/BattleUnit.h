@@ -74,8 +74,10 @@ private:
 	std::vector<BattleUnit *> _visibleUnits, _unitsSpottedThisTurn;
 	std::vector<Tile *> _visibleTiles;
 	int _tu, _energy, _health, _morale, _stunlevel, _dmg; // _dmg - all dmg taken this battle
+	int _healPool;							// The # of HP to heal/hurt over time
 	bool _kneeled, _floating, _dontReselect;
 	int _currentArmor[5];
+	bool _woundable;
 	int _fatalWounds[6];
 	int _fire;
 	std::vector<BattleItem*> _inventory;
@@ -250,6 +252,8 @@ public:
 	void prepareNewTurn();
 	/// Morale change
 	void moraleChange(int change);
+	/// Morale damage
+	void moraleDamage(int dmg);
 	/// Don't reselect this unit
 	void dontReselect();
 	/// Check whether reselecting this unit is allowed.
@@ -316,6 +320,10 @@ public:
 	unsigned painKillers ();
 	/// Give stimulant to this unit
 	void stimulant (int energy, int stun);
+	/// Get the psiAttack value
+	int getPsiAttackStrength() const;
+	/// Get the psiDefence value
+	int getPsiDefenceStrength(int const type) const;
 	/// Get motion points for the motion scanner.
 	int getMotionPoints() const;
 	/// Gets the unit's armor.

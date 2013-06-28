@@ -360,61 +360,61 @@ void AggroBAIState::meleeAction(BattleAction *action)
  */
 void AggroBAIState::psiAction(BattleAction *action)
 {
-	int psiAttackStrength = _unit->getStats()->psiSkill * _unit->getStats()->psiStrength / 50;
-	int chanceToAttack = 0;
+	int psiAttackStrength = _unit->getPsiAttackStrength();
+	int bestAttackChance = 0;
 	for (std::vector<BattleUnit*>::const_iterator i = _game->getExposedUnits()->begin(); i != _game->getExposedUnits()->end(); ++i)
 	{
-		// don't target tanks or other aliens or units under mind control
-		if ((*i)->getArmor()->getSize() == 1 && (*i)->getOriginalFaction() == FACTION_PLAYER && (*i)->getFaction() == FACTION_PLAYER)
+		// don't target mindless units or other aliens or units under mind control
+		if ((*i)->isFearable() && (*i)->getOriginalFaction() == FACTION_PLAYER && (*i)->getFaction() == FACTION_PLAYER && (*i)->getStats()->psiStrength > 0)
 		{
-			int chanceToAttackMe = psiAttackStrength
-				+ (((*i)->getStats()->psiSkill > 0) ? (*i)->getStats()->psiSkill * -0.4 : 0)
-				- (_game->getTileEngine()->distance(_unit->getPosition(), (*i)->getPosition()) / 2)
-				- ((*i)->getStats()->psiStrength)
-				+ (RNG::generate(0, 50))
-				+ 55;
+			int attackChance = psiAttackStrength
+				- (*i)->getPsiDefenceStrength(-33)      // Estimate defense strength +/- 33%
+				- 25 * _game->getTileEngine()->distance(_unit->getPosition(), (*i)->getPosition())
+				;
 
-			if (chanceToAttackMe > chanceToAttack)
+			if (attackChance > bestAttackChance)
 			{
-				chanceToAttack = chanceToAttackMe;
+				bestAttackChance = attackChance;
 				_aggroTarget = *i;
 			}
 		}
 	}
 
 	if (!_aggroTarget)
-		chanceToAttack = 0;
+		bestAttackChance = 0;
+	else 
+		bestAttackChance /= 50;
 
-	if (chanceToAttack)
+	if (bestAttackChance)
 	{
 		if (!_unit->getVisibleUnits()->empty() && _unit->getMainHandWeapon() && _unit->getMainHandWeapon()->getAmmoItem())
 		{
-			if (_unit->getMainHandWeapon()->getAmmoItem()->getRules()->getPower() >= chanceToAttack)
+			if (_unit->getMainHandWeapon()->getAmmoItem()->getRules()->getPower() >= bestAttackChance)
 			{
-				chanceToAttack = 0;
+				bestAttackChance = 0;
 				_aggroTarget = 0;
 			}
 		}
 		else
 		{
-			if (RNG::generate(35, 155) >= chanceToAttack)
+			if (RNG::generate(35, 155) >= bestAttackChance)
 			{
-				chanceToAttack = 0;
+				bestAttackChance = 0;
 				_aggroTarget = 0;
 			}
 		}
-		if (chanceToAttack >= 30)
+		if (bestAttackChance >= 30)
 		{
 			int controlOrPanic = 60;
 			int morale = _aggroTarget->getMorale();
-			int bravery = (110 - _aggroTarget->getStats()->bravery) / 10;
-			if (bravery > 6)
+			int cowardice = (110 - _aggroTarget->getStats()->bravery);
+			if (cowardice > 60)
 				controlOrPanic += 15;
-			if ( bravery < 4)
+			if ( cowardice < 40)
 				controlOrPanic -= 15;
 			if (morale >= 40)
 			{
-				if (morale - 10 * bravery < 50)
+				if (morale - cowardice < 50)
 					controlOrPanic += 15;
 			}
 			else
@@ -436,7 +436,7 @@ void AggroBAIState::psiAction(BattleAction *action)
 				action->target = _aggroTarget->getPosition();
 			}
 		}
-		else if (chanceToAttack)
+		else if (bestAttackChance)
 		{
 				action->type = BA_PANIC;
 				action->target = _aggroTarget->getPosition();

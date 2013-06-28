@@ -974,7 +974,7 @@ int BattleUnit::damage(Position position, int power, ItemDamageType type, bool i
 
 	if (!ignoreArmor)
 	{
-		if (position == Position(0, 0, 0))
+		if (position == Position(0, 0, 0) && _status != STATUS_UNCONSCIOUS)
 		{
 			side = SIDE_UNDER;
 		}
@@ -1032,32 +1032,35 @@ int BattleUnit::damage(Position position, int power, ItemDamageType type, bool i
 
 		impactheight = 10*position.z/getHeight();
 
-		if (impactheight > 4 && impactheight < 7) // torso
-		{
-			if (side == SIDE_LEFT)
-			{
-				bodypart = BODYPART_LEFTARM;
-			}else if (side == SIDE_RIGHT)
-			{
-				bodypart = BODYPART_RIGHTARM;
-			}else
-			{
-				bodypart = BODYPART_TORSO;
-			}
-		}else if (impactheight >= 7) //head
+		if (impactheight >= 7)
 		{
 			bodypart = BODYPART_HEAD;
-		}else if (impactheight <=4) //legs
+			side = SIDE_FRONT;				// Helmet armor is good all round
+		}
+		else if (impactheight > 4)
 		{
-			if (side == SIDE_LEFT || side == SIDE_FRONT)
+			switch(side)
 			{
-				bodypart = BODYPART_LEFTLEG;
-			}else
-			{
-				bodypart = BODYPART_RIGHTLEG;
+			case SIDE_LEFT: 		
+				bodypart = BODYPART_LEFTARM; break;
+			case SIDE_RIGHT:		
+				bodypart = BODYPART_RIGHTARM; break;
+			default:				
+				bodypart = BODYPART_TORSO;
 			}
 		}
-
+		else 
+		{
+			switch(side)
+			{
+			case SIDE_LEFT: 		
+				bodypart = BODYPART_LEFTLEG; 	break;
+			case SIDE_RIGHT:		
+				bodypart = BODYPART_RIGHTLEG; 	break;
+			default:
+				bodypart = (UnitBodyPart) RNG::generate(BODYPART_RIGHTLEG,BODYPART_LEFTLEG);
+			}
+		}
 		power -= getArmor(side);
 	}
 
@@ -1071,7 +1074,7 @@ int BattleUnit::damage(Position position, int power, ItemDamageType type, bool i
 		{
 			// health damage
 			_health -= power;
-            _dmg    += power;
+			_dmg    += power;
 			if (_health < 0)
 			{
 				_health = 0;
@@ -1089,19 +1092,19 @@ int BattleUnit::damage(Position position, int power, ItemDamageType type, bool i
 				{
                     int rnd = RNG::generate(1, _health);
 					if (rnd <= power)
-                    {
-                        rnd = RNG::generate(1, power / rnd);
-                        if (rnd >= 2 + power / 12)
-                            rnd  = 2 + power / 12;
+					{
+						rnd = RNG::generate(1, power / rnd);
+						if (rnd >= 2 + power / 12)
+							rnd  = 2 + power / 12;
 						_fatalWounds[bodypart] += rnd;
-                    }
+					}
 
 					if (_fatalWounds[bodypart])
 						moraleChange(-_fatalWounds[bodypart]);
 				}
 				// armor damage
 				setArmor(getArmor(side) - (power/10) - 1, side);
-            }
+			}
 		}
 	}
 
@@ -1279,7 +1282,7 @@ bool BattleUnit::spendTimeUnits(int tu, bool debugmode)
  */
 bool BattleUnit::spendEnergy(int tu)
 {
-	int eu = tu / 2;
+	int const eu = tu / 2;
 
 	if (eu <= _energy)
 	{
@@ -1553,8 +1556,16 @@ void BattleUnit::prepareNewTurn()
 		_health -= getFatalWounds() * _pain / _stats.health;   // Bleeding ramps with pain.
 
 		// Turn into a zombie?  (Kmod - fight zombification with painkillers and healing!)
-		if (_spawnUnit.empty() && _specab == SPECAB_RESPAWN)
+		if (!_spawnUnit.empty() && _specab == SPECAB_RESPAWN)
 			_health -= _pain;
+
+		// Convert _healthPool into health (positive or negative)
+		if (_healthPool)
+		{
+			int const delta = _healthPool/abs(_healthPool) + _healthPool/_stats.health;
+			_health        += delta;
+			_healthPool    -= delta;
+		}
 
 		// pain is the moving average of _dmg - non-woundable units (tanks) are less likely to take penalties.
 		if (_dmg > 0 && (isWoundable() || RNG::generate(0,100) < _dmg))
@@ -1626,6 +1637,23 @@ void BattleUnit::moraleChange(int change)
 		_morale = 0;
 }
 
+/**
+ * Morale change plus a bravery calculation 
+ * @param damage can be positive or negative
+ */
+void BattleUnit::moraleDamage(int dmg)
+{
+	if (!isFearable()) return;
+
+	if (dmg > 0)
+		dmg = std::max(0, dmg - _stats.bravery);
+
+	_morale -= dmg;
+	if (_morale > 100)
+		_morale = 100;
+	else if (_morale < 0)
+		_morale = 0;
+}
 /**
  * Mark this unit is not reselectable.
  */
@@ -2175,7 +2203,7 @@ unsigned BattleUnit::heal(int part, int healAmount, int healthAmount)
     if (healthAmount > 0)
     {
         int const statHealth = getStats()->health;
-        int const maxHealth  = statHealth - (healthAmount <= 4 ? _dmg*3/5 : _dmg * 1/2);
+        int const maxHealth  = statHealth - (healthAmount <= 4 ? _dmg*2/3 : _dmg * 1/2);
 
         int newHealth = std::min(_health + healthAmount, maxHealth);
         if (newHealth > _health)                                    // Simple, but capped healing
@@ -2223,6 +2251,37 @@ void BattleUnit::stimulant (int energy, int s)
 }
 
 
+/** 
+ *Get the psiAttack value
+ * @return the attack value used to determine whether a psiAttack succeeds
+ */
+int BattleUnit::getPsiAttackStrength() const
+{
+	return _stats.psiSkill * _stats.psiStrength;
+}
+
+/** 
+ *Get the psiDefence value
+ * @return the defence value used to determine whether a psiAttack succeeds
+ */
+int BattleUnit::getPsiDefenceStrength(int const type) const
+{	// was pStr + psiSkill / 5 + 10  (+ 20 if MINDCONTRL)
+
+	// sum is the attribute based (non base value) portion of the defence strength
+	int const sum = _stats.psiStrength * 50 +  _stats.psiSkill * (50 * 0.4)
+		+ 5 * _energy + 10 * _morale;
+
+	if (type == BA_MINDCONTROL)		// MINDCONTROL == 12
+		return sum + (10 + 20) * 50;
+
+	else if (type >= 0)				// PANIC == 13 or I don't know ... something else
+		return sum + 10 * 50;
+	
+	// estimate is a % error, 1 would mean value is off less than 1%
+	int const estimate =(sum * type)/ 100 * -1;
+	return RNG::generate(sum - estimate, sum + estimate) + 10 * 50;
+}
+
 /**
  * Get motion points for the motion scanner. More points
  * is a larger blip on the scanner.
@@ -2240,7 +2299,7 @@ int BattleUnit::getMotionPoints() const
  */
 Armor *BattleUnit::getArmor() const
 {
-	return _armor;		
+	return _armor;
 }
 /**
  * Get unit's name.
@@ -2351,16 +2410,16 @@ int BattleUnit::getMoveSound() const
   */
 bool BattleUnit::isWoundable() const
 {
-	return (_type=="SOLDIER");
+	return _armor->getDamageModifier(DT_SMOKE) > 0.0;
 }
 /**
   * Get whether the unit is affected by morale loss.
-  * Normally only small units are affected by morale loss.
+  * Immune units (mindless or mechanical) have a bravery stat of 110
   * @return true or false
   */
 bool BattleUnit::isFearable() const
 {
-	return (_armor->getSize() == 1);
+	return _stats.bravery < 110;
 }
 
 /**
@@ -2514,15 +2573,12 @@ void BattleUnit::setEnergy(int energy)
  *  3 - 111%    GENIUS		-> Cyberdisc = 37 armor
  *  4 - 120%    SUPERHUMAN 	-> Cyberdisc = 40 armor!! GOOD LUCK
  */
-void BattleUnit::adjustArmor(int diff = 2)
+void BattleUnit::adjustArmor(int const diff = 2)
 {
-    int over    = diff*2 + 4;
-    int under   = diff   + 6; 
-	_currentArmor[0] *=  over / under; 
-	_currentArmor[1] *=  over / under;
-	_currentArmor[2] *=  over / under;
-	_currentArmor[3] *=  over / under;
-	_currentArmor[4] *=  over / under;
+	for (int i = SIDE_UNDER; i >= 0; i--)
+	{
+		_currentArmor[i] = _currentArmor[i] * (diff * 2 + 4) / (diff + 6);
+	}
 }
 
 /**

@@ -191,7 +191,7 @@ void TileEngine::calculateUnitLighting()
  * @param power
  * @param layer Light is seperated in 3 layers: Ambient, Static and Dynamic.
  */
-void TileEngine::addLight(const Position &center, int power, int layer)
+void TileEngine::addLight(const Position &center, int const power, int layer)
 {
 	// only loop through the positive quadrant.
 	for (int x = 0; x <= power; ++x)
@@ -200,7 +200,7 @@ void TileEngine::addLight(const Position &center, int power, int layer)
 		{
 			for (int z = 0; z < _save->getMapSizeZ(); z++)
 			{
-				int distance = int(floor(sqrt(float(x*x + y*y)) + 0.5));
+				int const distance = int(floor(sqrt(float(x*x + y*y)) + 0.5));
 
 				if (_save->getTile(Position(center.x + x,center.y + y, z)))
 					_save->getTile(Position(center.x + x,center.y + y, z))->addLight(power - distance, layer);
@@ -562,7 +562,7 @@ bool TileEngine::visible(BattleUnit *currentUnit, Tile *tile)
 
 	// aliens can see in the dark, xcom can see at a distance of 18 or less, 2 further if there's enough light.
 	if (currentUnit->getFaction() == FACTION_PLAYER &&
-		distance(currentUnit->getPosition(), tile->getPosition()) > 18 &&
+		distanceSq(currentUnit->getPosition(), tile->getPosition()) > 18*18 &&
 		tile->getShade() > MAX_DARKNESS_TO_SEE_UNITS)
 	{
 		return false;
@@ -596,7 +596,7 @@ bool TileEngine::visible(BattleUnit *currentUnit, Tile *tile)
 				maxViewDistance -= 2 * t->getSmoke() / 3;
 			}
 		}
-		if (distance(currentUnit->getPosition(), tile->getPosition()) > maxViewDistance)
+		if (distanceSq(currentUnit->getPosition(), tile->getPosition()) > maxViewDistance*maxViewDistance)
 		{
 			unitSeen = false;
 		}
@@ -903,7 +903,7 @@ void TileEngine::calculateFOV(const Position &position)
 {
 	for (std::vector<BattleUnit*>::iterator i = _save->getUnits()->begin(); i != _save->getUnits()->end(); ++i)
 	{
-		if (distance(position, (*i)->getPosition()) < 20 && (*i)->getFaction() == _save->getSide())
+		if (distanceSq(position, (*i)->getPosition()) < 20*20 && (*i)->getFaction() == _save->getSide())
 		{
 			calculateFOV(*i);
 		}
@@ -1339,9 +1339,13 @@ void TileEngine::explode(const Position &center, int power, ItemDamageType type,
 								{
 									if (power_ > (*it)->getRules()->getArmor())
 									{
+										//(*it)->getUnit()->instaKill();
 										if ((*it)->getUnit() && (*it)->getUnit()->getStatus() == STATUS_UNCONSCIOUS)
-											(*it)->getUnit()->instaKill();
-										_save->removeItem((*it));
+										{
+											(*it)->getUnit()->damage(Position(0, 0, 0), (int)(RNG::generate(power_/2.0, power_*1.5)), type);
+										}
+										else
+											_save->removeItem((*it));
 										break;
 									}
 									else
@@ -2370,39 +2374,41 @@ int TileEngine::distanceSq(const Position &pos1, const Position &pos2, bool cons
 }
 
 
-
 /**
  * Psionic attack mechanism.
  * @param action
  * @return whether it failed or succeeded
  */
-bool TileEngine::psiAttack(BattleAction *action)
+int TileEngine::psiAttack(BattleAction *action)
 {
 	BattleUnit *victim = _save->getTile(action->target)->getUnit();
-	double attackStrength = static_cast<double>(action->actor->getStats()->psiStrength) * action->actor->getStats()->psiSkill / 50;
-	double defenseStrength = static_cast<double>(victim->getStats()->psiStrength)
-		+ (victim->getStats()->psiSkill > 0) ? 10.0 + static_cast<double>(victim->getStats()->psiSkill) / 5 : 10.0;
-	int d = distance(action->actor->getPosition(), action->target);
-	attackStrength -= static_cast<double>(d)/2;
-	attackStrength += RNG::generate(0,55);
+	int const attackStr = action->actor->getPsiAttackStrength();
+	int const defenseStr= victim->getPsiDefenceStrength(action->type);
+	int const distMod   = distance(action->actor->getPosition(), action->target) * 25;
+	int const randMod   = RNG::generate(0,66*50);
+	int const total     = attackStr - defenseStr - distMod + randMod;   // 12,225 is max
 
-	if (action->type == BA_MINDCONTROL)
+	if (! action->actor->spendEnergy(distMod / 25 + randMod / 100))		// 1 eu for 2 dist, then up to 15 more for random strain
 	{
-		defenseStrength += 20;
+		action->result = "STR_NOT_ENOUGH_ENERGY";
+		return 0;										            // Not enough energy
 	}
 
 	action->actor->addPsiExp();
-	if (attackStrength > defenseStrength)
+	if (total > 0)
 	{
 		action->actor->addPsiExp();
 		action->actor->addPsiExp();
 		if (action->type == BA_PANIC)
 		{
-			int moraleLoss = (110-_save->getTile(action->target)->getUnit()->getStats()->bravery);
-			if (moraleLoss > 0)
-				_save->getTile(action->target)->getUnit()->moraleChange(-moraleLoss);
+			int moraleLoss = (RNG::generate(60+total/200 ,110+total/1000) - victim->getStats()->bravery);
+			if (moraleLoss >= 0)
+			{
+				victim->moraleChange(-moraleLoss);
+				return moraleLoss;
+			}
 		}
-		else// if (action->type == BA_MINDCONTROL)
+		else if (action->type == BA_MINDCONTROL)
 		{
 			victim->convertToFaction(action->actor->getFaction());
 			calculateFOV(victim);
@@ -2420,6 +2426,9 @@ bool TileEngine::psiAttack(BattleAction *action)
 					_save->getBattleState()->getBattleGame()->statePushBack(new EndBattleBState(_save->getBattleState()->getBattleGame(), liveSoldiers, _save->getBattleState()));
 				}
 			}
+		}
+		else	// TODO mind probe
+		{
 		}
 		return true;
 	}

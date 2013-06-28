@@ -100,7 +100,7 @@ public:
 	/// can someone on our team see this position?
 	bool inTeamFOV(const Position &pos, UnitFaction team);
 	/// attempt a panic or mind control action
-	bool psiAttack(BattleAction *action);
+	int psiAttack(BattleAction *action);
 	/// apply gravity to anything that occupy this tile.
 	Tile *applyGravity(Tile *t);
 	/// return melee validity between two units

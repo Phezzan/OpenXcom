@@ -325,8 +325,8 @@ void BattlescapeGame::handleAI(BattleUnit *unit)
 		statePushBack(new ProjectileFlyBState(this, action));
 		if (action.type == BA_MINDCONTROL || action.type == BA_PANIC)
 		{
-			bool success = _save->getTileEngine()->psiAttack(&action);
-			if (success && action.type == BA_MINDCONTROL)
+			int result = _save->getTileEngine()->psiAttack(&action);
+			if (result > 0 && action.type == BA_MINDCONTROL)
 			{
 				_save->updateExposedUnits();
 				// show a little infobox with the name of the unit and "... is under alien control"
