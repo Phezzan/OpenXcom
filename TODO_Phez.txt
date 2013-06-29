@@ -1,0 +1,41 @@
+This is a summary of Phezzan's planned and completed OpenXcom code changes.
+This file is intended to be read in VIM.
+
+Planned		::
+	Items::
+		NightVision		Extend XCom Night Vision from 18 to 20. Possibly suppress reaction for wearer?
+	;;
+	GUI::
+		Inventory		Drop should be one click - Pick up to Right Hand / Belt also one click
+
+	;;
+	Tweaks::
+		poison			New Damage Type - adds Dmg over Time to target
+		Regeneration	New Unit rule variable and BattleUnit variable - heals per turn.
+		Armor_Piercing	Partially ignore armor thresholds: Brilliant Energy
+		Armor_Rending	Damages Armor directly. -1 could prevent normal armor dmg 
+							Acid / Psi Claws?
+		STR_Enhance		Power Armor adds a bonus to STR
+		Slow_Heal		Health is not instant - heal() -> 'Heal counter' which operates at NewTurn.
+		Bravery			Make it a normal stat
+		Experience		Bravery should gain more if it's terrifying than if its just scary.
+		Health			increase with wounding, have a higher limit.
+	;;
+;;
+
+Completed		::
+	Items::
+		Adv MediKit		More effective with More doses
+		Pulse Laser		A Heavy Laser w/ auto fire - req Elerium to build
+		;;
+	Tweaks::
+		Damage 		Normal distribution 
+		InstaKill	Nothing should be 'InstaKill', Not Chryssalids, Not HE vs Unconscious
+		Difficulty	Everything about Difficulty should ramp:
+			Armor		66% -> 120% with 'Veteran' == 100%
+			Spawns	No jumps at Veteran and SuperHuman
+
+	;;
+;;
+
+// vim: foldmethod=marker: ts=3 : fmr=\:\:,\;\;
