@@ -599,7 +599,7 @@ void BattlescapeGenerator::deployAliens(AlienRace *race, AlienDeployment *deploy
 				else
 				{
                     ItemSet const &set = dd.itemSets.at(_alienItemLevel);
-					for (std::vector<std::string>::const_iterator it = set.items.begin(); it != sete.items.end(); ++it)
+					for (std::vector<std::string>::const_iterator it = set.items.begin(); it != set.items.end(); ++it)
 					{
 						RuleItem *ruleItem = _game->getRuleset()->getItem((*it));
 						if (ruleItem)

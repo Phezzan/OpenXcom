@@ -74,7 +74,7 @@ private:
 	std::vector<BattleUnit *> _visibleUnits, _unitsSpottedThisTurn;
 	std::vector<Tile *> _visibleTiles;
 	int _tu, _energy, _health, _morale, _stunlevel, _dmg; // _dmg - all dmg taken this battle
-	int _healPool;							// The # of HP to heal/hurt over time
+	int _healthPool;							// The # of HP to heal/hurt over time
 	bool _kneeled, _floating, _dontReselect;
 	int _currentArmor[5];
 	bool _woundable;

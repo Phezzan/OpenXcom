@@ -1,0 +1,35 @@
+This is a summary of planned and completed changes to OpenXcom rulesets for Phezzan's mod.
+Some of these rule changes require code changes from Phezzan's game.
+Others are just personal preference etc...
+
+This file is intended to be read in VIM.
+
+Planned		::
+	Items::
+		Adv MediKit		More effective with More doses
+		Plasma Torch	Melee 'weapon' for cutting UFO hulls.
+		Sniper Laser	Hvy Laser with only "Aimed" shots, has Armor_Piercing
+		Mind Probe		There should be a human version - perhaps like the Motion Scanner
+		Fusion Gren		An Advanced Prox Grenade
+		Fusion HiEx		A directed charge for breaching UFOs.
+		Tactical Armor	Palette shifted personal - 20% better, but heavy.
+		Adv Ballistics	Dredd's gun.
+	;;
+	No Category::
+		NightVision		Extend XCom Night Vision from 18 to 20. Possibly suppress reaction for wearer?
+		poison			New Damage Type - adds Dmg over Time to target
+		Regeneration	New Unit rule variable and BattleUnit variable - heals per turn.
+		FleshWound		Use Armor_Piercing values to reduce damage to non-Insta-Kill levels. (I've had worse)
+
+	;;
+;;
+
+Completed		::
+	Items::
+		Pulse Laser -  A Heavy Laser w/ auto fire - req Elerium to build
+		Adv Tank			Good for mid game vs Plasma Rifles
+
+	;;
+;;
+
+// vim: foldmethod=marker: ts=3 : fmr=\:\:,\;\;

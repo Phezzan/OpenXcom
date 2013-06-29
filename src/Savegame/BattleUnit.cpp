@@ -51,7 +51,8 @@ BattleUnit::BattleUnit(Soldier *soldier, UnitFaction faction) :
 	_pos(Position()), _tile(0), _lastPos(Position()), 
 	_direction(0), _toDirection(0), _directionTurret(0), _toDirectionTurret(0),  
 	_verticalDirection(0), _status(STATUS_STANDING), 
-	_walkPhase(0), _fallPhase(0), _dmg(0), _kneeled(false), _floating(false), _dontReselect(false), 
+	_walkPhase(0), _fallPhase(0), _dmg(0), _healthPool(0), 
+	_kneeled(false), _floating(false), _dontReselect(false), 
 	_fire(0), _currentAIState(0), _visible(false), _cacheInvalid(true), 
 	_expBravery(0), _expReactions(0), _expFiring(0), _expThrowing(0), _expPsiSkill(0), 
 	_expMelee(0), 
@@ -118,17 +119,18 @@ BattleUnit::BattleUnit(Soldier *soldier, UnitFaction faction) :
  * @param difficulty level (for stat adjustement)
  */
 BattleUnit::BattleUnit(Unit *unit, UnitFaction faction, int id, Armor *armor, int const diff) : 
-    _faction(faction), _originalFaction(faction), _killedBy(faction), 
-    _id(id), _pos(Position()), _tile(0), _lastPos(Position()), 
-    _direction(0), _toDirection(0), _directionTurret(0), _toDirectionTurret(0),  
-    _verticalDirection(0), _status(STATUS_STANDING), 
-    _walkPhase(0), _fallPhase(0), _dmg(0), _kneeled(false), _floating(false), _dontReselect(false), 
-    _fire(0), _currentAIState(0), _visible(false), _cacheInvalid(true),
-    _expBravery(0), _expReactions(0), _expFiring(0), _expThrowing(0), 
-    _expPsiSkill(0), _expMelee(0), 
-    _turretType(-1), _motionPoints(0), _kills(0), _pain(0),
-    _type(unit->getType()), _race(unit->getRace()), _armor(armor), _geoscapeSoldier(0), 
-    _charging(0), _turnsExposed(0), _unitRules(unit), _rankInt(-1), 
+	_faction(faction), _originalFaction(faction), _killedBy(faction), 
+	_id(id), _pos(Position()), _tile(0), _lastPos(Position()), 
+	_direction(0), _toDirection(0), _directionTurret(0), _toDirectionTurret(0),  
+	_verticalDirection(0), _status(STATUS_STANDING), 
+	_walkPhase(0), _fallPhase(0), _dmg(0), _healthPool(0), 
+	_kneeled(false), _floating(false), _dontReselect(false), 
+	_fire(0), _currentAIState(0), _visible(false), _cacheInvalid(true),
+	_expBravery(0), _expReactions(0), _expFiring(0), _expThrowing(0), 
+	_expPsiSkill(0), _expMelee(0), 
+	_turretType(-1), _motionPoints(0), _kills(0), _pain(0),
+	_type(unit->getType()), _race(unit->getRace()), _armor(armor), _geoscapeSoldier(0), 
+	_charging(0), _turnsExposed(0), _unitRules(unit), _rankInt(-1), 
 	_hidingForTurn(false), _hitByFire(false)
 {
 	_rank = unit->getRank();
@@ -194,7 +196,8 @@ BattleUnit::BattleUnit(BattleUnit &b) :
 	_visibleUnits(b._visibleUnits),
 	_visibleTiles(b._visibleTiles),
 	_tu(b._tu), _energy(b._energy), _health(b._health), _morale(b._morale), _stunlevel(b._stunlevel),
-	_dmg(b._dmg), _kneeled(b._kneeled), _floating(b._floating), _dontReselect(b._dontReselect),
+	_dmg(b._dmg), _healthPool(b._healthPool), 
+	_kneeled(b._kneeled), _floating(b._floating), _dontReselect(b._dontReselect),
 	//int _currentArmor[5];
 	//int _fatalWounds[6];
 	_fire(b._fire),
