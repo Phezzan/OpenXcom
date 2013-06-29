@@ -122,6 +122,7 @@ name_DATA = \
 	
 shaderdir = $(pkgdatadir)/data/Shaders
 shader_DATA = \
+	bin/data/Shaders/Raw.OpenGL.shader \
 	bin/data/Shaders/CRT-interlaced.OpenGL.shader \
 	bin/data/Shaders/CRT.OpenGL.shader \
 	bin/data/Shaders/CRT-simple.OpenGL.shader \
@@ -241,8 +242,6 @@ openxcom_SOURCES = \
 	src/Battlescape/BattleState.h \
 	src/Battlescape/BriefingState.cpp \
 	src/Battlescape/BriefingState.h \
-	src/Battlescape/BulletSprite.cpp \
-	src/Battlescape/BulletSprite.h \
 	src/Battlescape/Camera.cpp \
 	src/Battlescape/Camera.h \
 	src/Battlescape/CannotReequipState.cpp \

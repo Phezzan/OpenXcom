@@ -49,7 +49,7 @@ int AggroBAIState::_randomTileSearchAge = 0xBAD; // data not good yet
  * @param game pointer to the game.
  * @param unit pointer to the unit.
  */
-AggroBAIState::AggroBAIState(SavedBattleGame *game, BattleUnit *unit) : BattleAIState(game, unit), _aggroTarget(0), _lastKnownTarget(0), _timesNotSeen(0), _coverCharge(0), _charge(false)
+AggroBAIState::AggroBAIState(SavedBattleGame *game, BattleUnit *unit) : BattleAIState(game, unit), _aggroTarget(0), _lastKnownTarget(0), _timesNotSeen(0), _coverCharge(0), _charge(false), _wasHit(false)
 {
 	_traceAI = _game->getTraceSetting();
 
@@ -176,7 +176,7 @@ void AggroBAIState::think(BattleAction *action)
  	action->type = BA_RETHINK;
 	action->actor = _unit;
 	_aggroTarget = 0;
-	
+	_wasHit = false;
 	if (_lastKnownTarget && _lastKnownTarget->isOut())
 	{
 		_lastKnownTarget = 0;
@@ -234,7 +234,7 @@ void AggroBAIState::think(BattleAction *action)
 	{
 		grenadeAction(action);
 	}
-
+	action->TU = action->actor->getActionTUs(action->type, action->weapon);
 	if (_aggroTarget != 0) { setAggroTarget(_aggroTarget); }
 	else if (_lastKnownTarget) { stalkingAction(action); }
 }
@@ -851,7 +851,7 @@ bool AggroBAIState::takeCoverAssessment(BattleAction *action)
 	int unitsSpottingMe = _game->getSpottingUnits(_unit);
 	int aggression = _unit->getAggression();
 
-	if (_charge)
+	if (_charge || !_aggroTarget)
 		return false;
 
 	// extra 5% chance per unit that sees us
@@ -1030,4 +1030,15 @@ void AggroBAIState::selectFireMethod(BattleAction *action)
 			action->type = BA_AUTOSHOT;
 	}
 }
+
+void AggroBAIState::setWasHit(bool wasHit)
+{
+	_wasHit = wasHit;
+}
+
+bool AggroBAIState::getWasHit()
+{
+	return _wasHit;
+}
+
 }

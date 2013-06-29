@@ -47,17 +47,18 @@ namespace OpenXcom
  * @param faction Which faction the units belongs to.
  */
 BattleUnit::BattleUnit(Soldier *soldier, UnitFaction faction) : 
-    _faction(faction), _originalFaction(faction), _killedBy(faction), _id(0), 
-    _pos(Position()), _tile(0), _lastPos(Position()), 
-    _direction(0), _toDirection(0), _directionTurret(0), _toDirectionTurret(0),  
-    _verticalDirection(0), _status(STATUS_STANDING), 
-    _walkPhase(0), _fallPhase(0), _dmg(0), _kneeled(false), _floating(false), _dontReselect(false), 
-    _fire(0), _currentAIState(0), _visible(false), _cacheInvalid(true), 
-    _expBravery(0), _expReactions(0), _expFiring(0), _expThrowing(0), _expPsiSkill(0), 
-    _expMelee(0), 
-    _turretType(-1), _motionPoints(0), _kills(0), _pain(0),
-    _type("SOLDIER"), _geoscapeSoldier(soldier), 
-    _charging(0), _turnsExposed(0), _unitRules(0), _rankInt(-1), _hidingForTurn(false)
+	_faction(faction), _originalFaction(faction), _killedBy(faction), _id(0), 
+	_pos(Position()), _tile(0), _lastPos(Position()), 
+	_direction(0), _toDirection(0), _directionTurret(0), _toDirectionTurret(0),  
+	_verticalDirection(0), _status(STATUS_STANDING), 
+	_walkPhase(0), _fallPhase(0), _dmg(0), _kneeled(false), _floating(false), _dontReselect(false), 
+	_fire(0), _currentAIState(0), _visible(false), _cacheInvalid(true), 
+	_expBravery(0), _expReactions(0), _expFiring(0), _expThrowing(0), _expPsiSkill(0), 
+	_expMelee(0), 
+	_turretType(-1), _motionPoints(0), _kills(0), _pain(0),
+	_type("SOLDIER"), _geoscapeSoldier(soldier), 
+	_charging(0), _turnsExposed(0), 
+	_unitRules(0), _rankInt(-1), _hidingForTurn(false), _hitByFire(false)
 {
 	_name = soldier->getName();
 	_id = soldier->getId();
@@ -127,7 +128,8 @@ BattleUnit::BattleUnit(Unit *unit, UnitFaction faction, int id, Armor *armor, in
     _expPsiSkill(0), _expMelee(0), 
     _turretType(-1), _motionPoints(0), _kills(0), _pain(0),
     _type(unit->getType()), _race(unit->getRace()), _armor(armor), _geoscapeSoldier(0), 
-    _charging(0), _turnsExposed(0), _unitRules(unit), _rankInt(-1), _hidingForTurn(false)
+    _charging(0), _turnsExposed(0), _unitRules(unit), _rankInt(-1), 
+	_hidingForTurn(false), _hitByFire(false)
 {
 	_rank = unit->getRank();
 	_stats = *unit->getStats();
@@ -163,6 +165,7 @@ BattleUnit::BattleUnit(Unit *unit, UnitFaction faction, int id, Armor *armor, in
         adjustStats(diff);
         adjustArmor(diff);
     }
+
     for (int i = 0; i < 6; ++i)
         _fatalWounds[i] = 0;
 	for (int i = 0; i < 5; ++i)
@@ -1082,7 +1085,7 @@ int BattleUnit::damage(Position position, int power, ItemDamageType type, bool i
 
 			if (type != DT_IN)
 			{
-				if (_armor->getSize() == 1)
+				if (_armor->getSize() == 1 && type != DT_STUN)
 				{
 					// conventional weapons can cause additional stun damage
 					_stunlevel += RNG::nDice(2, 0, power / 4);
@@ -1257,13 +1260,10 @@ int BattleUnit::getActionTUs(BattleActionType actionType, BattleItem * const ite
 /**
  * Spend time units if it can. Return false if it can't.
  * @param tu
- * @param debugmode If this is true, the function actually does noting.
  * @return flag if it could spend the time units or not.
  */
-bool BattleUnit::spendTimeUnits(int tu, bool debugmode)
+bool BattleUnit::spendTimeUnits(int tu)
 {
-	if (debugmode) return true;
-
 	if (tu <= _tu)
 	{
 		_tu -= tu;
@@ -1575,7 +1575,7 @@ void BattleUnit::prepareNewTurn()
 		}
 
 		// suffer from fire
-		if (_fire > 0)
+		if (!_hitByFire && _fire > 0)
 		{
 			int const burn = _armor->getDamageModifier(DT_IN) * RNG::generate(5, 10);
 			_health -= burn;
@@ -1616,7 +1616,7 @@ void BattleUnit::prepareNewTurn()
 			_expBravery += 1 + chance / 15;
 		}
 	}
-
+	_hitByFire = false;
 	_dontReselect = false;
 	_motionPoints = 0;
 }
@@ -1945,7 +1945,7 @@ bool BattleUnit::checkAmmo()
 
 	if (wrong) return false; // didn't find any compatible ammo in inventory
 
-	spendTimeUnits(15,false);
+	spendTimeUnits(15);
 	weapon->setAmmoItem(ammo);
 	ammo->moveToOwner(0);
 
@@ -2751,6 +2751,9 @@ bool BattleUnit::checkViewSector (Position pos) const
 	return false;
 }
 
+/*
+ * common function to adjust a unit's stats according to difficulty setting.
+ */
 void BattleUnit::adjustStats(const int diff)
 {
 	// adjust the unit's stats according to the difficulty level.
@@ -2764,6 +2767,23 @@ void BattleUnit::adjustStats(const int diff)
     _stats.melee        += 4 * diff * _stats.melee / 100;
     _stats.psiSkill     += 4 * diff * _stats.psiSkill / 100;
     _stats.psiStrength  += 4 * diff * _stats.psiStrength / 100;
+}
+
+/*
+ * did this unit already take fire damage this turn?
+ * (used to avoid damaging large units multiple times.)
+ */
+bool BattleUnit::tookFireDamage() const
+{
+	return _hitByFire;
+}
+
+/*
+ * toggle the state of the fire damage tracking boolean.
+ */
+void BattleUnit::toggleFireDamage()
+{
+	_hitByFire = !_hitByFire;
 }
 
 }

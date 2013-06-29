@@ -26,7 +26,6 @@
 #include "Pathfinding.h"
 #include "TileEngine.h"
 #include "Projectile.h"
-#include "BulletSprite.h"
 #include "Explosion.h"
 #include "BattlescapeState.h"
 #include "../Resource/ResourcePack.h"
@@ -106,11 +105,6 @@ Map::~Map()
 	delete _arrow;
 	delete _message;
 	delete _camera;
-
-	for (int i = 0; i < BULLET_SPRITES; ++i)
-	{
-		delete _bullet[i];
-	}
 }
 
 /**
@@ -138,12 +132,6 @@ void Map::init()
 		for (int x = 0; x < 9; ++x)
 			_arrow->setPixel(x, y, pixels[x+(y*9)]);
 	_arrow->unlock();
-
-	for (int i = 0; i < BULLET_SPRITES; ++i)
-	{
-		_bullet[i] = new BulletSprite(i);
-		_bullet[i]->setPalette(this->getPalette());
-	}
 
 	_projectile = 0;
 }
@@ -239,8 +227,8 @@ void Map::drawTerrain(Surface *surface)
 	// if we got bullet, get the highest x and y tiles to draw it on
 	if (_projectile)
 	{
-		int part = _projectile->getItem() ? 1 : 35;
-		for (int i = 1; i <= part; ++i)
+		int part = _projectile->getItem() ? 0 : BULLET_SPRITES-1;
+		for (int i = 0; i <= part; ++i)
 		{
 			if (_projectile->getPosition(1-i).x < bulletLowX)
 				bulletLowX = _projectile->getPosition(1-i).x;
@@ -499,7 +487,7 @@ void Map::drawTerrain(Surface *surface)
 							// draw bullet on the correct tile
 							if (itX >= bulletLowX && itX <= bulletHighX && itY >= bulletLowY && itY <= bulletHighY)
 							{
-								for (int i = 1; i <= 35; ++i)
+								for (int i = 0; i < BULLET_SPRITES; ++i)
 								{
 									tmpSurface = _res->getSurfaceSet("Projectiles")->getFrame(_projectile->getParticle(i));
 									if (tmpSurface)
@@ -592,23 +580,13 @@ void Map::drawTerrain(Surface *surface)
 					
 
 					// Draw smoke/fire
-					if (tile->getFire() && tile->isDiscovered(2))
-					{
-						frameNumber = 0; // see http://www.ufopaedia.org/images/c/cb/Smoke.gif
-						if ((_animFrame / 2) + tile->getAnimationOffset() > 3)
-						{
-							frameNumber += ((_animFrame / 2) + tile->getAnimationOffset() - 4);
-						}
-						else
-						{
-							frameNumber += (_animFrame / 2) + tile->getAnimationOffset();
-						}
-						tmpSurface = _res->getSurfaceSet("SMOKE.PCK")->getFrame(frameNumber);
-						tmpSurface->blitNShade(surface, screenPosition.x, screenPosition.y, 0);
-					}
 					if (tile->getSmoke() && tile->isDiscovered(2))
 					{
-						frameNumber = 8 + int(floor((tile->getSmoke() / 6.0) - 0.1)); // see http://www.ufopaedia.org/images/c/cb/Smoke.gif
+						frameNumber = 0;
+						if (!tile->getFire())
+						{
+							frameNumber = 8 + int(floor((tile->getSmoke() / 6.0) - 0.1)); // see http://www.ufopaedia.org/images/c/cb/Smoke.gif
+						}
 
 						if ((_animFrame / 2) + tile->getAnimationOffset() > 3)
 						{

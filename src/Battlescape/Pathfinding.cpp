@@ -411,9 +411,10 @@ int Pathfinding::getTUCost(const Position &startPosition, int direction, Positio
 			}
 			cost += wallcost;
 			if (_unit->getFaction() == FACTION_HOSTILE && 
-				destinationTile->getUnit() &&
+				((destinationTile->getUnit() &&
 				destinationTile->getUnit()->getFaction() == FACTION_HOSTILE &&
-				destinationTile->getUnit() != _unit)
+				destinationTile->getUnit() != _unit) ||
+				destinationTile->getFire() > 0))
 				cost += 32; // try to find a better path, but don't exclude this path entirely.
 
 			// Strafing costs +1 for forwards-ish or sidewards, propose +2 for backwards-ish directions
@@ -577,8 +578,11 @@ bool Pathfinding::isBlocked(Tile *tile, const int part, BattleUnit *missileTarge
 	if (part == MapData::O_FLOOR)
 	{
 		BattleUnit *unit = tile->getUnit();
-		if (unit == 0 || unit == _unit || unit == missileTarget || unit->isOut()) return false;
-		if (_unit && _unit->getFaction() == FACTION_PLAYER && unit->getVisible()) return true;		// player know all visible units
+		if (unit != 0)
+		{
+			if (unit == _unit || unit == missileTarget || unit->isOut()) return false;
+			if (_unit && _unit->getFaction() == FACTION_PLAYER && unit->getVisible()) return true;		// player know all visible units
+		}
 	}
 	// missiles can't pathfind through closed doors.
 	if (missileTarget != 0 && tile->getMapData(part) &&
@@ -794,6 +798,10 @@ bool Pathfinding::previewPath(bool bRemove)
 	Position pos = _unit->getPosition();
 	Position destination;
 	int tus = _unit->getTimeUnits();
+	if (_unit->isKneeled())
+	{
+		tus -= 8;
+	}
 	int energy = _unit->getEnergy();
 	int size = _unit->getArmor()->getSize() - 1;
 	int total = 0;

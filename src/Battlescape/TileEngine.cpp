@@ -978,8 +978,9 @@ std::list<std::pair <int, BattleUnit*> > TileEngine::getReactingUnits(BattleUnit
 				continue;
 
 			AggroBAIState *aggro = dynamic_cast<AggroBAIState*>((*i)->getCurrentAIState());
-				// can actually see the target Tile, or is aggro
-			if (((*i)->checkViewSector(unit->getPosition()) || aggro != 0) &&
+			bool gotHit = (aggro != 0 && aggro->getWasHit());
+				// can actually see the target Tile, or we got hit
+			if (((*i)->checkViewSector(unit->getPosition()) || gotHit) &&
 				// can actually see the unit
 				visible(*i, unit->getTile()) &&
 				// aliens can see in the dark, xcom can see at a distance of 18 or less, 2 further if there's enough light.
@@ -1098,6 +1099,11 @@ bool TileEngine::tryReactionSnap(BattleUnit *unit, BattleUnit *target)
 	action.weapon = unit->getMainHandWeapon();
 	// reaction fire is ALWAYS snap shot.
 	action.type = BA_SNAPSHOT;
+	// unless we're a melee unit.
+	if (action.weapon->getRules()->getBattleType() == BT_MELEE)
+	{
+		action.type = BA_HIT;
+	}
 	action.target = target->getPosition();
 	action.TU = unit->getActionTUs(action.type, action.weapon);
 
@@ -1296,6 +1302,12 @@ void TileEngine::explode(const Position &center, int power, ItemDamageType type,
 					power_ -= (horizontalBlockage(origin, dest, type) + verticalBlockage(origin, dest, type)) * 2;
 					power_ -= 10; // explosive damage decreases by 10 per tile
 					if (origin->getPosition().z != tileZ) power_ -= vertdec; //3d explosion factor
+					if (type == DT_IN)
+					{
+						int dir;
+						Pathfinding::vectorToDirection(origin->getPosition() - dest->getPosition(), dir);
+						if (dir != -1 && dir %2) power_ -= 5; // diagonal movement costs an extra 50% for fire.
+					}
 				}
 
 				if (power_ > 0)
@@ -1362,7 +1374,8 @@ void TileEngine::explode(const Position &center, int power, ItemDamageType type,
 							// smoke from explosions always stay 6 to 14 turns - power of a smoke grenade is 60
 							if (dest->getSmoke() < 10)
 							{
-								dest->addSmoke(RNG::generate(power_/10, 14));
+								dest->setFire(0);
+								dest->setSmoke(RNG::generate(7, 15));
 							}
 						}
 
@@ -1370,7 +1383,8 @@ void TileEngine::explode(const Position &center, int power, ItemDamageType type,
 						{
 							if (dest->getFire() == 0)
 							{
-								dest->ignite();
+								dest->setFire(dest->getFuel() + 1);
+								dest->setSmoke(std::max(1, std::min(15 - (dest->getFlammability() / 10), 12)));
 							}
 							if (dest->getUnit())
 							{
@@ -1420,25 +1434,6 @@ void TileEngine::explode(const Position &center, int power, ItemDamageType type,
 }
 
 /**
- * get the height of an object checking it's voxels at 8,8
- * @return int height
- */
-int TileEngine::getVoxelHeight(MapData *mp)
-{
-	int x = 8;
-	int y = 8;
-	for (int i=0; i < 12; i++)
-	{
-		int idx = (mp->getLoftID(i)*16) + y;
-		if ((_voxelData->at(idx) & (1 << x)) == 0)
-		{
-			return i;
-		}
-	}
-	return 12;
-}
-
-/**
  * Apply the explosive power to the tile parts. This is where the actual destruction takes place.
  * Must affect on 7 objects (6 box sides and object inside)
  * @return bool Return true objective was destroyed
@@ -1458,7 +1453,7 @@ bool TileEngine::detonate(Tile* tile)
 	if (explosive)
 	{
 		// explosions create smoke which only stays 1 or 2 turns
-		tile->addSmoke(RNG::generate(0,2));
+		tile->setSmoke(std::max(1, std::min(tile->getSmoke() + RNG::generate(0,2), 15)));
 		for (int i = 0; i < 7; ++i)
 		{
 			if(tiles[i] && tiles[i]->getMapData(parts[i]))
@@ -1469,18 +1464,34 @@ bool TileEngine::detonate(Tile* tile)
 					remainingPower -= tiles[i]->getMapData(parts[i])->getArmor();
 					if (remainingPower >= 0)
 					{
-						int height = getVoxelHeight(tiles[i]->getMapData(parts[i]));
-						if (i > 3) tiles[i]->addSmoke(RNG::generate((height/2), (height/2)+1)); //only current tile produces smoke[2]
+						int volume = 0;
+						// get the volume of the object by checking it's loftemps objects.
+						for (int j=0; j < 12; j++)
+						{
+							if (tiles[i]->getMapData(parts[i])->getLoftID(j) != 0)
+								++volume;
+						}
+
+						if (i > 3)
+						{
+							tiles[i]->setFire(0);
+							int smoke = RNG::generate(0, (volume / 2) + 2);
+							smoke += (volume / 2) + 1;
+							if (smoke > tiles[i]->getSmoke())
+							{
+								tiles[i]->setSmoke(std::max(0, std::min(smoke, 15)));
+							}
+						}
 						objective = objective || tiles[i]->destroy(parts[i]);
 					}
 				}
 			}
 		}
 
-		int flam = tile->getFlammability();
-		if (explosive > flam)
+		if (tile->getFlammability() < explosive)
 		{
-			tile->ignite();
+			tile->setFire(tile->getFuel() + 1);
+			tile->setSmoke(std::max(1, std::min(15 - (tile->getFlammability() / 10), 12)));
 		}
 	}
 
@@ -1599,11 +1610,11 @@ int TileEngine::horizontalBlockage(Tile *startTile, Tile *endTile, ItemDamageTyp
 		if (type == DT_NONE) //this is two-way diagonal visiblity check, used in original game
 		{
 			block = blockage(startTile, MapData::O_NORTHWALL, type) + blockage(endTile, MapData::O_WESTWALL, type); //up+right
-			block += blockage(_save->getTile(startTile->getPosition() + oneTileNorth), MapData::O_OBJECT, type, 2);
+			block += blockage(_save->getTile(startTile->getPosition() + oneTileNorth), MapData::O_OBJECT, type, 3);
 			if (block == 0) break; //this way is opened
 			block = blockage(_save->getTile(startTile->getPosition() + oneTileEast), MapData::O_NORTHWALL, type)
 				+ blockage(_save->getTile(startTile->getPosition() + oneTileEast), MapData::O_WESTWALL, type); //right+up
-			block += blockage(_save->getTile(startTile->getPosition() + oneTileEast), MapData::O_OBJECT, type, 0);
+			block += blockage(_save->getTile(startTile->getPosition() + oneTileEast), MapData::O_OBJECT, type, 7);
 		}
 		else
 		{
@@ -1626,11 +1637,11 @@ int TileEngine::horizontalBlockage(Tile *startTile, Tile *endTile, ItemDamageTyp
 		{
 			block = blockage(_save->getTile(startTile->getPosition() + oneTileSouth), MapData::O_NORTHWALL, type)
 				+ blockage(endTile, MapData::O_WESTWALL, type); //down+right
-			block += blockage(_save->getTile(startTile->getPosition() + oneTileSouth), MapData::O_OBJECT, type, 2);
+			block += blockage(_save->getTile(startTile->getPosition() + oneTileSouth), MapData::O_OBJECT, type, 1);
 			if (block == 0) break; //this way is opened
 			block = blockage(_save->getTile(startTile->getPosition() + oneTileEast), MapData::O_WESTWALL, type)
 				+ blockage(endTile, MapData::O_NORTHWALL, type); //right+down
-			block += blockage(_save->getTile(startTile->getPosition() + oneTileEast), MapData::O_OBJECT, type, 4);
+			block += blockage(_save->getTile(startTile->getPosition() + oneTileEast), MapData::O_OBJECT, type, 5);
 		}
 		else
 		{
@@ -1653,10 +1664,10 @@ int TileEngine::horizontalBlockage(Tile *startTile, Tile *endTile, ItemDamageTyp
 		{
 			block = blockage(_save->getTile(startTile->getPosition() + oneTileSouth), MapData::O_NORTHWALL, type)
 				+ blockage(_save->getTile(startTile->getPosition() + oneTileSouth), MapData::O_WESTWALL, type); //down+left
-			block += blockage(_save->getTile(startTile->getPosition() + oneTileSouth), MapData::O_OBJECT, type, 6);
+			block += blockage(_save->getTile(startTile->getPosition() + oneTileSouth), MapData::O_OBJECT, type, 7);
 			if (block == 0) break; //this way is opened
 			block = blockage(startTile, MapData::O_WESTWALL, type) + blockage(endTile, MapData::O_NORTHWALL, type); //left+down
-			block += blockage(_save->getTile(startTile->getPosition() + oneTileWest), MapData::O_OBJECT, type, 4);
+			block += blockage(_save->getTile(startTile->getPosition() + oneTileWest), MapData::O_OBJECT, type, 3);
 		}
 		else
 		{
@@ -1680,11 +1691,11 @@ int TileEngine::horizontalBlockage(Tile *startTile, Tile *endTile, ItemDamageTyp
 		{
 			block = blockage(startTile, MapData::O_NORTHWALL, type)
 				+ blockage(_save->getTile(startTile->getPosition() + oneTileNorth), MapData::O_WESTWALL, type); //up+left
-			block += blockage(_save->getTile(startTile->getPosition() + oneTileNorth), MapData::O_OBJECT, type, 6);
+			block += blockage(_save->getTile(startTile->getPosition() + oneTileNorth), MapData::O_OBJECT, type, 5);
 			if (block == 0) break; //this way is opened
 			block = blockage(startTile, MapData::O_WESTWALL, type)
 				+ blockage(_save->getTile(startTile->getPosition() + oneTileWest), MapData::O_NORTHWALL, type); //left+up
-			block += blockage(_save->getTile(startTile->getPosition() + oneTileWest), MapData::O_OBJECT, type, 0);
+			block += blockage(_save->getTile(startTile->getPosition() + oneTileWest), MapData::O_OBJECT, type, 1);
 		}
 		else
 		{
@@ -1710,11 +1721,21 @@ int TileEngine::horizontalBlockage(Tile *startTile, Tile *endTile, ItemDamageTyp
 	}
 	else
 	{
-		block += blockage(startTile,MapData::O_OBJECT, type, direction);
+        block += blockage(startTile,MapData::O_OBJECT, type, direction);
+        if ( block <= 127 ) 
+        {
+            direction += 4;
+            if (direction > 7)
+                direction -= 8;
+            if (blockage(endTile,MapData::O_OBJECT, type, direction) > 127){
+                return -1; //hit bigwall, reveal bigwall tile
+            }
+        }
 	}
 
 	return block;
 }
+
 
 
 
@@ -1733,9 +1754,10 @@ int TileEngine::blockage(Tile *tile, const int part, ItemDamageType type, int di
 	if (tile->getMapData(part))
 	{
 		bool check = true;
+		int wall = -1;
 		if (direction != -1)
 		{
-			int wall = tile->getMapData(MapData::O_OBJECT)->getBigWall();
+			wall = tile->getMapData(MapData::O_OBJECT)->getBigWall();
 			switch (direction)
 			{
 			case 0: // north
@@ -1792,10 +1814,10 @@ int TileEngine::blockage(Tile *tile, const int part, ItemDamageType type, int di
 				{
 					check = false;
 				}
-			break;
-			case 7: // north east
+				break;
+			case 7: // north west
 				if (wall == Pathfinding::BIGWALLSOUTH ||
-					wall == Pathfinding::BIGWALLWEST ||
+					wall == Pathfinding::BIGWALLEAST ||
 					wall == Pathfinding::BIGWALLEASTANDSOUTH)
 				{
 					check = false;
@@ -1808,6 +1830,10 @@ int TileEngine::blockage(Tile *tile, const int part, ItemDamageType type, int di
 
 		if (check)
 		{
+			if (type == DT_SMOKE && wall != 0)
+			{
+				return 255;
+			}
 			blockage += tile->getMapData(part)->getBlock(type);
 		}
 	}
@@ -1829,7 +1855,7 @@ int TileEngine::blockage(Tile *tile, const int part, ItemDamageType type, int di
  *        1 ufo door is starting to open, make a whoosh sound, don't walk through.
  *        3 ufo door is still opening, don't walk through it yet. (have patience, futuristic technology...)
  */
-int TileEngine::unitOpensDoor(BattleUnit *unit, bool rClick)
+int TileEngine::unitOpensDoor(BattleUnit *unit, bool rClick, int dir)
 {
 	int door = -1;
 	int TUCost = 0;
@@ -1837,7 +1863,10 @@ int TileEngine::unitOpensDoor(BattleUnit *unit, bool rClick)
 	int z = unit->getTile()->getTerrainLevel() < -12 ? 1 : 0; // if we're standing on stairs, check the tile above instead.
 	if (size > 1 && rClick)
 		return door;
-
+	if (dir == -1)
+	{
+		dir = unit->getDirection();
+	}
 	for (int x = 0; x < size && door == -1; x++)
 	{
 		for (int y = 0; y < size && door == -1; y++)
@@ -1846,7 +1875,7 @@ int TileEngine::unitOpensDoor(BattleUnit *unit, bool rClick)
 			Tile *tile = _save->getTile(unit->getPosition() + Position(x,y,z));
 			if (!tile) continue;
 
-			switch (unit->getDirection())
+			switch (dir)
 			{
 			case 0: // north
 				checkPositions.push_back(std::make_pair(Position(0, 0, 0), MapData::O_NORTHWALL)); // origin
@@ -2092,8 +2121,18 @@ int TileEngine::calculateLine(const Position& origin, const Position& target, bo
 		}
 		else
 		{
-			result = horizontalBlockage(_save->getTile(lastPoint), _save->getTile(Position(cx, cy, cz)), DT_NONE)
-				+ verticalBlockage(_save->getTile(lastPoint), _save->getTile(Position(cx, cy, cz)), DT_NONE);
+            int temp_res = verticalBlockage(_save->getTile(lastPoint), _save->getTile(Position(cx, cy, cz)), DT_NONE);
+			result = horizontalBlockage(_save->getTile(lastPoint), _save->getTile(Position(cx, cy, cz)), DT_NONE);
+            if (result == -1)
+            {
+                if (temp_res > 127)
+                {
+                    result = 0;
+                } else {
+                return result; // We hit a big wall
+                }
+            }
+            result += temp_res;
 			if (result > 127)
 			{
 				return result;
@@ -2278,7 +2317,7 @@ int TileEngine::voxelCheck(const Position& voxel, BattleUnit *excludeUnit, bool 
 	}
 
 	if (voxel.z % 24 == 0 && tile->getMapData(MapData::O_FLOOR) && tile->getMapData(MapData::O_FLOOR)->isGravLift())
-	{       
+	{
 		Tile *tileBelow = _save->getTile(tile->getPosition() + Position(0,0,-1));
 		if (tileBelow && tileBelow->getMapData(MapData::O_FLOOR) && !tileBelow->getMapData(MapData::O_FLOOR)->isGravLift())
 			return 0;
@@ -2414,7 +2453,7 @@ int TileEngine::psiAttack(BattleAction *action)
 			calculateFOV(victim);
 			calculateUnitLighting();
 			victim->setTimeUnits(victim->getStats()->tu);
-			victim->lookAt(victim->getDirection()); // resets unit status to STANDING
+			victim->abortTurn(); // resets unit status to STANDING
 			// if all units from either faction are mind controlled - auto-end the mission.
 			if (Options::getBool("battleAutoEnd") && Options::getBool("allowPsionicCapture"))
 			{
