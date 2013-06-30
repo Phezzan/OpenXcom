@@ -874,8 +874,8 @@ void Tile::prepareNewTurn()
 			// no fire: must be smoke
 			else
 			{
-				// aliens don't breathe
-				if (_unit->getOriginalFaction() != FACTION_HOSTILE)
+				// anything 'woundable' breathes
+				if (_unit->isWoundable())
 				{
 					// try to knock this guy out.
 					if (_unit->getArmor()->getDamageModifier(DT_SMOKE) > 0.0 && _unit->getArmor()->getSize() == 1)
