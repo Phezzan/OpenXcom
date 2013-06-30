@@ -958,111 +958,93 @@ int BattleUnit::getMorale() const
 
 /**
  * Do an amount of damage.
- * @param position The position defines which part of armor and/or bodypart is hit.
+ * @param relative The relative position of the hit to calculate side and bodypart
  * @param power
  * @param type
  * @return damage done after adjustment
  */
-int BattleUnit::damage(Position position, int power, ItemDamageType type, bool ignoreArmor)
+int BattleUnit::damage(Position const &relative, int power, ItemDamageType type, bool ignoreArmor)
 {
 	UnitSide side = SIDE_FRONT;
 	int impactheight;
 	UnitBodyPart bodypart = BODYPART_TORSO;
 
-	if (power <= 0)
+	power = (int)floor(power * _armor->getDamageModifier(type));
+
+	if (power <= 0 || _health <= 0)
 	{
 		return 0;
 	}
-
-	power = (int)floor(power * _armor->getDamageModifier(type));
 
 	if (type == DT_SMOKE) type = DT_STUN; // smoke doesn't do real damage, but stun damage
 
 	if (!ignoreArmor)
 	{
-		if (position == Position(0, 0, 0) && _status != STATUS_UNCONSCIOUS)
+		if (relative == Position(0, 0, 0) && _status != STATUS_UNCONSCIOUS)
 		{
 			side = SIDE_UNDER;
 		}
 		else
 		{
-			// normalize x and y towards north
-			int x = 8, y = 8;
-			switch(_direction)
-			{
-			case 0: // heading north
-				x = position.x;
-				y = 15 - position.y;
-				break;
-			case 1: // somewhere in between 0 and 2
-				x = (position.x + position.y)/2;
-				y = ((15 - position.y) + position.x)/2;
-				break;
-			case 2: // heading east
-				x = 15 - position.y;
-				y = 15 - position.x;
-				break;
-			case 3:
-				x = (position.y + (15 - position.x))/2;
-				y = (position.x + position.y)/2;
-				break;
-			case 4: // heading south
-				x = 15 - position.x;
-				y = position.y;
-				break;
-			case 5:
-				x = ((15 - position.x) + (15 - position.y))/2;
-				y = (position.y + (15 - position.x))/2;
-				break;
-			case 6: // heading west
-				x = 15 - position.y;
-				y = 15 - position.x;
-				break;
-			case 7:
-				x = ((15 - position.y) + position.x)/2;
-				y = ((15 - position.x) + (15 - position.y))/2;
-				break;
-			}
-			// determine side
-			if (y > 9)
-				side = SIDE_FRONT;
-			else if (y < 6)
-				side = SIDE_REAR;
-			else if (x < 6)
-				side = SIDE_LEFT;
-			else if (x > 9)
-				side = SIDE_RIGHT;
+			int relativeDirection;
+			int const abs_x = abs(relative.x);
+			int const abs_y = abs(relative.y);
+
+			if (abs_y > abs_x * 2)
+				relativeDirection = 8 + 4 * (relative.y > 0);
+			else if (abs_x > abs_y * 2)
+				relativeDirection = 10 + 4 * (relative.x < 0);
 			else
-				side = SIDE_FRONT;
+			{
+				if (relative.x < 0)
+				{
+					if (relative.y > 0)
+						relativeDirection = 13;
+					else
+						relativeDirection = 15;
+				}
+				else
+				{
+					if (relative.y > 0)
+						relativeDirection = 11;
+					else
+						relativeDirection = 9;
+				}
+			}
+
+			switch((relativeDirection - _direction) % 8)
+			{
+			case 0:	side = SIDE_FRONT; 										break;
+			case 1:	side = RNG::generate(0,2) < 2 ? SIDE_FRONT:SIDE_RIGHT; 	break;
+			case 2:	side = SIDE_RIGHT; 										break;
+			case 3:	side = RNG::generate(0,2) < 2 ? SIDE_REAR:SIDE_RIGHT; 	break;
+			case 4:	side = SIDE_REAR; 										break;
+			case 5:	side = RNG::generate(0,2) < 2 ? SIDE_REAR:SIDE_LEFT; 	break;
+			case 6:	side = SIDE_LEFT; 										break;
+			case 7:	side = RNG::generate(0,2) < 2 ? SIDE_FRONT:SIDE_LEFT; 	break;
+			}
 		}
 
-		impactheight = 10*position.z/getHeight();
-
-		if (impactheight >= 7)
+		if (relative.z > getHeight())
 		{
 			bodypart = BODYPART_HEAD;
 			side = SIDE_FRONT;				// Helmet armor is good all round
 		}
-		else if (impactheight > 4)
+		else if (relative.z > 4)
 		{
 			switch(side)
 			{
-			case SIDE_LEFT: 		
-				bodypart = BODYPART_LEFTARM; break;
-			case SIDE_RIGHT:		
-				bodypart = BODYPART_RIGHTARM; break;
-			default:				
-				bodypart = BODYPART_TORSO;
+			case SIDE_LEFT:		bodypart = BODYPART_LEFTARM; break;
+			case SIDE_RIGHT:	bodypart = BODYPART_RIGHTARM; break;
+			default:			bodypart = BODYPART_TORSO;
 			}
 		}
-		else 
+		else
 		{
 			switch(side)
 			{
-			case SIDE_LEFT: 		
-				bodypart = BODYPART_LEFTLEG; 	break;
-			case SIDE_RIGHT:		
-				bodypart = BODYPART_RIGHTLEG; 	break;
+			case SIDE_LEFT: 	bodypart = BODYPART_LEFTLEG; 	break;
+			case SIDE_RIGHT:	bodypart = BODYPART_RIGHTLEG; 	break;
 			default:
 				bodypart = (UnitBodyPart) RNG::generate(BODYPART_RIGHTLEG,BODYPART_LEFTLEG);
 			}
@@ -1088,20 +1070,21 @@ int BattleUnit::damage(Position position, int power, ItemDamageType type, bool i
 
 			if (type != DT_IN)
 			{
-				if (_armor->getSize() == 1 && type != DT_STUN)
-				{
-					// conventional weapons can cause additional stun damage
-					_stunlevel += RNG::nDice(2, 0, power / 4);
-				}
 				// fatal wounds
 				if (isWoundable())
 				{
+					if (type != DT_STUN)
+					{
+						// conventional weapons can cause additional stun damage
+						_stunlevel += RNG::nDice(2, 0, power / 4);
+					}
+
                     int rnd = RNG::generate(1, _health);
 					if (rnd <= power)
 					{
 						rnd = RNG::generate(1, power / rnd);
-						if (rnd >= 2 + power / 12)
-							rnd  = 2 + power / 12;
+						if (rnd >= 1 + power / 12)
+							rnd  = 1 + power / 12;
 						_fatalWounds[bodypart] += rnd;
 					}
 

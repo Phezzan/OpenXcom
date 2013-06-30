@@ -270,7 +270,7 @@ bool TileEngine::calculateFOV(BattleUnit *unit)
 		{
 			for (int z = 0; z < _save->getMapSizeZ(); z++)
 			{
-				int distanceSqr = x*x + y*y;
+				int const distanceSqr = x*x + y*y;
 				test.z = z;
 				if (distanceSqr <= MAX_VIEW_DISTANCE*MAX_VIEW_DISTANCE)
 				{
@@ -1170,11 +1170,14 @@ BattleUnit *TileEngine::hit(const Position &center, int power, ItemDamageType ty
 	}
 	else if (part == 4) // Unit was hit
 	{
+		int const sz = bu->getArmor()->getSize() * 8;
+		Position const target = bu->getPosition() * Position(16,16,24) + Position(sz,sz,bu->getFloatHeight() - tile->getTerrainLevel());
+		Position const relative = center - target;
 		// power 0 - 200%       Kmod distribution 7/8 chance power within 50%-150%
 		int rndPower = RNG::nDice(2, 0, power*2); // RNG::boxMuller(power, power/3)
 		if (bu)
 		{
-			adjustedDamage = bu->damage(Position(center.x%16, center.y%16, center.z%24 + tile->getTerrainLevel()), rndPower, type);
+			adjustedDamage = bu->damage(relative, rndPower, type);
 		}
 		else
 		{
@@ -1186,13 +1189,13 @@ BattleUnit *TileEngine::hit(const Position &center, int power, ItemDamageType ty
 				if (buBelow)
 				{
 					bu = buBelow;
-					adjustedDamage = bu->damage(Position(center.x%16, center.y%16, center.z%24 + below->getTerrainLevel() + 24), rndPower, type);
+					adjustedDamage = bu->damage(relative, rndPower, type);
 				}
 			}
 		}
 
         // STUN has been moved to the unit's damage routine
-		if (bu && bu->getFaction() == FACTION_HOSTILE && unit->getFaction() == FACTION_PLAYER && type != DT_NONE)
+		if (bu && unit->getFaction() == FACTION_PLAYER && bu->getOriginalFaction() == FACTION_HOSTILE && type != DT_NONE)
 		{
 			unit->addFiringExp();
 		}
@@ -1208,7 +1211,7 @@ BattleUnit *TileEngine::hit(const Position &center, int power, ItemDamageType ty
 		if (damageDealt != NULL)
 			*damageDealt = adjustedDamage;
 
-		if (bu->getSpecialAbility() == SPECAB_EXPLODEONDEATH && !bu->isOut() && (bu->getHealth() == 0 || bu->getStunlevel() >= bu->getHealth()))
+		if (bu->getSpecialAbility() == SPECAB_EXPLODEONDEATH && !bu->isOut() && (bu->getHealth() == 0 )) //|| bu->getStunlevel() >= bu->getHealth()))
 		{
 			if (type != DT_STUN && type != DT_HE)
 			{
@@ -1323,16 +1326,16 @@ void TileEngine::explode(const Position &center, int power, ItemDamageType type,
 					{
 						if (type == DT_STUN)
 						{
-							// power 50 - 150%
+							// power 25 - 150%
 							if (dest->getUnit())
 							{
-								dest->getUnit()->damage(Position(0, 0, 0), (int)(RNG::nDice(2, power_/2, power_*3/2)), type);
+								dest->getUnit()->damage(Position(0, 0, 0), (int)(RNG::nDice(2, power_/4, power_*3/2)), type, maxRadius > 1);
 							}
 							for (std::vector<BattleItem*>::iterator it = dest->getInventory()->begin(); it != dest->getInventory()->end(); ++it)
 							{
 								if ((*it)->getUnit())
 								{
-									(*it)->getUnit()->damage(Position(0, 0, 0), (int)(RNG::nDice(2, power_/2, power_*3/2)), type);
+									(*it)->getUnit()->damage(Position(0, 0, 0), (int)(RNG::nDice(2, power_/4, power_*3/2)), type);
 								}
 							}
 						}
@@ -1343,10 +1346,10 @@ void TileEngine::explode(const Position &center, int power, ItemDamageType type,
 							{
 								dest->getUnit()->damage(Position(0, 0, 0), (int)(RNG::generate(power_/2.0, power_*1.5)), type);
 							}
-							bool done = false;
-							while (!done)
-							{
-								done = dest->getInventory()->size() == 0;
+							//bool done = false;
+							//while (!done)
+							//{
+							//	done = dest->getInventory()->size() == 0;
 								for (std::vector<BattleItem*>::iterator it = dest->getInventory()->begin(); it != dest->getInventory()->end(); )
 								{
 									if (power_ > (*it)->getRules()->getArmor())
@@ -1354,7 +1357,8 @@ void TileEngine::explode(const Position &center, int power, ItemDamageType type,
 										//(*it)->getUnit()->instaKill();
 										if ((*it)->getUnit() && (*it)->getUnit()->getStatus() == STATUS_UNCONSCIOUS)
 										{
-											(*it)->getUnit()->damage(Position(0, 0, 0), (int)(RNG::generate(power_/2.0, power_*1.5)), type);
+											(*it)->getUnit()->damage(Position(0, 0, 0), (int)(RNG::nDice(2, power_/3.0, power_*1.5)), type);
+											++it;
 										}
 										else
 											_save->removeItem((*it));
@@ -1363,10 +1367,10 @@ void TileEngine::explode(const Position &center, int power, ItemDamageType type,
 									else
 									{
 										++it;
-										done = it == dest->getInventory()->end();
+							//			done = it == dest->getInventory()->end();
 									}
 								}
-							}
+							//}
 						}
 
 						if (type == DT_SMOKE)
@@ -1391,7 +1395,7 @@ void TileEngine::explode(const Position &center, int power, ItemDamageType type,
 								float resistance = dest->getUnit()->getArmor()->getDamageModifier(DT_IN);
 								if (resistance > 0.1)
 								{
-									dest->getUnit()->damage(Position(8, 8, 12-dest->getTerrainLevel()), RNG::generate(5, 10), DT_IN, true);
+									dest->getUnit()->damage(Position(0,0,0), RNG::generate(5, 10), DT_IN, true);
 									int burnTime = RNG::generate(0, int(5 * resistance));
 									if (dest->getUnit()->getFire() < burnTime)
 									{
