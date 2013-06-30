@@ -281,6 +281,7 @@ void BattleUnit::load(const YAML::Node &node)
 	node["health"] >> _health;
 	node["stunlevel"] >> _stunlevel;
 	node["dmg"] >> _dmg;
+	node["healthPool"] >> _healthPool;
 	node["pain"] >> _pain;
 	node["energy"] >> _energy;
 	node["morale"] >> _morale;
@@ -351,6 +352,7 @@ void BattleUnit::save(YAML::Emitter &out) const
 	out << YAML::Key << "health" << YAML::Value << _health;
 	out << YAML::Key << "stunlevel" << YAML::Value << _stunlevel;
 	out << YAML::Key << "dmg" << YAML::Value << _dmg;
+	out << YAML::Key << "healthPool" << YAML::Value << _healthPool;
 	out << YAML::Key << "pain" << YAML::Value << _pain;
 	out << YAML::Key << "energy" << YAML::Value << _energy;
 	out << YAML::Key << "morale" << YAML::Value << _morale;
@@ -1025,12 +1027,12 @@ int BattleUnit::damage(Position const &relative, int power, ItemDamageType type,
 			}
 		}
 
-		if (relative.z > getHeight())
+		if (relative.z > getHeight() - 4)
 		{
 			bodypart = BODYPART_HEAD;
 			side = SIDE_FRONT;				// Helmet armor is good all round
 		}
-		else if (relative.z > 4)
+		else if (relative.z > getHeight() - 8)
 		{
 			switch(side)
 			{
@@ -1519,7 +1521,7 @@ void BattleUnit::prepareNewTurn()
 	float encumbrance = (float)getStats()->strength / (float)getCarriedWeight();
 	if (encumbrance < 1)
 	{
-	  TURecovery = int(encumbrance * TURecovery);
+		TURecovery = int(encumbrance * TURecovery);
 	}
 	// Each fatal wound to the left or right leg reduces the soldier's TUs by 10%.
 	TURecovery -= (TURecovery * (_fatalWounds[BODYPART_LEFTLEG]+_fatalWounds[BODYPART_RIGHTLEG] * 10))/100;
