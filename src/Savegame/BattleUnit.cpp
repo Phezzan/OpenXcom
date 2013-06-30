@@ -46,6 +46,7 @@ namespace OpenXcom
  * @param soldier Pointer to the Soldier.
  * @param faction Which faction the units belongs to.
  */
+<<<<<<< HEAD
 BattleUnit::BattleUnit(Soldier *soldier, UnitFaction faction) : 
 	_faction(faction), _originalFaction(faction), _killedBy(faction), _id(0), 
 	_pos(Position()), _tile(0), _lastPos(Position()), 
@@ -59,7 +60,7 @@ BattleUnit::BattleUnit(Soldier *soldier, UnitFaction faction) :
 	_turretType(-1), _motionPoints(0), _kills(0), _pain(0),
 	_type("SOLDIER"), _geoscapeSoldier(soldier), 
 	_charging(0), _turnsExposed(0), 
-	_unitRules(0), _rankInt(-1), _hidingForTurn(false), _hitByFire(false)
+	_unitRules(0), _rankInt(-1), _hitByFire(false), _hidingForTurn(false)
 {
 	_name = soldier->getName();
 	_id = soldier->getId();
@@ -131,7 +132,7 @@ BattleUnit::BattleUnit(Unit *unit, UnitFaction faction, int id, Armor *armor, in
 	_turretType(-1), _motionPoints(0), _kills(0), _pain(0),
 	_type(unit->getType()), _race(unit->getRace()), _armor(armor), _geoscapeSoldier(0), 
 	_charging(0), _turnsExposed(0), _unitRules(unit), _rankInt(-1), 
-	_hidingForTurn(false), _hitByFire(false)
+	_hitByFire(false), _hidingForTurn(false)
 {
 	_rank = unit->getRank();
 	_stats = *unit->getStats();
@@ -162,16 +163,16 @@ BattleUnit::BattleUnit(Unit *unit, UnitFaction faction, int id, Armor *armor, in
 	_currentArmor[SIDE_REAR] = _armor->getRearArmor();
 	_currentArmor[SIDE_UNDER] = _armor->getUnderArmor();
 
-    if (faction == FACTION_HOSTILE)
-    {
-        adjustStats(diff);
-        adjustArmor(diff);
-    }
+	if (faction == FACTION_HOSTILE)
+	{
+		adjustStats(diff);
+		adjustArmor(diff);
+	}
 
-    for (int i = 0; i < 6; ++i)
-        _fatalWounds[i] = 0;
+	for (int i = 0; i < 6; ++i)
+		_fatalWounds[i] = 0;
 	for (int i = 0; i < 5; ++i)
-        _cache[i] = 0;
+		_cache[i] = 0;
 
 	_activeHand = "STR_RIGHT_HAND";
 	
@@ -207,7 +208,7 @@ BattleUnit::BattleUnit(BattleUnit &b) :
 	//Surface *_cache[5];
 	_cacheInvalid(b._cacheInvalid),
 	_expBravery(b._expBravery), _expReactions(b._expReactions), _expFiring(b._expFiring), 
-    _expThrowing(b._expThrowing), _expPsiSkill(b._expPsiSkill), _expMelee(b._expMelee),
+	_expThrowing(b._expThrowing), _expPsiSkill(b._expPsiSkill), _expMelee(b._expMelee),
 	_turretType(b._expMelee),
 	_motionPoints(b._motionPoints),
 	_kills(b._kills),
@@ -2020,15 +2021,15 @@ bool BattleUnit::postMissionProcedures(SavedGame *geoscape)
 	UnitStats caps = s->getRules()->getStatCaps();
 	int healthLoss = stats->health - _health;
 
-    if (healthLoss > 0)
-    {
-        const int diff = geoscape->getDifficulty();
-        const float max = healthLoss * (0.75f + diff/8.f);
+	if (healthLoss > 0)
+	{
+		const int diff = geoscape->getDifficulty();
+		const float max = healthLoss * (0.75f + diff/8.f);
 
-        s->setWoundRecovery(RNG::generate(max/5,max));
-        if (caps.health > stats->health)
-            stats->health += improveStat(s->getWoundRecovery()/3);
-    }
+		s->setWoundRecovery(RNG::generate(max/5,max));
+		if (caps.health > stats->health)
+			stats->health += improveStat(s->getWoundRecovery()/3);
+	}
 
 	if (_expBravery)
 	{

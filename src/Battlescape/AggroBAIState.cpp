@@ -31,7 +31,6 @@
 #include "../Savegame/Tile.h"
 #include "../Battlescape/Pathfinding.h"
 #include "../Engine/RNG.h"
-#include "../Engine/Options.h"
 #include "../Engine/Logger.h"
 #include "../Engine/Game.h"
 #include "../Ruleset/Armor.h"
@@ -367,12 +366,23 @@ void AggroBAIState::psiAction(BattleAction *action)
 		// don't target mindless units or other aliens or units under mind control
 		if ((*i)->isFearable() && (*i)->getOriginalFaction() == FACTION_PLAYER && (*i)->getFaction() == FACTION_PLAYER && (*i)->getStats()->psiStrength > 0)
 		{
+<<<<<<< HEAD
 			int attackChance = psiAttackStrength
 				- (*i)->getPsiDefenceStrength(-33)      // Estimate defense strength +/- 33%
 				- 25 * _game->getTileEngine()->distance(_unit->getPosition(), (*i)->getPosition())
 				;
 
 			if (attackChance > bestAttackChance)
+=======
+			int chanceToAttackMe = psiAttackStrength
+				+ (((*i)->getStats()->psiSkill > 0) ? (*i)->getStats()->psiSkill * -0.4 : 0)
+				- _game->getTileEngine()->distance(_unit->getPosition(), (*i)->getPosition())
+				- ((*i)->getStats()->psiStrength)
+				+ (RNG::generate(0, 50))
+				+ 55;
+
+			if (chanceToAttackMe > chanceToAttack)
+>>>>>>> 7cba23bae87fd1a3583c5563863d9620aa9211eb
 			{
 				bestAttackChance = attackChance;
 				_aggroTarget = *i;
@@ -979,7 +989,7 @@ void AggroBAIState::selectFireMethod(BattleAction *action)
 	int tuAimed = action->weapon->getRules()->getTUAimed();
 	int currentTU = action->actor->getTimeUnits() - _coverCharge;
 
-	if (distance < 8)
+	if (distance < 4)
 	{
 		if ( tuAuto && currentTU >= action->actor->getActionTUs(BA_AUTOSHOT, action->weapon) )
 		{
@@ -999,14 +1009,14 @@ void AggroBAIState::selectFireMethod(BattleAction *action)
 	}
 
 
-	if ( distance >= 25 )
+	if ( distance > 12 )
 	{
 		if ( tuAimed && currentTU >= action->actor->getActionTUs(BA_AIMEDSHOT, action->weapon) )
 		{
 			action->type = BA_AIMEDSHOT;
 			return;
 		}
-		if ( distance < 40
+		if ( distance < 20
 			&& tuSnap
 			&& currentTU >= action->actor->getActionTUs(BA_SNAPSHOT, action->weapon) )
 		{

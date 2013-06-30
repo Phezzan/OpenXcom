@@ -1,4 +1,8 @@
----
+lookWeight:
+  - 1
+  - 1
+  - 92
+  - 6
 maleFirst:
   - Akira
   - Arata
@@ -86,5 +90,3 @@ maleLast:
   - Yamanaka
   - Yamashita
   - Yamazaki
-look:
-  - 2

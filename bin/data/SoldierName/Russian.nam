@@ -1,3 +1,8 @@
+lookWeights:
+  - 50
+  - 50
+  - 0
+  - 0
 maleFirst:
   - Anatoly
   - Andrei
@@ -74,10 +79,3 @@ femaleLast:
   - Voronina
   - Yakusheva
   - Zhdanovich
-look:
-  - 0
-  - 0
-  - 0
-  - 1
-  - 1
-  - 2

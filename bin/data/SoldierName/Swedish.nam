@@ -1,3 +1,8 @@
+lookWeight:
+  - 60
+  - 40
+  - 0
+  - 0
 maleFirst:
   - Johan
   - Fredrik
@@ -89,13 +94,3 @@ maleLast:
   - Lindgren
   - Eklund
   - Axelsson
-look:
-  - 0
-  - 0
-  - 0
-  - 0
-  - 0
-  - 1
-  - 1
-  - 1
-  - 2

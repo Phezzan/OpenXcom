@@ -1,3 +1,8 @@
+lookWeights:
+  - 49
+  - 49
+  - 1
+  - 1
 maleFirst:
   - Aaro
   - Aatu
@@ -201,10 +206,3 @@ maleLast:
   - Virtanen
   - Vuorinen
   - Ylitalo
-look:
-  - 0
-  - 0
-  - 0
-  - 1
-  - 1
-  - 2

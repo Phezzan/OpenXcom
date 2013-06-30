@@ -32,7 +32,7 @@ namespace OpenXcom
 /**
  * Initializes a new pool with blank lists of names.
  */
-SoldierNamePool::SoldierNamePool() : _maleFirst(), _femaleFirst(), _maleLast(), _femaleLast(), _look()
+SoldierNamePool::SoldierNamePool() : _maleFirst(), _femaleFirst(), _maleLast(), _femaleLast(), _totalWeight(0)
 {
 }
 
@@ -90,20 +90,15 @@ void SoldierNamePool::load(const std::string &filename)
 	{
 		_femaleLast = _maleLast;
 	}
-
-	if (const YAML::Node *pName = doc.FindValue("look"))
+	if (const YAML::Node *pName = doc.FindValue("lookWeights"))
 	{
 		for (YAML::Iterator i = pName->begin(); i != pName->end(); ++i)
 		{
-			unsigned look;
-			*i >> look;
-			_look.push_back((unsigned char)look);
+			int a;
+			*i >> a;
+			_totalWeight += a;
+			_lookWeights.push_back(a);
 		}
-	}
-
-    if (_maleLast.empty() || _maleFirst.empty() || _femaleFirst.empty())
-	{
-		throw Exception(filename + " missing name group");
 	}
 	fin.close();
 }
@@ -138,16 +133,39 @@ std::wstring SoldierNamePool::genName(SoldierGender *gender, SoldierLook *look) 
 	// enum SoldierLook { LOOK_BLONDE, LOOK_BROWNHAIR, LOOK_ORIENTAL, LOOK_AFRICAN }
 	if (NULL != look)
 	{
-		if (_look.empty())
+		if (_lookWeights.empty())
 			*look = (SoldierLook) RNG::generate(LOOK_BLONDE, LOOK_AFRICAN);
 		else
-		{
-			size_t index = RNG::generate(0, _look.size() - 1);
-			*look = (SoldierLook)_look[index];
-		}
+			*look = genLook(_lookWeights.size());
 	}
 
 	return name.str();
+}
+
+int SoldierNamePool::genLook(int numLooks)
+{
+	int maxChance = 0;
+	int look      = 0;
+
+    while(numLooks > 0)
+    {
+        if (numLooks-- <= _lookWeights.size())
+            maxChance += _lookWeights[numLooks];
+        else
+            maxChance += 2;
+    }
+
+    maxChance = RNG::generate(0,maxChance);
+	for (look = 0; look < _lookWeights.size(); look++)
+	{
+		maxChance -= _lookWeights[look];
+        if (maxChance < 1)
+		{
+			return look;
+		}
+		++look;
+	}
+    return look + (maxChance - 1) / 2;
 }
 
 }

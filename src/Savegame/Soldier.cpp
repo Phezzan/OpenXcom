@@ -65,7 +65,7 @@ Soldier::Soldier(RuleSoldier *rules, Armor *armor, const std::vector<SoldierName
 		{
 			_name = L"";
 			_gender = (SoldierGender)RNG::generate(0, 1);
-            _look = (SoldierLook)RNG::generate(0, 3);
+			_look = (SoldierLook)RNG::generate(0,3);
 		}
 	}
 	if (id != 0)
