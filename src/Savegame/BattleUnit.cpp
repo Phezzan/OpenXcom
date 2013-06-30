@@ -1081,7 +1081,7 @@ int BattleUnit::damage(Position const &relative, int power, ItemDamageType type,
 						_stunlevel += RNG::nDice(2, 0, power / 4);
 					}
 
-                    int rnd = RNG::generate(1, _health);
+					int rnd = RNG::generate(1, _health);
 					if (rnd <= power)
 					{
 						rnd = RNG::generate(1, power / rnd);
@@ -2171,44 +2171,44 @@ int BattleUnit::getFatalWound(int part) const
  */
 unsigned BattleUnit::heal(int part, int healAmount, int healthAmount)
 {
-    unsigned i;
-    unsigned didHeal = 0;
+	unsigned i;
+	unsigned didHeal = 0;
 
 
-    for(i = 0; i < 6 && healAmount > 0; part++, i++)
-    {
-        if (_fatalWounds[part % 6])
-        {
-            int const            tmp = std::min(healAmount, _fatalWounds[part % 6]);
-            _fatalWounds[part % 6]  -= tmp;
-            healAmount              -= tmp;
-            didHeal                 += tmp * 3u;
-            _health                 += std::min(_dmg, tmp * 3);
-            _dmg                    -= std::min(_dmg, tmp * 3);     // only reduce dmg when healing a fatal wound.
-        }
-    }
+	for(i = 0; i < 6 && healAmount > 0; part++, i++)
+	{
+		if (_fatalWounds[part % 6])
+		{
+			int const            tmp = std::min(healAmount, _fatalWounds[part % 6]);
+			_fatalWounds[part % 6]  -= tmp;
+			healAmount              -= tmp;
+			didHeal                 += tmp * 3u;
+			_health                 += std::min(_dmg, tmp * 3);
+			_dmg                    -= std::min(_dmg, tmp * 3);     // only reduce dmg when healing a fatal wound.
+		}
+	}
 
-    if (healthAmount > 0)
-    {
-        int const statHealth = getStats()->health;
-        int const maxHealth  = statHealth - (healthAmount <= 4 ? _dmg*2/3 : _dmg * 1/2);
+	if (healthAmount > 0)
+	{
+		int const statHealth = getStats()->health;
+		int const maxHealth  = statHealth - (healthAmount <= 4 ? _dmg*2/3 : _dmg * 1/2);
 
-        int newHealth = std::min(_health + healthAmount, maxHealth);
-        if (newHealth > _health)                                    // Simple, but capped healing
-        {
-            healthAmount -= newHealth - _health;
-            didHeal += newHealth - _health;
-            _health  = newHealth;
-        }
+		int newHealth = std::min(_health + healthAmount, maxHealth);
+		if (newHealth > _health)                                    // Simple, but capped healing
+		{
+			healthAmount -= newHealth - _health;
+			didHeal += newHealth - _health;
+			_health  = newHealth;
+		}
 
-        if (healthAmount > 0)                                       // Diminishing returns - 5 * 0% hurt -> 0 healing
-        {
-            int const heal = healthAmount * (1 + statHealth - _health) / (1 + statHealth);
-            _health += heal;
-            didHeal += heal;
-        }
-    }
-    return didHeal;
+		if (healthAmount > 0)		// Diminishing returns & delayed healing w/ healthPool
+		{
+			int const heal = healthAmount * (1 + statHealth - _health) / (1 + statHealth);
+			_healthPool += heal;
+			didHeal += heal;
+		}
+	}
+	return didHeal;
 }
 
 /** 
@@ -2232,9 +2232,7 @@ unsigned BattleUnit::painKillers ()
  */
 void BattleUnit::stimulant (int energy, int s)
 {
-	_energy += energy;
-	if (_energy > getStats()->stamina)
-		_energy = getStats()->stamina;
+	_energy += std::min(energy, getStats()->stamina - _energy);
 	healStun (s);
 }
 
