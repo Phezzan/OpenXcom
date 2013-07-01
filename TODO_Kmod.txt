@@ -18,7 +18,6 @@ Planned		::
 	No Category::
 		NightVision		Extend XCom Night Vision from 18 to 20. Possibly suppress reaction for wearer?
 		poison			New Damage Type - adds Dmg over Time to target
-		Regeneration	New Unit rule variable and BattleUnit variable - heals per turn.
 		FleshWound		Use Armor_Piercing values to reduce damage to non-Insta-Kill levels. (I've had worse)
 
 	;;
@@ -28,7 +27,10 @@ Completed		::
 	Items::
 		Pulse Laser -  A Heavy Laser w/ auto fire - req Elerium to build
 		Adv Tank			Good for mid game vs Plasma Rifles
-
+	;;
+	Tweaks		::
+		Regeneration	New Unit rule variable and BattleUnit variable - heals per turn.
+							Chryssalid regenerates, zombie degenerates
 	;;
 ;;
 

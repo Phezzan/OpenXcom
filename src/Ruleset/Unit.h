@@ -54,6 +54,7 @@ private:
 	SpecialAbility _specab;
 	std::string _zombieUnit, _spawnUnit;
 	bool _livingWeapon;
+	int _healthPool;
 public:
 	/// Creates a blank unit ruleset.
 	Unit(const std::string &type, std::string race, std::string rank);
@@ -99,6 +100,8 @@ public:
 	int getAggroSound() const;
 	/// does this unit have a built in weapon?
 	bool isLivingWeapon() const;
+	/// does this unit regenerate (or degenerate) over time?
+	int getHealthPool() const;
 };
 
 }

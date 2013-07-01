@@ -62,7 +62,7 @@ YAML::Emitter& operator<< (YAML::Emitter& out, const UnitStats& stats)
  */
 Unit::Unit(const std::string &type, std::string race, std::string rank) : _type(type), _race(race), _rank(rank), _stats(), _armor(""), _standHeight(0), _kneelHeight(0), _floatHeight(0),
 																		_value(0), _deathSound(0), _aggroSound(-1), _moveSound(-1), _intelligence(0), _aggression(0), _specab(SPECAB_NONE),
-																		_zombieUnit(""), _spawnUnit(""), _livingWeapon(false)
+																		_zombieUnit(""), _spawnUnit(""), _livingWeapon(false), _healthPool(0)
 {
 }
 
@@ -159,6 +159,10 @@ void Unit::load(const YAML::Node &node)
 		{
 			i.second() >> _livingWeapon;
 		}
+		else if (key == "regeneration")
+		{
+			i.second() >> _healthPool;
+		}
 	}
 }
 
@@ -187,6 +191,7 @@ void Unit::save(YAML::Emitter &out) const
 	out << YAML::Key << "zombieUnit" << YAML::Value << _zombieUnit;
 	out << YAML::Key << "spawnUnit" << YAML::Value << _spawnUnit;
 	out << YAML::Key << "livingWeapon" << YAML::Value << _livingWeapon;
+	out << YAML::Key << "regeneration" << YAML::Value << _healthPool;
 	out << YAML::EndMap;
 }
 
@@ -352,6 +357,15 @@ int Unit::getAggroSound() const
 bool Unit::isLivingWeapon() const
 {
 	return _livingWeapon;
+}
+
+/**
+ * Does this unit regenerate? (ie: chryssalid) or degenerate ?
+ * @return the number of points available for healing
+ */
+int Unit::getHealthPool() const
+{
+	return _healthPool;
 }
 
 }
