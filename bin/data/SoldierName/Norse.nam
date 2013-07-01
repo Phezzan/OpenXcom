@@ -1,3 +1,8 @@
+lookWeight:
+  - 60
+  - 30
+  - 10
+  - 0
 maleFirst:
   - Abbe
   - Agni
@@ -87,10 +92,3 @@ femalLast:
   - Gautsdottir
   - Hognadottir
   - Hrogirsdottir
-look:
-  - 0
-  - 0
-  - 0
-  - 1
-  - 1
-  - 2
