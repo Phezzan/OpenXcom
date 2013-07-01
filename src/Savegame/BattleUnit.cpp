@@ -46,7 +46,6 @@ namespace OpenXcom
  * @param soldier Pointer to the Soldier.
  * @param faction Which faction the units belongs to.
  */
-<<<<<<< HEAD
 BattleUnit::BattleUnit(Soldier *soldier, UnitFaction faction) : 
 	_faction(faction), _originalFaction(faction), _killedBy(faction), _id(0), 
 	_pos(Position()), _tile(0), _lastPos(Position()), 
@@ -124,7 +123,7 @@ BattleUnit::BattleUnit(Unit *unit, UnitFaction faction, int id, Armor *armor, in
 	_id(id), _pos(Position()), _tile(0), _lastPos(Position()), 
 	_direction(0), _toDirection(0), _directionTurret(0), _toDirectionTurret(0),  
 	_verticalDirection(0), _status(STATUS_STANDING), 
-	_walkPhase(0), _fallPhase(0), _dmg(0), _healthPool(0), 
+	_walkPhase(0), _fallPhase(0), _dmg(0), _healthPool(unit->getHealthPool()), 
 	_kneeled(false), _floating(false), _dontReselect(false), 
 	_fire(0), _currentAIState(0), _visible(false), _cacheInvalid(true),
 	_expBravery(0), _expReactions(0), _expFiring(0), _expThrowing(0), 
@@ -2259,7 +2258,7 @@ int BattleUnit::getPsiDefenceStrength(int const type) const
 		+ 5 * _energy + 10 * _morale;
 
 	if (type == BA_MINDCONTROL)		// MINDCONTROL == 12
-		return sum + (10 + 20) * 50;
+		return sum + (10 + 30) * 50;
 
 	else if (type >= 0)				// PANIC == 13 or I don't know ... something else
 		return sum + 10 * 50;

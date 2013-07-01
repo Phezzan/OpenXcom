@@ -366,23 +366,13 @@ void AggroBAIState::psiAction(BattleAction *action)
 		// don't target mindless units or other aliens or units under mind control
 		if ((*i)->isFearable() && (*i)->getOriginalFaction() == FACTION_PLAYER && (*i)->getFaction() == FACTION_PLAYER && (*i)->getStats()->psiStrength > 0)
 		{
-<<<<<<< HEAD
 			int attackChance = psiAttackStrength
 				- (*i)->getPsiDefenceStrength(-33)      // Estimate defense strength +/- 33%
-				- 25 * _game->getTileEngine()->distance(_unit->getPosition(), (*i)->getPosition())
+				- 50 * _game->getTileEngine()->distance(_unit->getPosition(), (*i)->getPosition())
+				+ 33*50									// this bonus is 1/3 of the maximum random amount.
 				;
 
-			if (attackChance > bestAttackChance)
-=======
-			int chanceToAttackMe = psiAttackStrength
-				+ (((*i)->getStats()->psiSkill > 0) ? (*i)->getStats()->psiSkill * -0.4 : 0)
-				- _game->getTileEngine()->distance(_unit->getPosition(), (*i)->getPosition())
-				- ((*i)->getStats()->psiStrength)
-				+ (RNG::generate(0, 50))
-				+ 55;
-
-			if (chanceToAttackMe > chanceToAttack)
->>>>>>> 7cba23bae87fd1a3583c5563863d9620aa9211eb
+			if (attackChance > bestAttackChance)	// any attackChance > 0 will likely provide a decent chance of success
 			{
 				bestAttackChance = attackChance;
 				_aggroTarget = *i;

@@ -974,7 +974,6 @@ std::list<std::pair <int, BattleUnit*> > TileEngine::getReactingUnits(BattleUnit
 		if ((*i)->isReady() &&
 			// not a friend
 			(*i)->getFaction() != _save->getSide() && (*i)->getFaction() != FACTION_NEUTRAL)
-            )
 		{
 			int const distBonus = MAX_VIEW_DISTANCE - distance(unit->getPosition(), (*i)->getPosition());
 
@@ -2443,7 +2442,7 @@ int TileEngine::psiAttack(BattleAction *action)
 	int const attackStr = action->actor->getPsiAttackStrength();
 	int const defenseStr= victim->getPsiDefenceStrength(action->type);
 	int const distMod   = distance(action->actor->getPosition(), action->target) * 50;
-	int const randMod   = RNG::generate(0,66*50);
+	int const randMod   = RNG::generate(0,100*50);
 	int const total     = attackStr - defenseStr - distMod + randMod;   // 12,225 is max
 
 	if (! action->actor->spendEnergy(distMod / 50 + randMod / 100))		// 1 eu for 2 dist, then up to 15 more for random strain
