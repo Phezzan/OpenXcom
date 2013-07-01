@@ -32,7 +32,7 @@ namespace OpenXcom
 /**
  * Initializes a new pool with blank lists of names.
  */
-SoldierNamePool::SoldierNamePool() : _maleFirst(), _femaleFirst(), _maleLast(), _femaleLast(), _totalWeight(0)
+SoldierNamePool::SoldierNamePool() : _maleFirst(), _femaleFirst(), _maleLast(), _femaleLast()
 {
 }
 
@@ -96,7 +96,6 @@ void SoldierNamePool::load(const std::string &filename)
 		{
 			int a;
 			*i >> a;
-			_totalWeight += a;
 			_lookWeights.push_back(a);
 		}
 	}
@@ -142,14 +141,15 @@ std::wstring SoldierNamePool::genName(SoldierGender *gender, SoldierLook *look) 
 	return name.str();
 }
 
-SoldierLook SoldierNamePool::genLook(int numLooks) const
+SoldierLook SoldierNamePool::genLook(unsigned numLooks) const
 {
 	int maxChance = 0;
 	int look      = 0;
 
 	while(numLooks > 0)
 	{
-		if (numLooks-- <= _lookWeights.size())
+		numLooks--;
+		if (numLooks < _lookWeights.size())
 			maxChance += _lookWeights[numLooks];
 		else
 			maxChance += 2;
@@ -163,7 +163,6 @@ SoldierLook SoldierNamePool::genLook(int numLooks) const
 		{
 			return (SoldierLook) look;
 		}
-		++look;
 	}
 	return (SoldierLook) (look + (maxChance - 1) / 2);
 }

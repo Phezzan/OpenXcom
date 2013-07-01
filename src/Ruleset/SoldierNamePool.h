@@ -37,7 +37,6 @@ class SoldierNamePool
 private:
 	std::vector<std::wstring> _maleFirst, _femaleFirst, _maleLast, _femaleLast;
 	std::vector<int> _lookWeights;
-	int _totalWeight;
 public:
 	/// Creates a blank pool.
 	SoldierNamePool();
@@ -48,7 +47,7 @@ public:
 	/// Generates a new name from the pool.
 	std::wstring genName(SoldierGender *gender, SoldierLook *look = NULL) const;
 	/// generates an int representing the index of the soldier's look, when passed the maximum index value.
-	SoldierLook genLook(int numLooks) const;
+	SoldierLook genLook(unsigned numLooks) const;
 };
 
 }
