@@ -934,7 +934,7 @@ items:
     size: 0.3
     costSell: 92000		# $3k / month - not a money maker
     weight: 14			## Alien Alloys - Hvy Plasma only weighs 8
-    bigSprite: 6
+    bigSprite: 80
     floorSprite: 0		## Hvy Laser was 6
     handSprite: 8		## Hvy Laser was 16
     bulletSprite: 7		## Good?
