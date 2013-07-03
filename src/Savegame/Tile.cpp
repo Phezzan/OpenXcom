@@ -567,7 +567,7 @@ int Tile::getFlammability() const
  * Fuel of a tile is the lowest flammability of it's objects.
  * @return how long to burn.
  */
-const int Tile::getFuel() const
+int Tile::getFuel() const
 {
 	int fuel = 0;
 
@@ -900,7 +900,7 @@ void Tile::setPreview(int dir)
 /*
  * retrieve the direction stored by the pathfinding.
  */
-const int Tile::getPreview() const
+int Tile::getPreview() const
 {
 	return _preview;
 }
@@ -916,7 +916,7 @@ void Tile::setTUMarker(int tu)
 /*
  * get the number to be displayed for pathfinding preview.
  */
-const int Tile::getTUMarker() const
+int Tile::getTUMarker() const
 {
 	return _TUMarker;
 }
@@ -924,7 +924,7 @@ const int Tile::getTUMarker() const
 /*
  * get the overlap value of this tile.
  */
-const int Tile::getOverlaps() const
+int Tile::getOverlaps() const
 {
 	return _overlaps;
 }
