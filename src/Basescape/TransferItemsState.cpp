@@ -155,7 +155,7 @@ TransferItemsState::TransferItemsState(Game *game, Base *baseFrom, Base *baseTo)
 	if (_baseFrom->getAvailableScientists() > 0)
 	{
 		_qtys.push_back(0);
-		_hasSci++;
+		_hasSci = 1;
 		std::wstringstream ss, ss2;
 		ss << _baseFrom->getAvailableScientists();
 		ss2 << _baseTo->getAvailableScientists();
@@ -164,7 +164,7 @@ TransferItemsState::TransferItemsState(Game *game, Base *baseFrom, Base *baseTo)
 	if (_baseFrom->getAvailableEngineers() > 0)
 	{
 		_qtys.push_back(0);
-		_hasEng++;
+		_hasEng = 1;
 		std::wstringstream ss, ss2;
 		ss << _baseFrom->getAvailableEngineers();
 		ss2 << _baseTo->getAvailableEngineers();
