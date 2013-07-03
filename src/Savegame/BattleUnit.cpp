@@ -1027,12 +1027,12 @@ int BattleUnit::damage(Position const &relative, int power, ItemDamageType type,
 			}
 		}
 
-		if (relative.z > getHeight() - 4)
+		if (relative.z > getHeight() * 12 / 16 )
 		{
 			bodypart = BODYPART_HEAD;
 			side = SIDE_FRONT;				// Helmet armor is good all round
 		}
-		else if (relative.z > getHeight() - 8)
+		else if (relative.z > getHeight() * 8 / 16)
 		{
 			switch(side)
 			{
