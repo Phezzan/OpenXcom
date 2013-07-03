@@ -2440,6 +2440,12 @@ ufopaedia:
     requires:
       - STR_MEDI_KIT_ADV
     text: STR_MEDI_KIT_UFOPEDIA_ADV
+  - id: STR_MIND_PROBE_M
+    type_id: 4
+    section: STR_WEAPONS_AND_EQUIPMENT
+    text: STR_MIND_PROBE_M_UFOPEDIA
+    requires:
+      - STR_MIND_PROBE
 startingBase:
   - lon: 0.0
     lat: 0.0
@@ -2620,6 +2626,8 @@ extraStrings:
     strings:
       STR_MEDI_KIT_ADV: Medikit+
       STR_MEDI_KIT_UFOPEDIA_ADV: Our research on alien medical technology has given us some ideas on improving the MEDKIT.
+      STR_MIND_PROBE_M: Mind Probe
+      STR_MIND_PROBE_M_UFO: The mind probe is based on an alien communication device which reads information directly from brain waves.  XCom units can use this device in combat to display a target's characteristics.
       STR_PULSE_LASER: Laser - Pulse Cannon
       STR_PULSE_LASER_UFO: An improved ergonomic handle and an Elerium power source capable of rapid fire make this the ultimate laser weapon and a favorite of squaddies everywhere.
   - type: EnglishUk

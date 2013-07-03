@@ -1,6 +1,6 @@
 items:
   - type: STR_MEDI_KIT_ADV
-    bigSprite: 24
+    bigSprite: 81
 extraSprites:
   - type: BIGOBS.PCK
     files:
