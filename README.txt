@@ -1,6 +1,37 @@
-#################
-# OpenXcom v0.9 #
-#################
+##################################
+# OpenXcom v0.9+	Modified #
+##################################
+
+This is a modification of OpenXcom.
+
+The goal is a more complete less frustrating game with 
+the same challenge and feel as the original.
+
+A full list of changes is in the GitHub commits.
+A partial list is in TODO_Kmod.txt
+
+A few changes of interest:
+    The likelihood that a UFO power source exploded on 'landing'
+    increases with the amount of damage the UFO took.
+
+    Damage rolls have an 88% chance of being within 50% - 150% of 
+    reported weapon strength. (Originally 50%)
+
+    Unconscious X-COM units are not considered dead for the purpose of 
+    losing the mission if they will probably wake up.
+
+    A Chryssalid attack must deal damage to trigger it's special ability.
+    Chryssalid special ability will not kill instantly. (Have MediKits)
+
+    New Weapons, Armor, Equipment, Research ...
+    A durable non-Elerium powered Interceptor
+
+    Manufacturing rebalance.
+    Psi rebalance - (Defense is increased by Energy and Morale)
+
+Not all graphical elements are in the Repo, because they are based on 
+Original Game Data. To avoid problems, do not load KmodGraphics or TANK2.
+
 
 OpenXcom is an open-source clone of the popular
 UFO: Enemy Unknown (X-Com: UFO Defense in USA) videogame by

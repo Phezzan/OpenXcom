@@ -6,10 +6,8 @@ This file is intended to be read in VIM.
 
 Planned		::
 	Items::
-		Adv MediKit		More effective with More doses
 		Plasma Torch	Melee 'weapon' for cutting UFO hulls.
 		Sniper Laser	Hvy Laser with only "Aimed" shots, has Armor_Piercing
-		Mind Probe		There should be a human version - perhaps like the Motion Scanner
 		Fusion Gren		An Advanced Prox Grenade
 		Fusion HiEx		A directed charge for breaching UFOs.
 		Tactical Armor	Palette shifted personal - 20% better, but heavy.
@@ -27,6 +25,8 @@ Completed		::
 	Items::
 		Pulse Laser -  A Heavy Laser w/ auto fire - req Elerium to build
 		Adv Tank			Good for mid game vs Plasma Rifles
+		Adv MediKit		More effective with More doses
+		Mind Probe		There should be a human version - perhaps like the Motion Scanner
 	;;
 	Tweaks		::
 		Regeneration	New Unit rule variable and BattleUnit variable - heals per turn.
