@@ -930,6 +930,32 @@ items:
     invWidth: 2
     invHeight: 3
     armor: 20
+  - type: STR_PULSE_LASER
+    size: 0.3
+    costSell: 92000		# $3k / month - not a money maker
+    weight: 14			## Alien Alloys - Hvy Plasma only weighs 8
+    bigSprite: 6
+    floorSprite: 0		## Hvy Laser was 6
+    handSprite: 8		## Hvy Laser was 16
+    bulletSprite: 7		## Good?
+    fireSound: 11
+    hitSound: 19
+    hitAnimation: 36
+    power: 75			## 10 less than Hvy Laser
+    damageType: 4
+    accuracyAuto: 50		## same accuracy as Hvy Laser snap
+    accuracySnap: 62
+    accuracyAimed: 95		## nearly same acc as laser rifle
+    tuAuto: 32			## Born for AUTO
+    tuSnap: 28
+    tuAimed: 66
+    clipSize: -1
+    battleType: 1
+    twoHanded: true
+    invWidth: 2
+    invHeight: 3
+    armor: 50			# Alien Alloys - explosion resistant just like the P Rifle
+    listOrder: 3001
   - type: STR_GRENADE
     size: 0.025
     costBuy: 275
@@ -996,7 +1022,7 @@ items:
     tuUse: 10
     flatRate: true
     armor: 25
-  - type: STR_ADV_MEDI_KIT
+  - type: STR_MEDI_KIT_ADV
     size: 0.1
     costSell: 50000
     weight: 5
@@ -1262,6 +1288,22 @@ items:
     tuUse: 50
     recoveryPoints: 1
     armor: 20
+    attraction: 1
+  - type: STR_MIND_PROBE_M
+    requires:
+      - STR_MIND_PROBE
+    size: 0.1
+    costSell: 280000
+    weight: 5
+    bigSprite: 81
+    floorSprite: 23
+    hitSound: 37
+    battleType: 8
+    invWidth: 1
+    invHeight: 1
+    tuUse: 32
+    recoveryPoints: 1
+    armor: 30
     attraction: 1
   - type: STR_ALIEN_ALLOYS
     size: 0.05
@@ -1992,7 +2034,15 @@ units:
 # RESEARCH #
 # RESEARCH #
 research:
-  - name: STR_ADV_MEDI_KIT
+  - name: STR_PULSE_LASER
+    cost: 400
+    points: 15
+    dependencies:
+      - STR_LASER_CANNON
+      - STR_ELERIUM_115
+      - STR_ALIEN_ALLOYS
+    listOrder: 9002
+  - name: STR_MEDI_KIT_ADV
     cost: 240
     points: 25
     dependencies:
@@ -2121,6 +2171,7 @@ manufacture:
     space: 2			# $5k/month, 31.2 - (25+1.2)
     time: 300
     cost: 8000
+    listOrder: 8030
   - name: STR_LASER_RIFLE
     category: STR_WEAPON
     requires:
@@ -2128,6 +2179,7 @@ manufacture:
     space: 3			# $5.6k (18*1.8 - 25+1.8)
     time: 400
     cost: 20000
+    listOrder: 8032
   - name: STR_HEAVY_LASER
     category: STR_WEAPON
     requires:
@@ -2135,6 +2187,18 @@ manufacture:
     space: 5			# $8k ((62-30)*72/64 - 25+3)
     time: 666
     cost: 30000
+    listOrder: 8034
+  - name: STR_PULSE_LASER
+    category: STR_WEAPON
+    requires:
+      - STR_PULSE_LASER
+    space: 4
+    time: 700
+    cost: 36000
+    requiredItems:
+      STR_ELERIUM_115: 2
+      STR_ALIEN_ALLOYS: 1
+    listOrder: 8036
   - name: STR_MOTION_SCANNER
     category: STR_EQUIPMENT
     requires:
@@ -2149,13 +2213,15 @@ manufacture:
     space: 5
     time: 360			# $7k
     cost: 22500
-  - name: STR_ADV_MEDI_KIT
+  - name: STR_MEDI_KIT_ADV
     category: STR_EQUIPMENT
     requires:
-      - STR_ADV_MEDI_KIT
+      - STR_MEDI_KIT_ADV
     space: 6
-    time: 720
-    cost: 25000
+    time: 420			# $13k
+    cost: 24000
+    requiredItems:
+      STR_ALIEN_ALLOYS: 1
   - name: STR_PSI_AMP
     category: STR_EQUIPMENT
     requires:
@@ -2264,7 +2330,7 @@ manufacture:
     cost: 400			# $6.4 : the elerium kills it
     requiredItems:
       STR_ELERIUM_115: 1
-  - name: STR_MIND_PROBE
+  - name: STR_MIND_PROBE_M
     category: STR_EQUIPMENT
     requires:
       - STR_MIND_PROBE
@@ -2273,6 +2339,7 @@ manufacture:
     cost: 200000
     requiredItems:
       STR_ELERIUM_115: 1
+      STR_ALIEN_ALLOYS: 1
   - name: STR_PERSONAL_ARMOR
     category: STR_PERSONAL_ARMOR
     requires:
@@ -2362,12 +2429,17 @@ manufacture:
       STR_UFO_POWER_SOURCE: 2
       STR_UFO_NAVIGATION: 1
 ufopaedia:
-  - id: STR_ADV_MEDI_KIT
+  - id: STR_PULSE_LASER
+    type_id: 4
+    section: STR_WEAPONS_AND_EQUIPMENT
+    text: STR_PULSE_LASER_UFO
+    listOrder: 2901
+  - id: STR_MEDI_KIT_ADV
     type_id: 4
     section: STR_WEAPONS_AND_EQUIPMENT
     requires:
-      - STR_ADV_MEDI_KIT
-    text: STR_ADV_MEDI_KIT_UFOPEDIA
+      - STR_MEDI_KIT_ADV
+    text: STR_MEDI_KIT_UFOPEDIA_ADV
 startingBase:
   - lon: 0.0
     lat: 0.0
@@ -2534,8 +2606,25 @@ costSoldier: 15000
 costEngineer: 20000
 costScientist: 25000
 timePersonnel: 72
+extraSprites:
+  - type: BIGOBS.PCK
+    files:
+      5: Resources/Kmod/LaserPistol.gif
+      6: Resources/Kmod/HeavyLaser.gif
+      7: Resources/Kmod/AutoCannon.gif
+      11: Resources/Kmod/HeavyCannon.gif
+      80: Resources/Kmod/PulseLaser.gif
+      81: Resources/Kmod/MindProbeM.gif
 extraStrings:
   - type: English
     strings:
-      STR_ADV_MEDI_KIT: Medikit+
-      STR_ADV_MEDI_KIT_UFOPEDIA: Our research on alien medical technology has given us some ideas on improving the MEDKIT.
+      STR_MEDI_KIT_ADV: Medikit+
+      STR_MEDI_KIT_UFOPEDIA_ADV: Our research on alien medical technology has given us some ideas on improving the MEDKIT.
+      STR_PULSE_LASER: Laser - Pulse Cannon
+      STR_PULSE_LASER_UFO: An improved ergonomic handle and an Elerium power source capable of rapid fire make this the ultimate laser weapon and a favorite of squaddies everywhere.
+  - type: EnglishUk
+    strings:
+      STR_MEDI_KIT_ADV: Medikit+
+      STR_MEDI_KIT_UFOPEDIA_ADV: Our research on alien medical technology has given us some ideas on improving the MEDKIT.
+      STR_PULSE_LASER: An improved ergonomic handle and a rapid fire chamber make this ultimate laser weapon a favorite of squaddies everywhere.
+      STR_PULSE_LASER_UFO: An improved ergonomic handle and a rapid fire chamber make this ultimate laser weapon a favorite of squaddies everywhere.

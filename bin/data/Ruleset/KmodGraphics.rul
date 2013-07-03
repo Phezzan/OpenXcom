@@ -1,0 +1,7 @@
+items:
+  - type: STR_MEDI_KIT_ADV
+    bigSprite: 24
+extraSprites:
+  - type: BIGOBS.PCK
+    files:
+      81: Resources/Kmod/MediKitPlus.gif
