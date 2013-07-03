@@ -1277,7 +1277,7 @@ items:
     requires:
       - STR_MIND_PROBE
     size: 0.1
-    costSell: 280000
+    costSell: 250000
     weight: 5
     bigSprite: 29
     floorSprite: 28
@@ -2330,6 +2330,13 @@ manufacture:
     cost: 400			# $6.4 : the elerium kills it
     requiredItems:
       STR_ELERIUM_115: 1
+  - name: STR_MIND_PROBE
+    category: STR_NONE
+    requires:
+      - STR_DISABLE
+    space: -1
+    time: -1
+    cost: -1
   - name: STR_MIND_PROBE_M
     category: STR_EQUIPMENT
     requires:
@@ -2443,7 +2450,7 @@ ufopaedia:
   - id: STR_MIND_PROBE_M
     type_id: 4
     section: STR_WEAPONS_AND_EQUIPMENT
-    text: STR_MIND_PROBE_M_UFOPEDIA
+    text: STR_MIND_PROBE_M_UFO
     requires:
       - STR_MIND_PROBE
 startingBase:
@@ -2626,8 +2633,8 @@ extraStrings:
     strings:
       STR_MEDI_KIT_ADV: Medikit+
       STR_MEDI_KIT_UFOPEDIA_ADV: Our research on alien medical technology has given us some ideas on improving the MEDKIT.
-      STR_MIND_PROBE_M: Mind Probe
-      STR_MIND_PROBE_M_UFO: The mind probe is based on an alien communication device which reads information directly from brain waves.  XCom units can use this device in combat to display a target's characteristics.
+      STR_MIND_PROBE_M: M.I.N.D.
+      STR_MIND_PROBE_M_UFO: The Mental InformatioN Display is based on an alien communication device which reads information directly from brain waves.  XCom units can use this device in combat to display a target's characteristics.
       STR_PULSE_LASER: Laser - Pulse Cannon
       STR_PULSE_LASER_UFO: An improved ergonomic handle and an Elerium power source capable of rapid fire make this the ultimate laser weapon and a favorite of squaddies everywhere.
   - type: EnglishUk

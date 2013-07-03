@@ -5,6 +5,10 @@ Others are just personal preference etc...
 This file is intended to be read in VIM.
 
 Planned		::
+	AI::
+		Make Alien HWP prefer to stand and fire instead of run away.
+		Make Alien Melee units aggressive and not stop in the middle of a charge.
+	;;
 	Items::
 		Plasma Torch	Melee 'weapon' for cutting UFO hulls.
 		Sniper Laser	Hvy Laser with only "Aimed" shots, has Armor_Piercing
