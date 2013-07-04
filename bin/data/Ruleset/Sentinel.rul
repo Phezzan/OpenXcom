@@ -43,6 +43,7 @@ manufacture:
     cost: 200000
     requiredItems:
       STR_ALIEN_ALLOYS: 25
+    listOrder: 90001
 extraSprites:
   - type: BASEBITS.PCK
     files:

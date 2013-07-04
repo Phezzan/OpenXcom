@@ -364,15 +364,15 @@ void AggroBAIState::psiAction(BattleAction *action)
 	for (std::vector<BattleUnit*>::const_iterator i = _game->getExposedUnits()->begin(); i != _game->getExposedUnits()->end(); ++i)
 	{
 		// don't target mindless units or other aliens or units under mind control
-		if ((*i)->isFearable() && (*i)->getOriginalFaction() == FACTION_PLAYER && (*i)->getFaction() == FACTION_PLAYER && (*i)->getStats()->psiStrength > 0)
+		if ((*i)->isFearable() && (*i)->getOriginalFaction() == FACTION_PLAYER 
+			&& (*i)->getFaction() == FACTION_PLAYER && (*i)->getStats()->psiStrength > 0)
 		{
-			int attackChance = psiAttackStrength
-				- (*i)->getPsiDefenceStrength(-33)      // Estimate defense strength +/- 33%
-				- 50 * _game->getTileEngine()->distance(_unit->getPosition(), (*i)->getPosition())
-				+ 33*50									// this bonus is 1/3 of the maximum random amount.
-				;
+			int const distance = _game->getTileEngine()->distance(_unit->getPosition(), (*i)->getPosition());
+			int const psiDefence = (*i)->getPsiDefenceStrength(-33);
+			int attackChance = psiAttackStrength - psiDefence - 50 * distance + 100*50;
 
-			if (attackChance > bestAttackChance)	// any attackChance > 0 will likely provide a decent chance of success
+			if (attackChance > bestAttackChance 
+				&& _unit->getEnergy() > (distance / 2 + 16))	// Since energy is used - require it.
 			{
 				bestAttackChance = attackChance;
 				_aggroTarget = *i;
@@ -383,7 +383,7 @@ void AggroBAIState::psiAction(BattleAction *action)
 	if (!_aggroTarget)
 		bestAttackChance = 0;
 	else 
-		bestAttackChance /= 50;
+		bestAttackChance = (bestAttackChance * 100) / (100*50);
 
 	if (bestAttackChance)
 	{
@@ -397,35 +397,22 @@ void AggroBAIState::psiAction(BattleAction *action)
 		}
 		else
 		{
-			if (RNG::generate(35, 155) >= bestAttackChance)
+			if (RNG::generate(33, 133) >= bestAttackChance)
 			{
 				bestAttackChance = 0;
 				_aggroTarget = 0;
 			}
 		}
-		if (bestAttackChance >= 30)
+		if (bestAttackChance >= 40)		// Minimum 10% chance to attempt MindControl 1500/50 = 30
 		{
-			int controlOrPanic = 60;
 			int morale = _aggroTarget->getMorale();
 			int cowardice = (110 - _aggroTarget->getStats()->bravery);
-			if (cowardice > 60)
-				controlOrPanic += 15;
-			if ( cowardice < 40)
-				controlOrPanic -= 15;
-			if (morale >= 40)
+			int panicChance = cowardice / 2 + morale / 4;
+			if (0 >= morale)
 			{
-				if (morale - cowardice < 50)
-					controlOrPanic += 15;
+				panicChance = 0;
 			}
-			else
-			{
-				controlOrPanic -= 15;
-			}
-			if (!morale)
-			{
-				controlOrPanic = 0;
-			}
-			if (RNG::generate(0, 100) >= controlOrPanic)
+			if (RNG::generate(0, 100) >= panicChance)
 			{
 				action->type = BA_MINDCONTROL;
 				action->target = _aggroTarget->getPosition();

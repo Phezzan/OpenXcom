@@ -53,6 +53,7 @@ ufopaedia:
   - id: STR_COMBAT_ARMOR_UC
     type_id: 5
     section: STR_WEAPONS_AND_EQUIPMENT
+    listOrder: 5
 extraSprites:
   - type: MAN_4F0.SPK
     singleImage: true

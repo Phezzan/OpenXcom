@@ -2265,7 +2265,7 @@ int BattleUnit::getPsiDefenceStrength(int const type) const
 	
 	// estimate is a % error, 1 would mean value is off less than 1%
 	int const estimate =(sum * type)/ 100 * -1;
-	return RNG::generate(sum - estimate, sum + estimate) + 10 * 50;
+	return RNG::nDice(2, sum - estimate, sum + estimate) + 10 * 50;
 }
 
 /**

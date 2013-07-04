@@ -294,7 +294,8 @@ bool TileEngine::calculateFOV(BattleUnit *unit)
 								{
 									visibleUnit->setVisible(true);
 								}
-								else if (unit->getFaction() == FACTION_HOSTILE && visibleUnit->getFaction() == FACTION_PLAYER && unit->getIntelligence() > visibleUnit->getTurnsExposed())
+								else if (unit->getFaction() == FACTION_HOSTILE && visibleUnit->getFaction() == FACTION_PLAYER 
+									&& unit->getIntelligence() > visibleUnit->getTurnsExposed())
 								{
 									visibleUnit->setTurnsExposed(unit->getIntelligence());
 									_save->updateExposedUnits();
@@ -938,21 +939,21 @@ bool TileEngine::checkReactionFire(BattleUnit *unit)
 	if (unit->getFaction() == unit->getOriginalFaction()
 		|| unit->getFaction() != FACTION_HOSTILE)
 	{
-        std::list<std::pair <int, BattleUnit*> > reactors = getReactingUnits(unit);
+		std::list<std::pair <int, BattleUnit*> > reactors = getReactingUnits(unit);
 
-        while (!reactors.empty() && !unit->isOut())
-        {
-            BattleUnit *reactor = reactors.back().second;
-            reactors.pop_back();
+		while (!reactors.empty() && !unit->isOut())
+		{
+			BattleUnit *reactor = reactors.back().second;
+			reactors.pop_back();
 
-            if(tryReactionSnap(reactor, unit))
-            {
-                if (reactor->getOriginalFaction() == FACTION_PLAYER)
-                    reactor->addReactionExp();
-                result = true;
-            }
-        }
-    }
+			if(tryReactionSnap(reactor, unit))
+			{
+				if (reactor->getOriginalFaction() == FACTION_PLAYER)
+					reactor->addReactionExp();
+				result = true;
+			}
+		}
+	}
 	return result;
 }
 
@@ -989,8 +990,8 @@ std::list<std::pair <int, BattleUnit*> > TileEngine::getReactingUnits(BattleUnit
 			if (((*i)->checkViewSector(unit->getPosition()) || gotHit) &&
 				// can actually see the unit
 				visible(*i, unit->getTile()) &&
-				// aliens can see in the dark, xcom can see at a distance of 18 or less, 2 further if there's enough light.
-				((*i)->getFaction() != FACTION_PLAYER || distBonus >= 2  ||
+				// aliens can see in the dark, xcom can see in the dark at 9 or if there's enough light.
+				((*i)->getOriginalFaction() != FACTION_PLAYER || distBonus >= 11  ||
 				unit->getTile()->getShade() <= MAX_DARKNESS_TO_SEE_UNITS))
 			{
 				if ((*i)->getFaction() == FACTION_PLAYER)
@@ -998,32 +999,32 @@ std::list<std::pair <int, BattleUnit*> > TileEngine::getReactingUnits(BattleUnit
 					unit->setVisible(true);
 				}
 				(*i)->addToVisibleUnits(unit);
-                // KMOD - but shouldn't the aliens kill civilians on terror missions?
-                // Admittedly - if civilians take turns after Aliens, but before XCom, then TUs are 'wasted' killing civvies
+				// KMOD - but shouldn't the aliens kill civilians on terror missions?
+				// Admittedly - if civilians take turns after Aliens, but before XCom, then TUs are 'wasted' killing civvies
 
 				// no reaction on civilian turn.
-                int const reaction = (*i)->getReactionScore(distBonus + 12 * (*i)->isKneeled());
+				int const reaction = (*i)->getReactionScore(distBonus + 12 * (*i)->isKneeled());
 				if (_save->getSide() != FACTION_NEUTRAL
-                 && reaction > requiredReaction 
-                 && canMakeSnap(*i, unit))
+					&& reaction > requiredReaction 
+					&& canMakeSnap(*i, unit))
 				{
-                    if (reaction >= bestReaction)
-                    {
-                        reactors.push_back(std::make_pair(reaction, *i));
-                        bestReaction = reaction;
-                    }
-                    else
-                    {
-                        reactors.push_back(std::make_pair(reaction, *i));
-                        doSort = true;
-                    }
-                }
-            }
-        }
-    }
-    if (doSort)
-        reactors.sort();
-    return reactors;
+					if (reaction >= bestReaction)
+					{
+						reactors.push_back(std::make_pair(reaction, *i));
+						bestReaction = reaction;
+					}
+					else
+					{
+						reactors.push_back(std::make_pair(reaction, *i));
+						doSort = true;
+					}
+				}
+			}
+		}
+	}
+	if (doSort)
+		reactors.sort();
+	return reactors;
 }
 
 /*
@@ -1178,14 +1179,7 @@ BattleUnit *TileEngine::hit(const Position &center, int power, ItemDamageType ty
 	{
 		// power 0 - 200%       Kmod distribution 7/8 chance power within 50%-150%
 		int rndPower = RNG::nDice(2, 0, power*2); // RNG::boxMuller(power, power/3)
-		if (bu)
-		{
-			int const sz = bu->getArmor()->getSize() * 8;
-			Position const target = bu->getPosition() * Position(16,16,24) + Position(sz,sz,bu->getFloatHeight() - tile->getTerrainLevel());
-			Position const relative = center - target;
-			adjustedDamage = bu->damage(relative, rndPower, type);
-		}
-		else
+		if (! bu)
 		{
 			// it's possible we have a unit below the actual tile, when he stands on a stairs and sticks his head out to the next tile
 			Tile *below = _save->getTile(Position(center.x/16, center.y/16, (center.z/24)-1));
@@ -1194,38 +1188,39 @@ BattleUnit *TileEngine::hit(const Position &center, int power, ItemDamageType ty
 				BattleUnit *buBelow = below->getUnit();
 				if (buBelow)
 				{
-					int const sz = bu->getArmor()->getSize() * 8;
-					Position const target = bu->getPosition() * Position(16,16,24) + Position(sz,sz,bu->getFloatHeight() - tile->getTerrainLevel());
-					Position const relative = center - target;
 					bu = buBelow;
-					adjustedDamage = bu->damage(relative, rndPower, type);
 				}
 			}
 		}
 
-        // STUN has been moved to the unit's damage routine
-		if (bu && unit->getFaction() == FACTION_PLAYER && bu->getOriginalFaction() == FACTION_HOSTILE && type != DT_NONE)
+		if(bu)
 		{
-			unit->addFiringExp();
-		}
-	}
-	if (bu)
-	{
+			int const sz = bu->getArmor()->getSize() * 8;
+			Position const target = bu->getPosition() * Position(16,16,24) + Position(sz,sz,bu->getFloatHeight() - tile->getTerrainLevel());
+			Position const relative = center - target;
+			adjustedDamage = bu->damage(relative, rndPower, type);
+			if (damageDealt != NULL)
+				*damageDealt = adjustedDamage;
 
-		int const cowardice = 110 - bu->getStats()->bravery;
-		int const modifier = bu->getFaction() == FACTION_PLAYER ? _save->getMoraleModifier() : 100;
-		int const morale_loss = 100 * (adjustedDamage * cowardice) / (100 * modifier);
-		bu->moraleChange(-morale_loss);
-
-		if (damageDealt != NULL)
-			*damageDealt = adjustedDamage;
-
-		if (bu->getSpecialAbility() == SPECAB_EXPLODEONDEATH && !bu->isOut() && (bu->getHealth() == 0 )) //|| bu->getStunlevel() >= bu->getHealth()))
-		{
-			if (type != DT_STUN && type != DT_HE)
+			// STUN has been moved to the unit's damage routine
+			if (unit->getFaction() == FACTION_PLAYER && bu->getOriginalFaction() == FACTION_HOSTILE && type != DT_NONE)
 			{
-				Position p = Position(bu->getPosition().x * 16, bu->getPosition().y * 16, bu->getPosition().z * 24);
-				_save->getBattleState()->getBattleGame()->statePushNext(new ExplosionBState(_save->getBattleState()->getBattleGame(), p, 0, bu, 0));
+				unit->addFiringExp();
+			}
+
+			{
+
+				int const cowardice = 110 - bu->getStats()->bravery;
+				int const modifier = bu->getFaction() == FACTION_PLAYER ? _save->getMoraleModifier() : 100;
+				int const morale_loss = 100 * (adjustedDamage * cowardice) / (100 * modifier);
+				bu->moraleChange(-morale_loss);
+
+				if (bu->getSpecialAbility() == SPECAB_EXPLODEONDEATH && !bu->isOut() && bu->getHealth() == 0 
+					&& (type != DT_STUN && type != DT_HE) )
+				{
+					Position p = Position(bu->getPosition().x * 16, bu->getPosition().y * 16, bu->getPosition().z * 24);
+					_save->getBattleState()->getBattleGame()->statePushNext(new ExplosionBState(_save->getBattleState()->getBattleGame(), p, 0, bu, 0));
+				}
 			}
 		}
 	}
@@ -2450,7 +2445,7 @@ int TileEngine::psiAttack(BattleAction *action)
 	int const randMod   = RNG::generate(0,100*50);
 	int const total     = attackStr - defenseStr - distMod + randMod;   // 12,225 is max
 
-	if (! action->actor->spendEnergy(distMod / 50 + randMod / 100))		// 1 eu for 2 dist, then up to 15 more for random strain
+	if (! action->actor->spendEnergy(distMod / 50 + randMod / 333))		// 1 eu for 2 dist, then up to 15 more for random strain
 	{
 		action->result = "STR_NOT_ENOUGH_ENERGY";
 		return 0;										            // Not enough energy
