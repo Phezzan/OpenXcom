@@ -87,12 +87,12 @@ int CraftWeapon::getAmmo() const
 bool CraftWeapon::setAmmo(int ammo)
 {
 	_ammo = ammo;
-	if (_ammo < 0)
+	if (ammo < 0)
 	{
 		_ammo = 0;
 		return false;
 	}
-	if (_ammo > _rules->getAmmoMax())
+	if (ammo > _rules->getAmmoMax())
 	{
 		_ammo = _rules->getAmmoMax();
 	}
@@ -105,7 +105,9 @@ bool CraftWeapon::setAmmo(int ammo)
  */
 bool CraftWeapon::isRearming() const
 {
-	return _rearming;
+	const int max = _rules->getAmmoMax();
+	return max > 0 && _ammo < max;
+	//return _rearming;
 }
 
 /**
@@ -134,14 +136,21 @@ void CraftWeapon::rearm()
  * Fires a projectile from crafts weapon.
  * @return Pointer to the new projectile.
  */
-CraftWeaponProjectile* CraftWeapon::fire() const
+CraftWeaponProjectile* CraftWeapon::fire(enum Directions upDown, const int leftRight)
 {
+	if (_rules->getAmmoMax() > 0 && _ammo <= 0)
+		return NULL;
+	else if (_ammo > 0)
+		_ammo--;
+
 	CraftWeaponProjectile *p = new CraftWeaponProjectile();
 	p->setType(this->getRules()->getProjectileType());
 	p->setSpeed(this->getRules()->getProjectileSpeed());
 	p->setAccuracy(this->getRules()->getAccuracy());
 	p->setDamage(this->getRules()->getDamage());
 	p->setRange(this->getRules()->getRange());
+	p->setDirection(upDown);
+	p->setHorizontalPosition(leftRight);
 	return p;
 }
 

@@ -165,7 +165,8 @@ void CraftWeaponsState::lstWeaponsClick(Action *)
 		sel->setRearming(true);
 		_base->getItems()->removeItem(sel->getRules()->getLauncherItem());
 		_base->getCrafts()->at(_craft)->getWeapons()->at(_weapon) = sel;
-		if (_base->getCrafts()->at(_craft)->getStatus() == "STR_READY")
+		if (_base->getCrafts()->at(_craft)->getStatus() == "STR_READY"
+			&& sel->isRearming())
 		{
 			_base->getCrafts()->at(_craft)->setStatus("STR_REARMING");
 		}

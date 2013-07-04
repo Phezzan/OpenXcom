@@ -21,6 +21,7 @@
 
 #include <string>
 #include <yaml-cpp/yaml.h>
+#include "CraftWeaponProjectile.h"
 
 namespace OpenXcom
 {
@@ -61,7 +62,7 @@ public:
 	/// Rearms the craft weapon.
 	void rearm();
 	/// Fires the craft weapon. Used during dogfights.
-	CraftWeaponProjectile* fire() const;
+	CraftWeaponProjectile* fire(enum Directions upDown, const int leftRight);
 };
 
 }

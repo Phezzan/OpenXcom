@@ -276,7 +276,7 @@ craftWeapons:
     reloadCautious: 8
     reloadStandard: 8
     reloadAggressive: 7
-    ammoMax: 200
+    ammoMax: -1
     rearmRate: 200
     launcher: STR_LASER_CANNON
     projectileType: 4
@@ -289,7 +289,7 @@ craftWeapons:
     reloadCautious: 12
     reloadStandard: 11
     reloadAggressive: 10
-    ammoMax: 125
+    ammoMax: -1
     rearmRate: 125
     launcher: STR_PLASMA_BEAM
     projectileType: 5
@@ -955,7 +955,7 @@ items:
     invWidth: 2
     invHeight: 3
     armor: 50			# Alien Alloys - explosion resistant just like the P Rifle
-    listOrder: 3001
+    listOrder: 3701
   - type: STR_GRENADE
     size: 0.025
     costBuy: 275
@@ -1041,6 +1041,7 @@ items:
     tuUse: 10
     flatRate: true
     armor: 40
+    listOrder: 4301
   - type: STR_PSI_AMP
     requires:
       - STR_PSI_AMP
@@ -1263,6 +1264,7 @@ items:
     armor: 20
     blastRadius: 6
     attraction: 1
+    listOrder: 4101
   - type: STR_ELERIUM_115
     size: 0.1
     costSell: 10000
@@ -1289,6 +1291,7 @@ items:
     recoveryPoints: 1
     armor: 20
     attraction: 1
+    listOrder: 4602
   - type: STR_MIND_PROBE_M
     requires:
       - STR_MIND_PROBE
@@ -1305,16 +1308,20 @@ items:
     recoveryPoints: 1
     armor: 30
     attraction: 1
+    listOrder: 4601
   - type: STR_ALIEN_ALLOYS
     size: 0.05
     costSell: 6500
   - type: STR_PERSONAL_ARMOR
+    weight: 10
     size: 0.5
     costSell: 60000
   - type: STR_POWER_SUIT
+    weight: 10
     size: 0.8
     costSell: 90000
   - type: STR_FLYING_SUIT
+    weight: 10
     size: 0.8
     costSell: 120000
 ############ END ITEMS #####################
@@ -2041,7 +2048,7 @@ research:
       - STR_LASER_CANNON
       - STR_ELERIUM_115
       - STR_ALIEN_ALLOYS
-    listOrder: 9002
+    listOrder: 8030
   - name: STR_MEDI_KIT_ADV
     cost: 240
     points: 25
@@ -2440,7 +2447,7 @@ ufopaedia:
     type_id: 4
     section: STR_WEAPONS_AND_EQUIPMENT
     text: STR_PULSE_LASER_UFO
-    listOrder: 2901
+    listOrder: 3901
   - id: STR_MEDI_KIT_ADV
     type_id: 4
     section: STR_WEAPONS_AND_EQUIPMENT
@@ -2631,11 +2638,12 @@ extraSprites:
 extraStrings:
   - type: English
     strings:
-      STR_MEDI_KIT_ADV: Medikit+
+      STR_MEDI_KIT_ADV: Medi-Kit+
       STR_MEDI_KIT_UFOPEDIA_ADV: Our research on alien medical technology has given us some ideas on improving the MEDKIT.
       STR_MIND_PROBE_M: M.I.N.D.
       STR_MIND_PROBE_M_UFO: The Mental InformatioN Display is based on an alien communication device which reads information directly from brain waves.  XCom units can use this device in combat to display a target's characteristics.
-      STR_PULSE_LASER: Laser - Pulse Cannon
+      STR_HEAVY_LASER: Laser Cannon
+      STR_PULSE_LASER: Laser Pulse Cannon
       STR_PULSE_LASER_UFO: An improved ergonomic handle and an Elerium power source capable of rapid fire make this the ultimate laser weapon and a favorite of squaddies everywhere.
   - type: EnglishUk
     strings:
