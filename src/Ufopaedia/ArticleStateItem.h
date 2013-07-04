@@ -55,9 +55,9 @@ namespace OpenXcom
 		Text *_txtTuCost;
 		Text *_txtDamage;
 		Text *_txtAmmo;
-		Text *_txtAmmoType[3];
-		Text *_txtAmmoDamage[3];
-		Surface *_imageAmmo[3];
+		Text *_txtAmmoType[5];
+		Text *_txtAmmoDamage[5];
+		Surface *_imageAmmo[5];
 	};
 }
 

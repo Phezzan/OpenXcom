@@ -149,20 +149,20 @@ namespace OpenXcom
 		// AMMO column
 		std::wstringstream ss;
 
-		for (int i = 0; i<3; ++i)
+		for (int i = 0; i<5; ++i)
 		{
-			_txtAmmoType[i] = new Text(90, 9, 200, 24 + i*49);
+			_txtAmmoType[i] = new Text(90, 9, 200, 24 + i*36);
 			add(_txtAmmoType[i]);
 			_txtAmmoType[i]->setColor(Palette::blockOffset(14)+15);
 			_txtAmmoType[i]->setAlign(ALIGN_CENTER);
 
-			_txtAmmoDamage[i] = new Text(90, 16, 200, 40 + i*49);
+			_txtAmmoDamage[i] = new Text(90, 16, 200, 40 + i*36);
 			add(_txtAmmoDamage[i]);
 			_txtAmmoDamage[i]->setColor(Palette::blockOffset(2));
 			_txtAmmoDamage[i]->setAlign(ALIGN_CENTER);
 			_txtAmmoDamage[i]->setBig();
 
-			_imageAmmo[i] = new Surface(32, 48, 280, 24 + i*49);
+			_imageAmmo[i] = new Surface(32, 48, 280, 20 + i*36);
 			add(_imageAmmo[i]);
 		}
 
@@ -191,7 +191,7 @@ namespace OpenXcom
 				}
 				else
 				{
-					for (unsigned int i = 0; i < ammo_data->size(); ++i)
+					for (unsigned int i = 0; i < std::min(5u, (unsigned)ammo_data->size()); ++i)
 					{
 						ArticleDefinition *ammo_article = _game->getRuleset()->getUfopaediaArticle((*ammo_data)[i]);
 						if (Ufopaedia::isArticleAvailable(_game, ammo_article))
