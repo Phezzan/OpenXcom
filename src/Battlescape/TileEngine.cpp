@@ -1169,13 +1169,13 @@ BattleUnit *TileEngine::hit(const Position &center, int power, ItemDamageType ty
 	}
 	else if (part == 4) // Unit was hit
 	{
-		int const sz = bu->getArmor()->getSize() * 8;
-		Position const target = bu->getPosition() * Position(16,16,24) + Position(sz,sz,bu->getFloatHeight() - tile->getTerrainLevel());
-		Position const relative = center - target;
 		// power 0 - 200%       Kmod distribution 7/8 chance power within 50%-150%
 		int rndPower = RNG::nDice(2, 0, power*2); // RNG::boxMuller(power, power/3)
 		if (bu)
 		{
+			int const sz = bu->getArmor()->getSize() * 8;
+			Position const target = bu->getPosition() * Position(16,16,24) + Position(sz,sz,bu->getFloatHeight() - tile->getTerrainLevel());
+			Position const relative = center - target;
 			adjustedDamage = bu->damage(relative, rndPower, type);
 		}
 		else
@@ -1187,6 +1187,9 @@ BattleUnit *TileEngine::hit(const Position &center, int power, ItemDamageType ty
 				BattleUnit *buBelow = below->getUnit();
 				if (buBelow)
 				{
+					int const sz = bu->getArmor()->getSize() * 8;
+					Position const target = bu->getPosition() * Position(16,16,24) + Position(sz,sz,bu->getFloatHeight() - tile->getTerrainLevel());
+					Position const relative = center - target;
 					bu = buBelow;
 					adjustedDamage = bu->damage(relative, rndPower, type);
 				}
