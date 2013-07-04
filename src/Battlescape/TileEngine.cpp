@@ -532,12 +532,19 @@ Position TileEngine::getSightOriginVoxel(BattleUnit *currentUnit)
 	originVoxel = Position((currentUnit->getPosition().x * 16) + 7, (currentUnit->getPosition().y * 16) + 8, currentUnit->getPosition().z*24);
 	originVoxel.z += -_save->getTile(currentUnit->getPosition())->getTerrainLevel();
 	originVoxel.z += currentUnit->getHeight() + currentUnit->getFloatHeight() - 1; //one voxel lower (eye level)
-
+	Tile *tileAbove = _save->getTile(currentUnit->getPosition() + Position(0,0,1));
 	if (currentUnit->getArmor()->getSize() > 1)
 	{
 		originVoxel.x += 8;
 		originVoxel.y += 8;
 		originVoxel.z += 1; //topmost voxel
+	}
+	if (originVoxel.z >= (currentUnit->getPosition().z + 1)*24 && (!tileAbove || !tileAbove->hasNoFloor(0)))
+	{
+		while (originVoxel.z >= (currentUnit->getPosition().z + 1)*24)
+		{
+			originVoxel.z--;
+		}
 	}
 
 	return originVoxel;
@@ -2362,7 +2369,7 @@ int TileEngine::voxelCheck(const Position& voxel, BattleUnit *excludeUnit, bool 
 		BattleUnit *unit = tile->getUnit();
 		// sometimes there is unit on the tile below, but sticks up to this tile with his head,
 		// in this case we couldn't have unit standing at current tile.
-		if (unit == 0) 
+		if (unit == 0 && tile->hasNoFloor(0))
 		{
 			tile = _save->getTile(Position(voxel.x/16, voxel.y/16, (voxel.z/24)-1)); //below
 			if (tile) unit = tile->getUnit();

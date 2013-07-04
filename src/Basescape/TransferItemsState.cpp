@@ -551,14 +551,14 @@ void TransferItemsState::increaseByValue(int change)
 			return;
 		}
 	}
-	if (TRANSFER_ITEM == selType && !selItem->getAlien() 
+	if (TRANSFER_ITEM == selType && !selItem->getAlien()
 		&& (_iQty + selItem->getSize()) > (_baseTo->getAvailableStores() - _baseTo->getUsedStores()))
 	{
 		_timerInc->stop();
 		_game->pushState(new ErrorMessageState(_game, "STR_NOT_ENOUGH_STORE_SPACE", Palette::blockOffset(15)+1, "BACK13.SCR", 0));
 		return;
 	}
-	if (TRANSFER_ITEM == selType && selItem->getAlien() 
+	if (TRANSFER_ITEM == selType && selItem->getAlien()
 		&& _containmentLimit * _aQty + 1 > _baseTo->getAvailableContainment() - _baseTo->getUsedContainment())
 	{
 		_timerInc->stop();
@@ -592,7 +592,9 @@ void TransferItemsState::increaseByValue(int change)
 		int freeStoresForItem;
 		if ( AreSame(storesNeededPerItem, 0.f) ) { 
 			freeStoresForItem = INT_MAX;
-		} else {
+		}
+		else
+		{
 			freeStoresForItem = floor(freeStores / storesNeededPerItem);
 		}
 		change = std::min(std::min(freeStoresForItem, getQuantity() - _qtys[_sel]), change);
@@ -652,7 +654,7 @@ void TransferItemsState::decreaseByValue(int change)
 		{
 			_iQty -= selItem->getSize() * ((float)(change));
 		}
-		else 
+		else
 		{
 			_aQty -= change;
 		}
