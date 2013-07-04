@@ -10,7 +10,7 @@ items:
     battleType: 4
     armor: 25
     blastRadius: 6
-    listOrder: 4001
+    listOrder: 3805
   - type: STR_STUN_GRENADE
     size: 0.025
     costSell: 2500
@@ -22,7 +22,7 @@ items:
     damageType: 6
     battleType: 4
     armor: 20
-    listOrder: 5901
+    listOrder: 3806
 research:
   - name: STR_INCENDIARY_GRENADE
     cost: 100
@@ -34,7 +34,7 @@ research:
     dependencies:
       - STR_SMALL_LAUNCHER
       - STR_STUN_BOMB
-    listOrder: 4401
+    listOrder: 601
 manufacture:
   - name: STR_INCENDIARY_GRENADE
     category: STR_WEAPON
@@ -43,7 +43,7 @@ manufacture:
     space: 1
     time: 24
     cost: 1
-    listOrder: 1101
+    listOrder: 111
   - name: STR_STUN_GRENADE
     category: STR_WEAPON
     requires:
@@ -53,7 +53,7 @@ manufacture:
     cost: 1
     requiredItems:
       STR_STUN_BOMB: 1
-    listOrder: 2401
+    listOrder: 241
 ufopaedia:
   - id: STR_INCENDIARY_GRENADE
     type_id: 4

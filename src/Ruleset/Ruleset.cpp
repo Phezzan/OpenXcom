@@ -716,7 +716,7 @@ void Ruleset::loadFile(const std::string &filename)
 	}
 	fin.close();
 
-	_modIndex += 1000;
+	_modIndex += 10000;
 }
 
 /**

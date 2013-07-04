@@ -24,7 +24,7 @@ items:
     invHeight: 3
     armor: 33
     arcingShot: true
-    listOrder: 3001
+    listOrder: 3401
   - type: STR_LAUNCHER_FRAG
     size: 0.05
     costBuy: 150
@@ -40,7 +40,7 @@ items:
     battleType: 2
     armor: 20
     blastRadius: 7
-    listOrder: 3002
+    listOrder: 3402
   - type: STR_LAUNCHER_INC
     size: 0.05
     costBuy: 500
@@ -56,7 +56,7 @@ items:
     battleType: 2
     armor: 20
     blastRadius: 7
-    listOrder: 3003
+    listOrder: 3403
   - type: STR_LAUNCHER_SMOKE
     size: 0.05
     costBuy: 150
@@ -72,7 +72,7 @@ items:
     battleType: 2
     armor: 20
     blastRadius: 8
-    listOrder: 3004
+    listOrder: 3404
   - type: STR_LAUNCHER_STUN
     size: 0.05
     costSell: 4000
@@ -87,7 +87,7 @@ items:
     battleType: 2
     armor: 20
     blastRadius: 8
-    listOrder: 3005
+    listOrder: 3405
 research:
   - name: STR_LAUNCHER_STUN
     cost: 50

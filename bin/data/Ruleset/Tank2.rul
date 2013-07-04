@@ -47,7 +47,7 @@ items:
     invHeight: 3
     armor: 90
     turretType: 2
-    liveAlien: false
+    listOrder: 1501
 armors:
   - type: TANK_2_ARMOR
     spriteSheet: TANK_2.PCK
