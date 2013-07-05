@@ -41,16 +41,16 @@ manufacture:
     requires:
       - STR_INCENDIARY_GRENADE
     space: 1
-    time: 24
-    cost: 1
+    time: 20
+    cost: 0
     listOrder: 111
   - name: STR_STUN_GRENADE
     category: STR_WEAPON
     requires:
       - STR_STUN_GRENADE
     space: 1
-    time: 48
-    cost: 1
+    time: 24
+    cost: 0
     requiredItems:
       STR_STUN_BOMB: 1
     listOrder: 241
@@ -72,7 +72,7 @@ ufopaedia:
 extraSprites:
   - type: BIGOBS.PCK
     files:
-      59: Resources/CustomGrenades/StunGrenade.png
+      59: Resources/Kmod/StunGrenade.gif
 extraStrings:
   - type: English
     strings:

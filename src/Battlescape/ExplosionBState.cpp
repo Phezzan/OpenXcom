@@ -178,19 +178,19 @@ void ExplosionBState::explode()
 			save->getTileEngine()->explode(_center, _power, _item->getRules()->getDamageType(), _item->getRules()->getExplosionRadius(), _unit);
 		}
 		else
-        {
-            int dmgDealt = 0;
-            BattleUnit *victim = save->getTileEngine()->hit(_center, _power, _item->getRules()->getDamageType(), _unit, &dmgDealt);
-            // check if this unit turns others into zombies
-            if (dmgDealt > 0 && !_unit->getZombieUnit().empty()
-                && victim && victim->getArmor()->getSize() == 1 
-                && victim->getSpawnUnit().empty())
-            {
-                // converts the victim to a zombie on death
-                victim->setSpecialAbility(SPECAB_RESPAWN);
-                victim->setSpawnUnit(_unit->getZombieUnit());
-            }
-        }
+		{
+			int dmgDealt = 0;
+			BattleUnit *victim = save->getTileEngine()->hit(_center, _power, _item->getRules()->getDamageType(), _unit, &dmgDealt);
+			// check if this unit turns others into zombies
+			if (dmgDealt > 0 && !_unit->getZombieUnit().empty()
+				&& victim && victim->getArmor()->getSize() == 1 
+				&& victim->getSpawnUnit().empty())
+			{
+				// converts the victim to a zombie on death
+				victim->setSpecialAbility(SPECAB_RESPAWN);
+				victim->setSpawnUnit(_unit->getZombieUnit());
+			}
+		}
 	}
 	if (_tile)
 	{
