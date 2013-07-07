@@ -811,7 +811,7 @@ void Tile::prepareNewTurn()
 			if (_fire)
 			{
 				// this is how we avoid hitting the same unit multiple times.
-				if (_unit->getArmor()->getSize() == 1 || !_unit->tookFireDamage())
+				if (!_unit->tookFireDamage())
 				{
 					_unit->toggleFireDamage();
 					// _smoke becomes our damage value
@@ -834,8 +834,9 @@ void Tile::prepareNewTurn()
 				if (_unit->isWoundable())
 				{
 					// try to knock this guy out.
-					if (_unit->getArmor()->getDamageModifier(DT_SMOKE) > 0.0 && _unit->getArmor()->getSize() == 1)
+					if (_unit->getArmor()->getDamageModifier(DT_SMOKE) > 0.0 && !_unit->tookFireDamage())
 					{
+						_unit->toggleFireDamage();  // This is the only caller - might as well use it.
 						_unit->damage(Position(0,0,0), (_smoke / 4) + 1, DT_SMOKE, true);
 					}
 				}
@@ -938,3 +939,4 @@ void Tile::addOverlap()
 }
 
 }
+// vim : noet
