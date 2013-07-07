@@ -1,0 +1,75 @@
+items:
+  - type: STR_SNIPER_RIFLE
+    size: 0.3
+    costBuy: 12000
+    costSell: 5500
+    weight: 9
+    bigSprite: 57
+    floorSprite: 76
+    handSprite: 129
+    bulletSprite: 2
+    fireSound: 4
+    compatibleAmmo:
+      - STR_SNIPER_RIFLE_CLIP
+    accuracySnap: 80
+    accuracyAimed: 160
+    tuSnap: 33
+    tuAimed: 50
+    battleType: 1
+    twoHanded: true
+    invWidth: 1
+    invHeight: 3
+    armor: 20
+    listOrder: 2201
+  - type: STR_SNIPER_RIFLE_CLIP
+    size: 0.1
+    costBuy: 250
+    costSell: 160
+    weight: 2
+    bigSprite: 58
+    floorSprite: 77
+    hitSound: 22
+    hitAnimation: 26
+    power: 35
+    damageType: 1
+    clipSize: 10
+    battleType: 2
+    armor: 20
+    listOrder: 2202
+ufopaedia:
+  - id: STR_SNIPER_RIFLE
+    type_id: 4
+    section: STR_WEAPONS_AND_EQUIPMENT
+    text: STR_SNIPER_RIFLE_UFOPEDIA
+    listOrder: 2201
+  - id: STR_SNIPER_RIFLE_CLIP
+    type_id: 4
+    section: STR_NOT_AVAILABLE
+extraSprites:
+  - type: BIGOBS.PCK
+    files:
+      57: Resources/SniperRifle/bigobs_57_0.gif
+      58: Resources/SniperRifle/bigobs_58_0.gif
+  - type: FLOOROB.PCK
+    files:
+      76: Resources/SniperRifle/floorob_76_0.gif
+      77: Resources/SniperRifle/floorob_77_0.gif
+  - type: HANDOB.PCK
+    files:
+      129: Resources/SniperRifle/HANDOB/
+extraStrings:
+  - type: English
+    strings:
+      STR_SNIPER_RIFLE: Sniper Rifle
+      STR_SNIPER_RIFLE_CLIP: Sniper Rifle Clip
+      STR_SNIPER_RIFLE_UFOPEDIA: This 12.7-mm caliber sniper rifle is more powerful than a standard rifle and has excellent accuracy. However, it is harder to use and has a low rate of fire.
+  - type: EnglishUk
+    strings:
+      STR_SNIPER_RIFLE: Sniper Rifle
+      STR_SNIPER_RIFLE_CLIP: Sniper Rifle Clip
+      STR_SNIPER_RIFLE_UFOPEDIA: This 12.7-mm caliber sniper rifle is more powerful than a standard rifle and has excellent accuracy. However, it is harder to use and has a low rate of fire.
+  - type: SpanishAL
+    strings:
+      STR_SNIPER_RIFLE_UFOPEDIA: Este rifle del calibre 12.7-mm es más potente que el rifle habitual, contando con una excelente precisión. En contra, su baja cadencia de disparo y dificultad de manejo.
+      STR_SNIPER_RIFLE: Rifle Francotirador
+      STR_SNIPER_RIFLE_CLIP: Cargador del Rifle Francotirador.
