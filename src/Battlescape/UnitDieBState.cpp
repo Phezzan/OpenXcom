@@ -210,22 +210,24 @@ void UnitDieBState::convertUnitToCorpse()
 {
 	_parent->getSave()->getBattleState()->showPsiButton(false);
 	// in case the unit was unconscious
+	//if (_unit->getStatus() == STATUS_DEAD)	// I think maybe remote origin is right and it's always ok to remove the body.
 	_parent->getSave()->removeUnconsciousBodyItem(_unit);
 
 	int size = _unit->getArmor()->getSize() - 1;
 	bool dropItems = !Options::getBool("weaponSelfDestruction") || (_unit->getOriginalFaction() != FACTION_HOSTILE || _unit->getStatus() == STATUS_UNCONSCIOUS);
 	// move inventory from unit to the ground for non-large units
-	if (size == 0 && dropItems)
+	if (dropItems && _unit->getTile())
 	{
-		for (std::vector<BattleItem*>::iterator i = _unit->getInventory()->begin(); i != _unit->getInventory()->end(); ++i)
+		if (_unit->dropInventory(_parent->getRuleset()->getInventory("STR_GROUND")))		// not dropping items means primed grenades just disappear - but maybe that's what they want.
 		{
-			_parent->dropItem(_unit->getPosition(), (*i));
-		}
+			_parent->getTileEngine()->calculateTerrainLighting();
+			_parent->getTileEngine()->calculateFOV(_unit->getPosition());
+		} 
+		_parent->getTileEngine()->applyGravity(_unit->getTile());
 	}
-	_unit->getInventory()->clear();
 
-	// remove unit-tile link
-	_unit->setTile(0);
+	if (_unit->getStatus() == STATUS_DEAD)
+		_unit->getInventory()->clear();  // Clearing the inventory overrides items that refuse to drop - like Chryssalid's weapon
 
 	if (size == 0)
 	{
@@ -254,6 +256,8 @@ void UnitDieBState::convertUnitToCorpse()
 			}
 		}
 	}
+	// remove unit-tile link
+	_unit->setTile(0);
 
 }
 
@@ -274,3 +278,4 @@ void UnitDieBState::playDeathSound()
 }
 
 }
+// vim : noet
