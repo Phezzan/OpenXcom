@@ -404,13 +404,10 @@ int BattleItem::setAmmoItem(BattleItem *item)
 	if (_ammoItem)
 		return -1;
 
-	for (std::vector<std::string>::iterator i = _rules->getCompatibleAmmo()->begin(); i != _rules->getCompatibleAmmo()->end(); ++i)
+	if (_rules->isCompatible(item->getRules()))
 	{
-		if (*i == item->getRules()->getType())
-		{
-			_ammoItem = item;
-			return 0;
-		}
+		_ammoItem = item;
+		return 0;
 	}
 
 	return -2;

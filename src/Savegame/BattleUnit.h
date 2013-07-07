@@ -24,6 +24,7 @@
 #include "../Battlescape/Position.h"
 #include "../Battlescape/BattlescapeGame.h"
 #include "../Ruleset/RuleItem.h"
+#include "../Ruleset/Ruleset.h"
 #include "../Ruleset/Unit.h"
 #include "../Ruleset/MapData.h"
 #include "Soldier.h"
@@ -87,6 +88,7 @@ private:
 	bool _cacheInvalid;
 	int _expBravery, _expReactions, _expFiring, _expThrowing, _expPsiSkill, _expMelee;
 	int improveStat(int exp);
+	int improveStat(int exp, int current, int max);
 	int _turretType;
 	int _motionPoints;
 	int _kills;
@@ -279,6 +281,8 @@ public:
 	void setTile(Tile *tile, Tile *tileBelow = 0);
 	/// Gets the unit's tile.
 	Tile *getTile() const;
+	/// Drop everything that can be dropped, return true if lights should be recalculated
+	bool dropInventory(RuleInventory * ground);
 	/// Gets the item in the specified slot.
 	BattleItem *getItem(RuleInventory *slot, int x = 0, int y = 0) const;
 	/// Gets the item in the specified slot.
@@ -287,6 +291,8 @@ public:
 	BattleItem *getMainHandWeapon(bool quickest = true) const;
 	/// Gets a grenade from the belt, if any.
 	BattleItem *getGrenadeFromBelt() const;
+	/// Puts the given item into inventory
+	bool pickUpItem(BattleItem * itm, Ruleset const * ruleset, bool ignoreWeight = false);
 	/// Reloads righthand weapon if needed.
 	bool checkAmmo();
 	/// Check if this unit is in the exit area
@@ -395,6 +401,8 @@ public:
 	BattleUnit *getCharging();
 	/// Get the carried weight in strength units.
 	int getCarriedWeight(BattleItem *draggingItem = 0) const;
+	/// Get the encumbrance in strength units - positive means penalties
+	int getEncumbrance(BattleItem const *draggingItem = 0) const;
 	/// Set how many turns this unit will be exposed for.
 	void setTurnsExposed (int turns);
 	/// Set how many turns this unit will be exposed for.

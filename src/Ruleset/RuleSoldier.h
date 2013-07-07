@@ -47,13 +47,13 @@ public:
 	/// Saves the unit data to YAML.
 	void save(YAML::Emitter& out) const;
 	/// Gets the unit's type.
-	std::string getType() const;
+	const std::string& getType() const;
 	/// Get the minimum stats for the random stats generator.
-	UnitStats getMinStats() const;
+	const UnitStats& getMinStats() const;
 	/// Get the maximum stats for the random stats generator.
-	UnitStats getMaxStats() const;
+	const UnitStats& getMaxStats() const;
 	/// Get the stat caps.
-	UnitStats getStatCaps() const;
+	const UnitStats& getStatCaps() const;
 	/// Get the height of the soldier when it's standing.
 	int getStandHeight() const;
 	/// Get the height of the soldier when it's kneeling.
@@ -61,7 +61,7 @@ public:
 	/// Get the elevation of soldier when it's flying.
 	int getFloatHeight() const;
 	/// Get the armor name.
-	std::string getArmor() const;
+	const std::string& getArmor() const;
 
 };
 

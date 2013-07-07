@@ -367,7 +367,7 @@ void RuleItem::save(YAML::Emitter &out) const
  * Returns the item type. Each item has a unique type.
  * @return Item name.
  */
-std::string RuleItem::getType() const
+const std::string &RuleItem::getType() const
 {
 	return _type;
 }
@@ -377,7 +377,7 @@ std::string RuleItem::getType() const
  * this item. This is not necessarily unique.
  * @return Item name.
  */
-std::string RuleItem::getName() const
+const std::string &RuleItem::getName() const
 {
 	return _name;
 }
@@ -617,9 +617,26 @@ int RuleItem::getTUMelee() const
  * Returns a list of compatible ammo.
  * @return pointer to a list of compatible ammo.
  */
-std::vector<std::string> *RuleItem::getCompatibleAmmo()
+const std::vector<std::string> *RuleItem::getCompatibleAmmo() const
 {
 	return &_compatibleAmmo;
+}
+
+bool RuleItem::isCompatible(RuleItem const * itm) const
+{
+	if (itm->getCompatibleAmmo()->size() == 0
+		&& _compatibleAmmo.size() == 0)
+		return false;
+
+	std::vector<std::string>::const_iterator i = _compatibleAmmo.size() ? _compatibleAmmo.begin() : itm->getCompatibleAmmo()->begin();
+	std::vector<std::string>::const_iterator e = _compatibleAmmo.size() ? _compatibleAmmo.end()   : itm->getCompatibleAmmo()->end();
+	std::string const &                   name = _compatibleAmmo.size() ? itm->getName(): _name;
+
+	for (; i != e; ++i)
+		if (name == *i)
+			return true;
+
+	return false;
 }
 
 /**
@@ -885,3 +902,4 @@ int RuleItem::getBulletSpeed() const
 }
 
 }
+// vim : tags+=/home/pub/OpenXcom/tags

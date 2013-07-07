@@ -782,17 +782,28 @@ BattleItem* BattlescapeGenerator::addItem(BattleItem *item, bool secondPass)
 				bool placed = false;
 				for (std::vector<BattleUnit*>::iterator bu = _save->getUnits()->begin(); bu != _save->getUnits()->end() && !placed; ++bu)
 				{
-					if ((*bu)->getMainHandWeapon() && (*bu)->getMainHandWeapon()->getRules()->getCompatibleAmmo())
+					BattleItem * weapon = (*bu)->getMainHandWeapon();
+					if (weapon && (*bu)->getEncumbrance(item) <= 0 && weapon->getRules()->getCompatibleAmmo()->size())
 					{
-						for (std::vector<std::string>::iterator it = (*bu)->getMainHandWeapon()->getRules()->getCompatibleAmmo()->begin(); it != (*bu)->getMainHandWeapon()->getRules()->getCompatibleAmmo()->end() && !placed; ++it)
+						if (item->getRules()->isCompatible(weapon->getRules()))
 						{
-							if (*it == item->getRules()->getType())
+							int x = 0;
+							const char * loc = NULL;
+							for (; x < 11; x++)
 							{
-								if (!(*bu)->getItem("STR_BELT", 1) && item->getRules()->getInventoryHeight() == 1)
+								switch(x)
+								{
+								case 0: case 1: loc = "STR_RIGHT_SHOULDER"; break;
+								case 2: case 3: loc = "STR_LEFT_SHOULDER"; break;
+								case 4: case 5: loc = "STR_RIGHT_LEG"; break;
+								case 6: case 7: loc = "STR_LEFT_LEG"; break;
+								default:        loc = "STR_BELT"; break;
+								}
+								if (loc && !(*bu)->getItem(loc, x&8 ? x-8:x&1) && item->getRules()->getInventoryHeight() == 1)
 								{
 									item->moveToOwner((*bu));
-									item->setSlot(_game->getRuleset()->getInventory("STR_BELT"));
-									item->setSlotX(1);
+									item->setSlot(_game->getRuleset()->getInventory(loc));
+									item->setSlotX(x&8 ? x-8:x&1);
 									placed = true;
 									break;
 								}
@@ -811,6 +822,9 @@ BattleItem* BattlescapeGenerator::addItem(BattleItem *item, bool secondPass)
 				// skip the vehicles, we need only X-Com soldiers WITHOUT equipment-layout
 				if ((*i)->getArmor()->getSize() > 1 || 0 == (*i)->getGeoscapeSoldier()) continue;
 				if (!((*i)->getGeoscapeSoldier()->getEquipmentLayout()->empty())) continue;
+
+				// Skip overloaded soldiers
+				if ((*i)->getEncumbrance(item) > 0) continue;
 
 				if (!(*i)->getItem("STR_BELT"))
 				{
@@ -843,16 +857,19 @@ BattleItem* BattlescapeGenerator::addItem(BattleItem *item, bool secondPass)
 				// find the first soldier with a free right hand to equip weapons
 				for (std::vector<BattleUnit*>::iterator i = _save->getUnits()->begin(); i != _save->getUnits()->end(); ++i)
 				{
+
 					// skip the vehicles, we need only X-Com soldiers WITHOUT equipment-layout
 					if ((*i)->getArmor()->getSize() > 1 || 0 == (*i)->getGeoscapeSoldier()) continue;
 					if (!((*i)->getGeoscapeSoldier()->getEquipmentLayout()->empty())) continue;
 
-					if (!(*i)->getItem("STR_RIGHT_HAND"))
-					{
-						item->moveToOwner((*i));
-						item->setSlot(righthand);
-						break;
-					}
+					if ((*i)->getItem("STR_RIGHT_HAND")) continue;
+
+					// Skip overloaded soldiers
+					if ((*i)->getEncumbrance(item) > 0) continue;
+
+					item->moveToOwner((*i));
+					item->setSlot(righthand);
+					break;
 				}
 			}
 			break;
@@ -863,6 +880,9 @@ BattleItem* BattlescapeGenerator::addItem(BattleItem *item, bool secondPass)
 				// skip the vehicles, we need only X-Com soldiers WITHOUT equipment-layout
 				if ((*i)->getArmor()->getSize() > 1 || 0 == (*i)->getGeoscapeSoldier()) continue;
 				if (!((*i)->getGeoscapeSoldier()->getEquipmentLayout()->empty())) continue;
+
+				// Skip overloaded soldiers
+				if ((*i)->getEncumbrance(item) > 0) continue;
 
 				if (!(*i)->getItem("STR_BELT",3,0))
 				{

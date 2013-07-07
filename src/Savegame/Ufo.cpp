@@ -593,7 +593,7 @@ void Ufo::setDestination(Target *dest)
 	delete old;
 }
 
-const int Ufo::getShootingAt() const
+int Ufo::getShootingAt() const
 {
 	return _shootingAt;
 }

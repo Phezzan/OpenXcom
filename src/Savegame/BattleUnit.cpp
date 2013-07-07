@@ -968,7 +968,6 @@ int BattleUnit::getMorale() const
 int BattleUnit::damage(Position const &relative, int power, ItemDamageType type, bool ignoreArmor)
 {
 	UnitSide side = SIDE_FRONT;
-	int impactheight;
 	UnitBodyPart bodypart = BODYPART_TORSO;
 
 	power = (int)floor(power * _armor->getDamageModifier(type));
@@ -982,6 +981,9 @@ int BattleUnit::damage(Position const &relative, int power, ItemDamageType type,
 
 	if (!ignoreArmor)
 	{
+		int const abs_x = abs(relative.x);
+		int const abs_y = abs(relative.y);
+
 		if (relative == Position(0, 0, 0) && _status != STATUS_UNCONSCIOUS)
 		{
 			side = SIDE_UNDER;
@@ -989,8 +991,6 @@ int BattleUnit::damage(Position const &relative, int power, ItemDamageType type,
 		else
 		{
 			int relativeDirection;
-			int const abs_x = abs(relative.x);
-			int const abs_y = abs(relative.y);
 
 			if (abs_y > abs_x * 2)
 				relativeDirection = 8 + 4 * (relative.y > 0);
@@ -1027,10 +1027,17 @@ int BattleUnit::damage(Position const &relative, int power, ItemDamageType type,
 			}
 		}
 
+		int centerHit = getArmor()->getSize() * 3;
+		centerHit = abs_x < centerHit && abs_y < centerHit && (abs_x * abs_x + abs_y*abs_y < centerHit * centerHit);
+
 		if (relative.z > getHeight() * 12 / 16 )
 		{
-			bodypart = BODYPART_HEAD;
-			side = SIDE_FRONT;				// Helmet armor is good all round
+			bodypart = BODYPART_TORSO;
+			if (centerHit)
+			{
+				bodypart = BODYPART_HEAD;
+				side = SIDE_FRONT;				// Helmet armor is good all round
+			}
 		}
 		else if (relative.z > getHeight() * 8 / 16)
 		{
@@ -1049,6 +1056,8 @@ int BattleUnit::damage(Position const &relative, int power, ItemDamageType type,
 			case SIDE_RIGHT:	bodypart = BODYPART_RIGHTLEG; 	break;
 			default:
 				bodypart = (UnitBodyPart) RNG::generate(BODYPART_RIGHTLEG,BODYPART_LEFTLEG);
+				if (centerHit && relative.z < getHeight() * 3 / 16)
+					side = SIDE_UNDER;
 			}
 		}
 		power -= getArmor(side);
@@ -1105,7 +1114,7 @@ int BattleUnit::damage(Position const &relative, int power, ItemDamageType type,
 void BattleUnit::healStun()
 {
 	if (_stunlevel > 1)
-		_stunlevel -= _stats.stamina / 40;
+		_stunlevel -= _stats.stamina / 33;
 	else
 		_stunlevel = 0;
 }
@@ -1208,40 +1217,40 @@ int BattleUnit::getActionTUs(BattleActionType actionType, BattleItem * const ite
 	}
 
 	switch (actionType)
-    {
-    case BA_PRIME:
-        return (int)floor(getStats()->tu * 0.50);
-    case BA_THROW:
-        return (int)floor(getStats()->tu * 0.25);
-    case BA_AUTOSHOT:
-        return (int)(getStats()->tu * item->getRules()->getTUAuto() / 100);
-    case BA_SNAPSHOT:
-        if (item->getRules()->getTUSnap())
-        {
-            if (item->getRules()->getFlatRate())
-                return (int)(item->getRules()->getTUSnap());
-            return (int)(_stats.tu * item->getRules()->getTUSnap() / 100);
-        }
-        // else fall and use Melee
-    case BA_STUN:
-    case BA_HIT:
-        if (item->getRules()->getFlatRate())
-            return item->getRules()->getTUMelee();
-        else
-            return (int)(getStats()->tu * item->getRules()->getTUMelee() / 100);
-    case BA_LAUNCH:
-    case BA_AIMEDSHOT:
-        return (int)(getStats()->tu * item->getRules()->getTUAimed() / 100);
-    case BA_USE:
-    case BA_MINDCONTROL:
-    case BA_PANIC:
-        if (item->getRules()->getFlatRate())
-            return item->getRules()->getTUUse();
-        else
-            return (int)(getStats()->tu * item->getRules()->getTUUse() / 100);
-    default:
-        return 0;
-    }
+	{
+	case BA_PRIME:
+		return (int)floor(getStats()->tu * 0.50);
+	case BA_THROW:
+		return (int)floor(getStats()->tu * 0.25);
+	case BA_AUTOSHOT:
+		return (int)(getStats()->tu * item->getRules()->getTUAuto() / 100);
+	case BA_SNAPSHOT:
+		if (item->getRules()->getTUSnap())
+		{
+			if (item->getRules()->getFlatRate())
+				return (int)(item->getRules()->getTUSnap());
+			return (int)(_stats.tu * item->getRules()->getTUSnap() / 100);
+		}
+		// else fall and use Melee
+	case BA_STUN:
+	case BA_HIT:
+		if (item->getRules()->getFlatRate())
+			return item->getRules()->getTUMelee();
+		else
+			return (int)(getStats()->tu * item->getRules()->getTUMelee() / 100);
+	case BA_LAUNCH:
+	case BA_AIMEDSHOT:
+		return (int)(getStats()->tu * item->getRules()->getTUAimed() / 100);
+	case BA_USE:
+	case BA_MINDCONTROL:
+	case BA_PANIC:
+		if (item->getRules()->getFlatRate())
+			return item->getRules()->getTUUse();
+		else
+			return (int)(getStats()->tu * item->getRules()->getTUUse() / 100);
+	default:
+		return 0;
+	}
 }
 
 
@@ -1527,20 +1536,19 @@ void BattleUnit::prepareNewTurn()
 	TURecovery -= (TURecovery * (_fatalWounds[BODYPART_LEFTLEG]+_fatalWounds[BODYPART_RIGHTLEG] * 10))/100;
 	setTimeUnits(TURecovery);
 
-	// recover energy
-	if (!isOut())
-	{
-		int ENRecovery = getStats()->stamina / 3 - _stunlevel;
-		// Each fatal wound to the body reduces the soldier's energy recovery by 10%.
-		ENRecovery -= (_energy * (_fatalWounds[BODYPART_TORSO] * 10))/100;
-		_energy += ENRecovery;
-		if (_energy > getStats()->stamina)
-			_energy = getStats()->stamina;
-	}
-
 	// suffer from wounds, fire, etc
     if(_status != STATUS_DEAD)
 	{
+		int ENRecovery = getStats()->stamina / 3;
+		if (_stunlevel)
+			ENRecovery = (ENRecovery * std::max(0, _stats.health - _stunlevel)) / _stats.health ;
+		// Each fatal wound to the body reduces the soldier's energy recovery by 10%.
+		if (ENRecovery > 0)
+		{
+			ENRecovery *= (10 - _fatalWounds[BODYPART_TORSO]) / 10;
+			setEnergy(_energy + ENRecovery);
+		}
+
 		_health -= getFatalWounds() * _pain / _stats.health;   // Bleeding ramps with pain.
 
 		// Turn into a zombie?  (Kmod - fight zombification with painkillers and healing!)
@@ -1855,6 +1863,130 @@ BattleItem *BattleUnit::getItem(const std::string &slot, int x, int y) const
 	return 0;
 }
 
+
+/**
+ * Puts unit's inventory on the ground - fixed weapons stay put
+ * the specified inventory position.
+ * @param ground Inventory slot.
+ * @return true if lighting should be recalced
+ */
+bool BattleUnit::dropInventory(RuleInventory * ground)
+{
+	bool calcLighting = false;
+	if (! _tile)
+		return false;
+
+	std::vector<BattleItem*> tmp;
+	std::vector<BattleItem*>::reverse_iterator i = _inventory.rbegin();
+	while(i != _inventory.rend())
+	{
+		// don't ever drop fixed items
+		if ((*i)->getRules()->isFixed())
+		{
+			tmp.push_back(*i);
+			i++;
+			continue;
+		}
+
+		_tile->addItem(*i, ground);
+		(*i)->setTurnFlag(false);		// the player didn't 'place' this here - he died.
+		(*i)->setOwner(0);
+		calcLighting |= ((*i)->getRules()->getBattleType() == BT_FLARE);
+		i++;
+	}
+	_inventory.swap(tmp);
+	return calcLighting;
+}
+
+bool BattleUnit::pickUpItem(BattleItem * itm, Ruleset const * ruleset, bool ignoreWeight)
+{
+	if (!ignoreWeight && getEncumbrance(itm) > 0)
+		return false;
+
+	int x = -1;
+	const char * loc = NULL;
+	switch (itm->getRules()->getBattleType())
+	{
+	case BT_SCANNER:
+	case BT_PROXIMITYGRENADE:
+	case BT_GRENADE:
+	case BT_FLARE:
+	case BT_AMMO:
+		if (itm->getRules()->getInventoryHeight() == 1)
+		{
+			for (x=0; x < 11; x++)
+			{
+				switch(x)
+				{
+				case 0: case 1: loc = "STR_RIGHT_SHOULDER"; break;
+				case 2: case 3: loc = "STR_LEFT_SHOULDER"; break;
+				case 4: case 5: loc = "STR_RIGHT_LEG"; break;
+				case 6: case 7: loc = "STR_LEFT_LEG"; break;
+				default:        loc = "STR_BELT"; break;
+				}
+				if (loc && !getItem(loc, x&8 ? x-8:x&1))
+				{
+					itm->moveToOwner(this);
+					itm->setSlot(ruleset->getInventory(loc));
+					itm->setSlotX(x&8 ? x-8:x&1);
+					break;
+				}
+			}
+			return false;
+		}
+		// If it's bigger than 1x1, treat it like a weapon
+	case BT_FIREARM:
+	case BT_MELEE:
+		for (x=0; x < 7; x++)
+		{
+			switch(x)
+			{
+			case 0: loc = "STR_RIGHT_HAND"; break;
+			case 1: loc = "STR_LEFT_HAND"; break;
+			case 2: case 3: loc = "STR_BELT"; break;
+			default: loc = "STR_BACKPACK"; break;
+			}
+			if (x == 2 || x == 3)
+			{
+				if (!loc || getItem(loc, x==3 ? x:0) || itm->getRules()->getInventoryHeight() > 2)
+					continue;
+				itm->moveToOwner(this);
+				itm->setSlot(ruleset->getInventory(loc));
+				itm->setSlotX(x == 3 ? x : 0);
+				return true;
+			}
+			if (loc && !getItem(loc, x>=4 ? x-4: 0))
+			{
+				itm->moveToOwner(this);
+				itm->setSlot(ruleset->getInventory(loc));
+				itm->setSlotX(x>=4 ? x-4 : 0);
+				return true;
+			}
+		}
+	break;
+	case BT_MEDIKIT:
+		if (!getItem("STR_BELT",3,0))
+			x = 3;
+		else if (!getItem("STR_BELT",0,0))
+			x = 0;
+		if (x >= 0)
+		{
+			// at this point we are assuming (3,1) is not occupied already (with eg. a grenade)
+			itm->moveToOwner(this);
+			itm->setSlot(ruleset->getInventory("STR_BELT"));
+			itm->setSlotX(x);
+			itm->setSlotY(0);
+			return true;
+		}
+	break;
+	default:
+	break;
+	}
+	return false;
+}
+
+
+
 /**
 * Get the "main hand weapon" from the unit.
 * @param quickest Wether to get the quickest weapon, default true
@@ -1916,22 +2048,14 @@ bool BattleUnit::checkAmmo()
 	}
 	// we have a non-melee weapon with no ammo and 15 or more TUs - we might need to look for ammo then
 	BattleItem *ammo = 0;
-	bool wrong = true;
-	for (std::vector<BattleItem*>::iterator i = getInventory()->begin(); i != getInventory()->end(); ++i)
+	bool good = false;
+	for (std::vector<BattleItem*>::const_iterator i = getInventory()->begin(); !good && i != getInventory()->end(); ++i)
 	{
-		ammo = (*i);
-		for (std::vector<std::string>::iterator c = weapon->getRules()->getCompatibleAmmo()->begin(); c != weapon->getRules()->getCompatibleAmmo()->end(); ++c)
-		{
-			if ((*c) == ammo->getRules()->getType())
-			{
-				wrong = false;
-				break;
-			}
-		}
-		if (!wrong) break;
+		if ( (good = weapon->getRules()->isCompatible((*i)->getRules())) )
+			ammo = (BattleItem*)*i;
 	}
 
-	if (wrong) return false; // didn't find any compatible ammo in inventory
+	if (!good) return false; // didn't find any compatible ammo in inventory
 
 	spendTimeUnits(15);
 	weapon->setAmmoItem(ammo);
@@ -2017,8 +2141,9 @@ bool BattleUnit::postMissionProcedures(SavedGame *geoscape)
 	s->addKillCount(_kills);
 
 	UnitStats *stats = s->getCurrentStats();
-	UnitStats caps = s->getRules()->getStatCaps();
+	const UnitStats &caps = s->getRules()->getStatCaps();
 	int healthLoss = stats->health - _health;
+	int impStr = _expMelee + _expThrowing/2;
 
 	if (healthLoss > 0)
 	{
@@ -2027,73 +2152,76 @@ bool BattleUnit::postMissionProcedures(SavedGame *geoscape)
 
 		s->setWoundRecovery(RNG::generate(max/5,max));
 		if (caps.health > stats->health)
-			stats->health += improveStat(s->getWoundRecovery()/3);
+			stats->health += improveStat(s->getWoundRecovery()/3, stats->health, caps.health);
 	}
 
-	if (_expBravery)
+	if (_expBravery && stats->bravery < caps.bravery)
 	{
-		stats->bravery += improveStat(_expBravery);
+		stats->bravery += improveStat(_expBravery, stats->bravery, caps.bravery);
 		if (stats->bravery > caps.bravery)
 			stats->bravery = caps.bravery;
 	}
 	if (_expReactions && stats->reactions < caps.reactions)
 	{
-		stats->reactions += improveStat(_expReactions);
+		stats->reactions += improveStat(_expReactions, stats->reactions, caps.reactions);
 	}
 	if (_expFiring && stats->firing < caps.firing)
 	{
-		stats->firing += improveStat(_expFiring);
+		stats->firing += improveStat(_expFiring, stats->firing, caps.firing);
 	}
 	if (_expMelee && stats->melee < caps.melee)
 	{
-		stats->melee += improveStat(_expMelee);
-        if (stats->strength < caps.strength)
-            stats->strength += improveStat(_expMelee);
+		stats->melee += improveStat(_expMelee, stats->melee, caps.melee);
 	}
 	if (_expThrowing && stats->throwing < caps.throwing)
 	{
-		stats->throwing += improveStat(_expThrowing);
-        if (stats->strength < caps.strength)
-            stats->strength += improveStat(_expThrowing)/2;
+		stats->throwing += improveStat(_expThrowing, stats->throwing, caps.throwing);
 	}
 	if (_expPsiSkill && stats->psiSkill < caps.psiSkill)
 	{
-		stats->psiSkill += improveStat(_expPsiSkill);
+		stats->psiSkill += improveStat(_expPsiSkill, stats->psiSkill, caps.psiSkill);
+	}
+	if (impStr && stats->strength < caps.strength)
+	{
+		stats->strength += improveStat(impStr, stats->strength, caps.strength );
 	}
 
 	if (_expBravery  || _expReactions || _expFiring 
-     || _expPsiSkill || _expMelee     || healthLoss > 0)
+		|| _expPsiSkill || _expMelee     || healthLoss > 0)
 	{
 		int v;
 		v = caps.tu - stats->tu;
-		if (v > 0) stats->tu += RNG::generate(0, v/10 + 2);
+		if (v > 0) stats->tu += RNG::generate(0, v/12 + 2);
 		v = caps.health - stats->health;
 		if (v > 0) stats->health += RNG::generate(healthLoss > 0, v/20 + 1);
 		v = caps.strength - stats->strength;
-		if (v > 0) stats->strength += RNG::generate(0, v/10 + 1);
+		if (v > 0) stats->strength += RNG::generate(0, v/12 + 1);
 		v = caps.stamina - stats->stamina;
-		if (v > 0) stats->stamina += RNG::generate(0, v/10 + 2);
-        return true;
+		if (v > 0) stats->stamina += RNG::generate(0, v/12 + 2);
+		return true;
 	}
 	else
 	{
 		return false;
 	}
-    return false;
+	return false;
 }
 
 /**
 * Converts the number of experience to the stat increase.
+*   Skillful units receive less increase than rookies
 * @param Experience counter.
 * @return Stat increase.
 */
-int BattleUnit::improveStat(int exp)
+int BattleUnit::improveStat(int exp, int current, int max = 100)
 {
-	double v = 4;
-	if (exp < 3) v = 1;
-	if (exp < 6) v = 2;
-	if (exp < 10) v = 3;
-	return (int)(v/2.0 + RNG::generate(0.0, v));
+	int rnd = exp + RNG::generate(1, max);
+
+	return(rnd > max) 
+		+ (rnd > current - exp)
+		+ (rnd * 2 > current)
+		+ (rnd * 3 > current)
+		+ (rnd * 4 > current);
 }
 
 /*
@@ -2619,6 +2747,10 @@ int BattleUnit::getCarriedWeight(BattleItem *draggingItem) const
 	return weight;
 }
 
+int BattleUnit::getEncumbrance(BattleItem const * testAdd) const
+{
+	return getCarriedWeight(NULL) + testAdd->getRules()->getWeight() - _stats.strength;
+}
 /**
  * Set how long this unit will be exposed for.
  * @param turns

@@ -77,9 +77,9 @@ public:
 	/// Saves the item data to YAML.
 	void save(YAML::Emitter& out) const;
 	/// Gets the item's type.
-	std::string getType() const;
+	const std::string &getType() const;
 	/// Gets the item's name.
-	std::string getName() const;
+	const std::string &getName() const;
 	/// Gets the item's requirements.
 	const std::vector<std::string> &getRequirements() const;
 	/// Gets the item's size.
@@ -131,7 +131,9 @@ public:
 	/// Gets the item's melee TU cost.
 	int getTUMelee() const;
 	/// Gets list of compatible ammo.
-	std::vector<std::string> *getCompatibleAmmo();
+	const std::vector<std::string> *getCompatibleAmmo() const;
+	/// True if itm takes this as ammo - or if this takes itm as ammo
+	bool isCompatible(RuleItem const * itm) const;
 	/// Gets the item's damage type.
 	ItemDamageType getDamageType() const;
 	/// Gets the item's type.

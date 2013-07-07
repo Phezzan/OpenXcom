@@ -108,22 +108,22 @@ void RuleSoldier::save(YAML::Emitter &out) const
  * this unit. Each unit type has a unique name.
  * @return Unit name.
  */
-std::string RuleSoldier::getType() const
+const std::string& RuleSoldier::getType() const
 {
 	return _type;
 }
 
-UnitStats RuleSoldier::getMinStats() const
+const UnitStats& RuleSoldier::getMinStats() const
 {
 	return _minStats;
 }
 ///
-UnitStats RuleSoldier::getMaxStats() const
+const UnitStats& RuleSoldier::getMaxStats() const
 {
 	return _maxStats;
 }
 ///
-UnitStats RuleSoldier::getStatCaps() const
+const UnitStats& RuleSoldier::getStatCaps() const
 {
 	return _statCaps;
 }
@@ -143,7 +143,7 @@ int RuleSoldier::getFloatHeight() const
 	return _floatHeight;
 }
 
-std::string RuleSoldier::getArmor() const
+const std::string& RuleSoldier::getArmor() const
 {
 	return _armor;
 }

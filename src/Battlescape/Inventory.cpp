@@ -623,16 +623,7 @@ void Inventory::mouseClick(Action *action, State *state)
 				// Put item in weapon
 				else
 				{
-					bool wrong = true;
-					for (std::vector<std::string>::iterator i = item->getRules()->getCompatibleAmmo()->begin(); i != item->getRules()->getCompatibleAmmo()->end(); ++i)
-					{
-						if ((*i) == _selItem->getRules()->getType())
-						{
-							wrong = false;
-							break;
-						}
-					}
-					if (wrong)
+					if (!_selItem->getRules()->isCompatible(item->getRules()))
 					{
 						_warning->showMessage(_game->getLanguage()->getString("STR_WRONG_AMMUNITION_FOR_THIS_WEAPON"));
 					}

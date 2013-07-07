@@ -524,7 +524,8 @@ items:
     bigSprite: 40
     floorSprite: 31
     handSprite: 104
-    fireSound: 18
+#    fireSound: 18		# Plasma sound...
+    fireSound: 11		# Laser Sound
     hitSound: 19
     hitAnimation: 36
     power: 100
@@ -625,7 +626,7 @@ items:
     invWidth: 1
     invHeight: 2
     armor: 20
-    attraction: 1
+    attraction: 0
   - type: STR_PISTOL_CLIP
     size: 0.1
     costBuy: 70
@@ -640,7 +641,7 @@ items:
     clipSize: 12
     battleType: 2
     armor: 12
-    attraction: 1
+    attraction: 0
   - type: STR_RIFLE
     size: 0.2
     costBuy: 3000
@@ -664,6 +665,7 @@ items:
     invWidth: 1
     invHeight: 3
     armor: 25
+    attraction: 1
   - type: STR_RIFLE_CLIP
     size: 0.1
     costBuy: 200
@@ -673,11 +675,12 @@ items:
     floorSprite: 2
     hitSound: 22
     hitAnimation: 26
-    power: 30
+    power: 32
     damageType: 1
     clipSize: 30
     battleType: 2
     armor: 25
+    attraction: 6
   - type: STR_HEAVY_CANNON
     size: 0.25
     costBuy: 6000
@@ -701,6 +704,7 @@ items:
     invWidth: 2
     invHeight: 3
     armor: 20
+    attraction: 6
   - type: STR_HC_AP_AMMO
     size: 0.08
     costBuy: 300
@@ -734,7 +738,7 @@ items:
     invWidth: 2
     invHeight: 1
     armor: 20
-    attraction: 1
+    attraction: 0
   - type: STR_HC_I_AMMO
     size: 0.08
     costBuy: 400
@@ -751,7 +755,7 @@ items:
     invWidth: 2
     invHeight: 1
     armor: 20
-    attraction: 1
+    attraction: 0
   - type: STR_AUTO_CANNON
     size: 0.3
     costBuy: 13500
@@ -825,7 +829,7 @@ items:
     invWidth: 2
     invHeight: 1
     armor: 20
-    attraction: 1
+    attraction: 0
   - type: STR_SMALL_ROCKET
     size: 0.2
     costBuy: 560
@@ -869,7 +873,7 @@ items:
     fireSound: 11
     hitSound: 19
     hitAnimation: 36
-    power: 46
+    power: 42
     damageType: 4
     accuracyAuto: 28
     accuracySnap: 40
@@ -893,7 +897,7 @@ items:
     fireSound: 11
     hitSound: 19
     hitAnimation: 36
-    power: 60
+    power: 56
     damageType: 4
     accuracyAuto: 46
     accuracySnap: 65
@@ -930,6 +934,7 @@ items:
     invWidth: 2
     invHeight: 3
     armor: 20
+    attraction: 8
   - type: STR_PULSE_LASER
     size: 0.3
     costSell: 92000		# $3k / month - not a money maker
@@ -937,11 +942,11 @@ items:
     bigSprite: 80
     floorSprite: 0		## Hvy Laser was 6
     handSprite: 8		## Hvy Laser was 16
-    bulletSprite: 7		## Good?
+    bulletSprite: 15		## Good?
     fireSound: 11
     hitSound: 19
     hitAnimation: 36
-    power: 75			## 10 less than Hvy Laser
+    power: 72
     damageType: 4
     accuracyAuto: 50		## same accuracy as Hvy Laser snap
     accuracySnap: 62
@@ -956,6 +961,7 @@ items:
     invHeight: 3
     armor: 50			# Alien Alloys - explosion resistant just like the P Rifle
     listOrder: 3701
+    attraction: 9
   - type: STR_GRENADE
     size: 0.025
     costBuy: 275
@@ -1079,36 +1085,85 @@ items:
       - STR_HEAVY_PLASMA
     size: 0.2
     costSell: 132000
-    weight: 8
-    accuracyAuto: 45
+    weight: 10
+    bigSprite: 86
+#    accuracyAuto: 45
+    accuracyAuto: 0
     accuracySnap: 70
     accuracyAimed: 90
-    tuAuto: 35
-    tuSnap: 30
-    tuAimed: 60
+#    tuAuto: 35
+    tuAuto: 0
+    tuSnap: 25
+    tuAimed: 50
     battleType: 1
     twoHanded: true
     invWidth: 2
     invHeight: 3
     recoveryPoints: 5
     armor: 50
-    attraction: 1
+    attraction: 40
   - type: STR_HEAVY_PLASMA_CLIP
     requires:
       - STR_HEAVY_PLASMA_CLIP
     size: 0.1
     costSell: 24000
     weight: 3
-    power: 110
+    bigSprite: 87
+    power: 115
     damageType: 5
     clipSize: 36
     armor: 20
+    attraction: 20
+  - type: STR_PULSE_PLASMA
+    requires:
+      - STR_PULSE_PLASMA
+    size: 0.2
+    costSell: 145000
+    weight: 10
+    bigSprite: 35
+    floorSprite: 34
+    handSprite: 56
+    bulletSprite: 8
+    fireSound: 18
+    compatibleAmmo:
+      - STR_PULSE_PLASMA_CLIP
+    accuracyAuto: 45
+    accuracySnap: 66
+    accuracyAimed: 81
+    tuAuto: 32
+    tuSnap: 25
+    tuAimed: 66
+    battleType: 1
+    twoHanded: true
+    invWidth: 2
+    invHeight: 3
+    recoveryPoints: 5
+    armor: 50
+    attraction: 50
+  - type: STR_PULSE_PLASMA_CLIP
+    requires:
+      - STR_PULSE_PLASMA_CLIP
+    size: 0.05
+    costSell: 24000
+    weight: 3
+    bigSprite: 25
+    floorSprite: 33
+    hitSound: 19
+    hitAnimation: 46
+    power: 96
+    damageType: 5
+    clipSize: 42
+    battleType: 2
+    recoveryPoints: 1
+    armor: 20
+    attraction: 25
   - type: STR_PLASMA_RIFLE
     requires:
       - STR_PLASMA_RIFLE
     size: 0.2
     costSell: 98000
     weight: 5
+    bigSprite: 84
     compatibleAmmo:
       - STR_PLASMA_RIFLE_CLIP
     accuracyAuto: 55
@@ -1123,26 +1178,28 @@ items:
     invHeight: 3
     recoveryPoints: 4
     armor: 50
-    attraction: 1
+    attraction: 30
   - type: STR_PLASMA_RIFLE_CLIP
     size: 0.1
     costSell: 18000
-    weight: 3
-    bigSprite: 41
+    weight: 2
+#    bigSprite: 41
+    bigSprite: 85
     floorSprite: 33
     hitSound: 19
     hitAnimation: 46
-    power: 75
+    power: 74
     damageType: 5
     clipSize: 36
     battleType: 2
     recoveryPoints: 1
     armor: 25
-    attraction: 1
+    attraction: 15
   - type: STR_PLASMA_PISTOL
     size: 0.1
     costSell: 66600
     weight: 3
+    bigSprite: 82
     accuracyAuto: 50
     accuracySnap: 65
     accuracyAimed: 85
@@ -1151,20 +1208,21 @@ items:
     tuAimed: 60
     recoveryPoints: 3
     armor: 45
-    attraction: 1
+    attraction: 20
   - type: STR_PLASMA_PISTOL_CLIP
     requires:
       - STR_PLASMA_PISTOL_CLIP
     size: 0.1
     costSell: 9000
-    weight: 3
+    weight: 1
+    bigSprite: 83
     power: 52
     damageType: 5
     clipSize: 26
     battleType: 2
     recoveryPoints: 1
     armor: 25
-    attraction: 1
+    attraction: 10
   - type: STR_BLASTER_LAUNCHER
     requires:
       - STR_BLASTER_LAUNCHER
@@ -1187,7 +1245,7 @@ items:
     invHeight: 3
     recoveryPoints: 5
     armor: 40
-    attraction: 1
+    attraction: 50
   - type: STR_BLASTER_BOMB
     requires:
       - STR_BLASTER_BOMB
@@ -1206,8 +1264,8 @@ items:
     invHeight: 2
     recoveryPoints: 1
     armor: 30
-    blastRadius: 11
-    attraction: 1
+    blastRadius: 10
+    attraction: 20
   - type: STR_SMALL_LAUNCHER
     requires:
       - STR_SMALL_LAUNCHER
@@ -1231,7 +1289,7 @@ items:
     invHeight: 2
     recoveryPoints: 4
     armor: 20
-    attraction: 1
+    attraction: 15
   - type: STR_STUN_BOMB
     requires:
       - STR_STUN_BOMB
@@ -1248,7 +1306,7 @@ items:
     battleType: 2
     recoveryPoints: 1
     armor: 20
-    attraction: 1
+    attraction: 8
   - type: STR_ALIEN_GRENADE
     requires:
       - STR_ALIEN_GRENADE
@@ -1263,7 +1321,7 @@ items:
     recoveryPoints: 1
     armor: 20
     blastRadius: 6
-    attraction: 1
+    attraction: 10
     listOrder: 4101
   - type: STR_ELERIUM_115
     size: 0.1
@@ -1274,7 +1332,7 @@ items:
     invWidth: 1
     invHeight: 1
     armor: 30
-    attraction: 4
+    attraction: 0
   - type: STR_MIND_PROBE
     requires:
       - STR_MIND_PROBE
@@ -1290,7 +1348,7 @@ items:
     tuUse: 50
     recoveryPoints: 1
     armor: 20
-    attraction: 1
+    attraction: 0
     listOrder: 4602
   - type: STR_MIND_PROBE_M
     requires:
@@ -1307,7 +1365,7 @@ items:
     tuUse: 32
     recoveryPoints: 1
     armor: 30
-    attraction: 1
+    attraction: 0
     listOrder: 4601
   - type: STR_ALIEN_ALLOYS
     size: 0.05
@@ -1436,8 +1494,8 @@ armors:
       - 0.1   	# Smoke 	DT_SMOKE
   - type: STR_FLYING_SUIT_UC
     frontArmor: 110
-    sideArmor: 95
-    rearArmor: 85
+    sideArmor: 85
+    rearArmor: 95
     underArmor: 75
     movementType: 1
     damageModifier:
@@ -1463,7 +1521,7 @@ armors:
       - 0.66    # HiEx		DT_HE          
       - 1.0     # Laser		DT_LASER
       - 1.0     # Plasma	DT_PLASMA
-      - 0.8     # Stun		DT_STUN         
+      - 0.7     # Stun		DT_STUN         
       - 1.0     # Melee		DT_MELEE         
       - 1.2     # Acid		DT_ACID         
       - 0.0     # Smoke 	DT_SMOKE
@@ -1479,7 +1537,7 @@ armors:
       - 0.8    	# HiEx		DT_HE          
       - 1.66   	# Laser		DT_LASER
       - 0.75   	# Plasma	DT_PLASMA
-      - 1.0    	# Stun		DT_STUN         
+      - 0.5    	# Stun		DT_STUN         
       - 1.0    	# Melee		DT_MELEE         
       - 1.0    	# Acid		DT_ACID         
       - 0.0    	# Smoke 	DT_SMOKE
@@ -2021,6 +2079,29 @@ units:
     intelligence: 4
     aggression: 1
     healthPool: 96
+  - type: STR_SECTOPOD_TERRORIST
+    race: STR_SECTOPOD
+    rank: STR_LIVE_TERRORIST
+    stats:
+      tu: 62
+      stamina: 90
+      health: 96
+      bravery: 110
+      reactions: 64
+      firing: 60
+      throwing: 0
+      strength: 90
+      psiStrength: 0
+      psiSkill: 0
+      melee: 80
+    armor: SECTOPOD_ARMOR
+    standHeight: 23
+    kneelHeight: 16
+    value: 30
+    deathSound: 23
+    intelligence: 4
+    aggression: 3
+    livingWeapon: true
   - type: STR_ZOMBIE
     stats:
       tu: 40
@@ -2048,13 +2129,74 @@ research:
       - STR_LASER_CANNON
       - STR_ELERIUM_115
       - STR_ALIEN_ALLOYS
-    listOrder: 8030
+    listOrder: 8021
+  - name: STR_PLASMA_RIFLE
+    cost: 700
+    points: 25
+    needItem: true
+    dependencies:
+      - STR_ELERIUM_115
+      - STR_ALIEN_ALLOYS
+      - STR_PLASMA_PISTOL
+  - name: STR_PLASMA_RIFLE_CLIP
+    cost: 400
+    points: 6
+    needItem: true
+    dependencies:
+      - STR_ELERIUM_115
+      - STR_ALIEN_ALLOYS
+      - STR_PLASMA_RIFLE
+  - name: STR_HEAVY_PLASMA
+    cost: 800
+    points: 30
+    needItem: true
+    dependencies:
+      - STR_ELERIUM_115
+      - STR_ALIEN_ALLOYS
+      - STR_PLASMA_RIFLE
+  - name: STR_HEAVY_PLASMA_CLIP
+    cost: 400
+    points: 7
+    needItem: true
+    dependencies:
+      - STR_ELERIUM_115
+      - STR_ALIEN_ALLOYS
+      - STR_HEAVY_PLASMA
+  - name: STR_PULSE_PLASMA
+    cost: 800
+    points: 30
+    needItem: true
+    dependencies:
+      - STR_ELERIUM_115
+      - STR_ALIEN_ALLOYS
+      - STR_HEAVY_PLASMA
+    listOrder: 8022
+  - name: STR_PULSE_PLASMA_CLIP
+    cost: 400
+    points: 15
+    needItem: true
+    dependencies:
+      - STR_PULSE_PLASMA
+      - STR_ELERIUM_115
+      - STR_ALIEN_ALLOYS
+    listOrder: 8023
+  - name: STR_PLASMA_CANNON
+    cost: 660
+    points: 25
+    dependencies:
+      - STR_PULSE_PLASMA
+      - STR_PULSE_PLASMA_CLIP
   - name: STR_MEDI_KIT_ADV
     cost: 240
     points: 25
     dependencies:
       - STR_MEDI_KIT
       - STR_ALIEN_SURGERY
+  - name: STR_ULTIMATE_CRAFT
+    cost: 1000
+    points: 30
+    dependencies:
+      - STR_NEW_FIGHTER_TRANSPORTER
 #654 MANUFACTURE START # # # # # #
 #654 MANUFACTURE START # # # # # #
 #654 MANUFACTURE START # # # # # #
@@ -2247,6 +2389,24 @@ manufacture:
     cost: 80000
     requiredItems:
       STR_ALIEN_ALLOYS: 1
+  - name: STR_PULSE_PLASMA
+    category: STR_WEAPON
+    requires:
+      - STR_PULSE_PLASMA
+    space: 6
+    time: 1050
+    cost: 88000
+    requiredItems:
+      STR_ALIEN_ALLOYS: 1
+  - name: STR_PULSE_PLASMA_CLIP
+    category: STR_AMMUNITION
+    requires:
+      - STR_PULSE_PLASMA_CLIP
+    space: 4
+    time: 80
+    cost: 6000
+    requiredItems:
+      STR_ELERIUM_115: 3
   - name: STR_HEAVY_PLASMA_CLIP
     category: STR_AMMUNITION
     requires:
@@ -2448,6 +2608,11 @@ ufopaedia:
     section: STR_WEAPONS_AND_EQUIPMENT
     text: STR_PULSE_LASER_UFO
     listOrder: 3901
+  - id: STR_PULSE_PLASMA
+    type_id: 4
+    section: STR_WEAPONS_AND_EQUIPMENT
+    text: STR_PULSE_PLASMA_UFO
+    listOrder: 4201
   - id: STR_MEDI_KIT_ADV
     type_id: 4
     section: STR_WEAPONS_AND_EQUIPMENT
@@ -2621,7 +2786,7 @@ startingTime:
   day: 1
   month: 1
   year: 1999
-####	COSTS     #######
+####      COSTS     #######
 costSoldier: 15000
 costEngineer: 20000
 costScientist: 25000
@@ -2635,6 +2800,19 @@ extraSprites:
       11: Resources/Kmod/HeavyCannon.gif
       80: Resources/Kmod/PulseLaser.gif
       81: Resources/Kmod/MindProbeM.gif
+      82: Resources/Kmod/AlienPlasmaPistol.gif
+      83: Resources/Kmod/PlasmaPistolClip.gif
+      84: Resources/Kmod/AlienPlasmaRifle.gif
+      85: Resources/Kmod/PlasmaRifleClip.gif
+      86: Resources/Kmod/AlienPlasmaHeavy.gif
+      87: Resources/Kmod/PlasmaHeavyClip.gif
+  - type: Projectiles
+    width: 105
+    height: 18
+    subX: 3
+    subY: 3
+    files:
+      385: Resources/Kmod/BulletSprites.png
 extraStrings:
   - type: English
     strings:
@@ -2645,6 +2823,9 @@ extraStrings:
       STR_HEAVY_LASER: Laser Cannon
       STR_PULSE_LASER: Laser Pulse Cannon
       STR_PULSE_LASER_UFO: An improved ergonomic handle and an Elerium power source capable of rapid fire make this the ultimate laser weapon and a favorite of squaddies everywhere.
+      STR_PULSE_PLASMA: Plasma Pulse Cannon
+      STR_PULSE_PLASMA_UFO: Although not as powerful as the single-shot Plasma Cannon, this weapon's auto-fire is still fully capable of penetrating all but the most heavily armored targets.
+      STR_PULSE_PLASMA_CLIP: PPC Clip
   - type: EnglishUk
     strings:
       STR_MEDI_KIT_ADV: Medikit+
