@@ -923,7 +923,7 @@ void DogfightState::move()
 			}
 
 			// Handle weapon firing
-			if (!wTimer->isRunning() && _currentDist <= w->getRules()->getRange() * 8 && w->getAmmo() > 0 && _mode != _btnStandoff 
+			if (!wTimer->isRunning() && _currentDist <= w->getRules()->getRange() * 8 && w->canFire() && _mode != _btnStandoff 
 				&& _mode != _btnDisengage && !_ufo->isCrashed() && !_craft->isDestroyed())
 			{
 				wTimer->start();
@@ -936,12 +936,12 @@ void DogfightState::move()
 					fireWeapon2();
 				}
 			}
-			else if (wTimer->isRunning() && (_currentDist > w->getRules()->getRange() * 8 || (w->getAmmo() == 0 && !projectileInFlight) || _mode == _btnStandoff
+			else if (wTimer->isRunning() && (_currentDist > w->getRules()->getRange() * 8 || (!w->canFire() && !projectileInFlight) || _mode == _btnStandoff
 				|| _mode == _btnDisengage || _ufo->isCrashed() || _craft->isDestroyed()))
 			{
 				wTimer->stop();
 				// Handle craft distance according to option set by user and available ammo.
-				if (w->getAmmo() == 0 && !_craft->isDestroyed())
+				if (!w->canFire() && !_craft->isDestroyed())
 				{
 					if (_mode == _btnCautious)
 					{
@@ -1205,7 +1205,7 @@ void DogfightState::minimumDistance()
 	{
 		if (*i == 0)
 			continue;
-		if ((*i)->getRules()->getRange() > max && (*i)->getAmmo() > 0)
+		if ((*i)->getRules()->getRange() > max && (*i)->canFire())
 		{
 			max = (*i)->getRules()->getRange();
 		}
@@ -1231,7 +1231,7 @@ void DogfightState::maximumDistance()
 	{
 		if (*i == 0)
 			continue;
-		if ((*i)->getRules()->getRange() < min && (*i)->getAmmo() > 0)
+		if ((*i)->getRules()->getRange() < min && (*i)->canFire())
 		{
 			min = (*i)->getRules()->getRange();
 		}

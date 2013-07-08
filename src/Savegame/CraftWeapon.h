@@ -56,11 +56,13 @@ public:
 	/// Sets the craft weapon's ammo.
 	bool setAmmo(int ammo);
 	/// Gets the craft weapon's rearming status.
-	bool isRearming() const;
+	int isRearming() const;
 	/// Sets the craft weapon's rearming status
 	void setRearming(bool rearming);
 	/// Rearms the craft weapon.
 	void rearm();
+	/// whether the weapon can fire
+	bool canFire();
 	/// Fires the craft weapon. Used during dogfights.
 	CraftWeaponProjectile* fire(enum Directions upDown, const int leftRight);
 };

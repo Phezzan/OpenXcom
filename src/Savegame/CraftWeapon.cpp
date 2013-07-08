@@ -86,6 +86,9 @@ int CraftWeapon::getAmmo() const
  */
 bool CraftWeapon::setAmmo(int ammo)
 {
+	if (_rules->getAmmoMax() < 0)
+		return true;
+
 	_ammo = ammo;
 	if (ammo < 0)
 	{
@@ -101,13 +104,17 @@ bool CraftWeapon::setAmmo(int ammo)
 
 /**
  * Returns whether this craft weapon needs rearming.
+ *  1  - needs reArming and the player hasn't been warned
+ *  0  - doesn't need reArming
+ *  -1 - needs reArming and the player has been warned.
  * @return Rearming status.
  */
-bool CraftWeapon::isRearming() const
+int CraftWeapon::isRearming() const
 {
 	const int max = _rules->getAmmoMax();
-	return max > 0 && _ammo < max;
-	//return _rearming;
+	if (max > 0 && _ammo < max)
+		return _rearming ? 1 : -1;
+	return 0;
 }
 
 /**
@@ -117,7 +124,10 @@ bool CraftWeapon::isRearming() const
  */
 void CraftWeapon::setRearming(bool rearming)
 {
-	_rearming = rearming;
+	if (_rules->getAmmoMax() < 0)
+		_rearming = false;
+	else
+		_rearming = rearming;
 }
 
 /**
@@ -126,12 +136,18 @@ void CraftWeapon::setRearming(bool rearming)
 void CraftWeapon::rearm()
 {
 	setAmmo(_ammo + _rules->getRearmRate());
-	if (_ammo == _rules->getAmmoMax())
+	if (_ammo >= _rules->getAmmoMax())
 	{
 		_rearming = false;
 	}
 }
 
+bool CraftWeapon::canFire()
+{
+	if (_rules->getAmmoMax() > 0 && _ammo <= 0)
+		return false;
+    return true;
+}
 /*
  * Fires a projectile from crafts weapon.
  * @return Pointer to the new projectile.

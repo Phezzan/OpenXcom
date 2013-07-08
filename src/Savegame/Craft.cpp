@@ -711,7 +711,7 @@ void Craft::refuel()
 		_status = "STR_READY";
 		for (std::vector<CraftWeapon*>::iterator i = _weapons.begin(); i != _weapons.end(); ++i)
 		{
-			if (*i && (*i)->isRearming())
+			if (*i && (*i)->isRearming() != 0)
 			{
 				_status = "STR_REARMING";
 				break;
@@ -735,7 +735,7 @@ std::string Craft::rearm()
 			_status = "STR_REFUELLING";
 			break;
 		}
-		if (*i != 0 && (*i)->isRearming())
+		if (*i != 0 && (*i)->isRearming() != 0)
 		{
 			if ((*i)->getRules()->getClipItem() == "" || _base->getItems()->getItem((*i)->getRules()->getClipItem()) > 0)
 			{
@@ -744,7 +744,9 @@ std::string Craft::rearm()
 			}
 			else
 			{
-				ammo = (*i)->getRules()->getClipItem();
+				// only report Rearm failure once 
+				if ((*i)->isRearming() == 1)
+					ammo = (*i)->getRules()->getClipItem();
 				(*i)->setRearming(false);
 			}
 			break;
