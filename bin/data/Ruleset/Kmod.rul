@@ -318,7 +318,7 @@ items:
 #    bigSprite: Sprite reference in BigObs.pck. -1 for none. (int) (default -1) (http://www.ufopaedia.org/index.php?title=BIGOBS.PCK)
 #    floorSprite: Sprite reference in FloorOb.pck. -1 for none. (int) (default -1) (http://www.ufopaedia.org/index.php?title=FLOOROB.PCK)
 #    handSprite: Sprite reference in HandOb.pck. -1 for none. (int) (default -1) (http://www.ufopaedia.org/index.php?title=HANDOB.PCK)
-#    bulletSprite: Projectile sprite. (int) 0 = rocket, 1 = pistol bullet, 2 = rifle bullet, 3 = auto cannon bullet, 
+#    bulletSprite: Projectile sprite. (int) 0 = rocket, 1 = pistol bullet, 2 = rifle bullet, 3 = auto cannon bullet,
 #    4 = heavy cannon bullet, 5 = small laser, 6 = laser rifle, 7 = heavy laser, 8 = plasma, 9 = small launcher, 10 = blaster launcher
 #    fireSound: Sound effect Reference in Sample2.cat. -1 for none (int) (default -1) (http://www.ufopaedia.org/index.php?title=SOUND#SAMPLE2.CAT)
 #    hitSound: Sound effect Reference in Sample2.cat. -1 for none (int) (default -1) (http://www.ufopaedia.org/index.php?title=SOUND#SAMPLE2.CAT)
@@ -1485,12 +1485,12 @@ armors:
       - 1.0   	#		DT_NONE
       - 1.0   	# ArmorP	DT_AP
       - 0.1   	# Fire		DT_IN
-      - 1.0   	# HiEx		DT_HE          
+      - 1.0   	# HiEx		DT_HE
       - 1.0   	# Laser		DT_LASER
       - 1.0   	# Plasma	DT_PLASMA
-      - 0.8   	# Stun		DT_STUN         
-      - 1.0   	# Melee		DT_MELEE         
-      - 1.0   	# Acid		DT_ACID         
+      - 0.8   	# Stun		DT_STUN
+      - 1.0   	# Melee		DT_MELEE
+      - 1.0   	# Acid		DT_ACID
       - 0.1   	# Smoke 	DT_SMOKE
   - type: STR_FLYING_SUIT_UC
     frontArmor: 110
@@ -1502,12 +1502,12 @@ armors:
       - 1.0   	#		DT_NONE
       - 1.0   	# ArmorP	DT_AP
       - 0.1   	# Fire		DT_IN
-      - 1.0   	# HiEx		DT_HE          
+      - 1.0   	# HiEx		DT_HE
       - 1.0   	# Laser		DT_LASER
       - 1.0   	# Plasma	DT_PLASMA
-      - 0.75  	# Stun		DT_STUN         
-      - 1.0   	# Melee		DT_MELEE         
-      - 1.0   	# Acid		DT_ACID         
+      - 0.75  	# Stun		DT_STUN
+      - 1.0   	# Melee		DT_MELEE
+      - 1.0   	# Acid		DT_ACID
       - 0.1   	# Smoke 	DT_SMOKE
   - type: CYBERDISC_ARMOR
     frontArmor: 34
@@ -1518,12 +1518,12 @@ armors:
       - 1.0	#		DT_NONE
       - 0.83    # ArmorP	DT_AP
       - 0.75    # Fire		DT_IN
-      - 0.66    # HiEx		DT_HE          
+      - 0.66    # HiEx		DT_HE
       - 1.0     # Laser		DT_LASER
       - 1.0     # Plasma	DT_PLASMA
-      - 0.7     # Stun		DT_STUN         
-      - 1.0     # Melee		DT_MELEE         
-      - 1.2     # Acid		DT_ACID         
+      - 0.7     # Stun		DT_STUN
+      - 1.0     # Melee		DT_MELEE
+      - 1.2     # Acid		DT_ACID
       - 0.0     # Smoke 	DT_SMOKE
   - type: SECTOPOD_ARMOR
     frontArmor: 145
@@ -1534,12 +1534,12 @@ armors:
       - 1.0    	#		DT_NONE
       - 1.0    	# ArmorP	DT_AP
       - 1.0    	# Fire		DT_IN
-      - 0.8    	# HiEx		DT_HE          
+      - 0.8    	# HiEx		DT_HE
       - 1.66   	# Laser		DT_LASER
       - 0.75   	# Plasma	DT_PLASMA
-      - 0.5    	# Stun		DT_STUN         
-      - 1.0    	# Melee		DT_MELEE         
-      - 1.0    	# Acid		DT_ACID         
+      - 0.5    	# Stun		DT_STUN
+      - 1.0    	# Melee		DT_MELEE
+      - 1.0    	# Acid		DT_ACID
       - 0.0    	# Smoke 	DT_SMOKE
   - type: TANK_ARMOR
     frontArmor: 90
@@ -1550,12 +1550,12 @@ armors:
       - 1.0     #		DT_NONE
       - 0.9     # ArmorP	DT_AP
       - 0.1     # Fire		DT_IN
-      - 0.75    # HiEx		DT_HE          
+      - 0.75    # HiEx		DT_HE
       - 1.0     # Laser		DT_LASER
       - 1.0     # Plasma	DT_PLASMA
-      - 0.0     # Stun		DT_STUN         
-      - 0.9     # Melee		DT_MELEE         
-      - 0.4     # Acid		DT_ACID         
+      - 0.0     # Stun		DT_STUN
+      - 0.9     # Melee		DT_MELEE
+      - 0.4     # Acid		DT_ACID
       - 0.0     # Smoke 	DT_SMOKE
   - type: HOVERTANK_ARMOR
     frontArmor: 135
@@ -1566,12 +1566,12 @@ armors:
       - 1.0    	#		DT_NONE
       - 1.0    	# ArmorP	DT_AP
       - 0.1    	# Fire		DT_IN
-      - 0.75   	# HiEx		DT_HE          
+      - 0.75   	# HiEx		DT_HE
       - 1.0    	# Laser		DT_LASER
       - 1.0    	# Plasma	DT_PLASMA
-      - 0.0    	# Stun		DT_STUN         
-      - 0.9    	# Melee		DT_MELEE         
-      - 0.4    	# Acid		DT_ACID         
+      - 0.0    	# Stun		DT_STUN
+      - 0.9    	# Melee		DT_MELEE
+      - 0.4    	# Acid		DT_ACID
       - 0.0    	# Smoke 	DT_SMOKE
   - type: MUTON_ARMOR0
     frontArmor: 20
@@ -1582,12 +1582,12 @@ armors:
       - 0.9    #		DT_NONE
       - 0.83   # ArmorP	DT_AP
       - 0.9    # Fire		DT_IN
-      - 0.7    # HiEx		DT_HE          
+      - 0.7    # HiEx		DT_HE
       - 0.8    # Laser		DT_LASER
       - 1.0    # Plasma	DT_PLASMA
-      - 0.9    # Stun		DT_STUN         
-      - 0.8    # Melee		DT_MELEE         
-      - 0.9    # Acid		DT_ACID         
+      - 0.9    # Stun		DT_STUN
+      - 0.8    # Melee		DT_MELEE
+      - 0.9    # Acid		DT_ACID
       - 0.9    # Smoke 	DT_SMOKE
   - type: MUTON_ARMOR1
     frontArmor: 25
@@ -1598,12 +1598,12 @@ armors:
       - 0.8    #		DT_NONE
       - 0.8    # ArmorP	DT_AP
       - 0.8    # Fire		DT_IN
-      - 0.6    # HiEx		DT_HE          
+      - 0.6    # HiEx		DT_HE
       - 0.7    # Laser		DT_LASER
       - 0.9    # Plasma	DT_PLASMA
-      - 0.8    # Stun		DT_STUN         
-      - 0.7    # Melee		DT_MELEE         
-      - 0.8    # Acid		DT_ACID         
+      - 0.8    # Stun		DT_STUN
+      - 0.7    # Melee		DT_MELEE
+      - 0.8    # Acid		DT_ACID
       - 0.8    # Smoke 	DT_SMOKE
   - type: MUTON_ARMOR2
     frontArmor: 30
@@ -1614,13 +1614,13 @@ armors:
       - 0.7    #		DT_NONE
       - 0.75   # ArmorP	DT_AP
       - 0.7    # Fire		DT_IN
-      - 0.5    # HiEx		DT_HE          
+      - 0.5    # HiEx		DT_HE
       - 0.6    # Laser		DT_LASER
       - 0.8    # Plasma	DT_PLASMA
-      - 0.7    # Stun		DT_STUN         
-      - 0.6    # Melee		DT_MELEE         
-      - 0.7    # Acid		DT_ACID         
-      - 0.7    # Smoke 	DT_SMOKE           
+      - 0.7    # Stun		DT_STUN
+      - 0.6    # Melee		DT_MELEE
+      - 0.7    # Acid		DT_ACID
+      - 0.7    # Smoke 	DT_SMOKE
 # SOLDIERS ######
 soldiers:
   - type: XCOM
@@ -1903,6 +1903,7 @@ units:
     armor: SNAKEMAN_ARMOR0
     intelligence: 2
     aggression: 2
+    healthPool: 20
   - type: STR_SNAKEMAN_NAVIGATOR
     stats:
       tu: 40
@@ -1919,6 +1920,7 @@ units:
     armor: SNAKEMAN_ARMOR0
     intelligence: 3
     aggression: 2
+    healthPool: 20
   - type: STR_SNAKEMAN_ENGINEER
     stats:
       tu: 40
@@ -1935,6 +1937,7 @@ units:
     armor: SNAKEMAN_ARMOR0
     intelligence: 4
     aggression: 2
+    healthPool: 20
   - type: STR_SNAKEMAN_LEADER
     stats:
       tu: 40
@@ -1950,7 +1953,8 @@ units:
       melee: 76
     armor: SNAKEMAN_ARMOR1
     intelligence: 5
-    aggression: 2  
+    aggression: 2
+    healthPool: 20
   - type: STR_SNAKEMAN_COMMANDER
     stats:
       tu: 45
@@ -1966,7 +1970,8 @@ units:
       melee: 76
     armor: SNAKEMAN_ARMOR2
     intelligence: 6
-    aggression: 2 
+    aggression: 2
+    healthPool: 20
   - type: STR_MUTON_SOLDIER
     stats:
       tu: 56
@@ -1983,6 +1988,7 @@ units:
     armor: MUTON_ARMOR0
     intelligence: 2
     aggression: 2
+    healthPool: 20
   - type: STR_MUTON_NAVIGATOR
     stats:
       tu: 56
@@ -1998,7 +2004,8 @@ units:
       melee: 76
     armor: MUTON_ARMOR1
     intelligence: 3
-    aggression: 2 
+    aggression: 2
+    healthPool: 20
   - type: STR_MUTON_ENGINEER
     stats:
       tu: 56
@@ -2014,7 +2021,8 @@ units:
       melee: 76
     armor: MUTON_ARMOR2
     intelligence: 4
-    aggression: 2 
+    aggression: 2
+    healthPool: 20
   - type: STR_ETHEREAL_SOLDIER
     stats:
       tu: 68
@@ -2030,7 +2038,7 @@ units:
       melee: 85
     armor: ETHEREAL_ARMOR0
     intelligence: 6
-    aggression: 1     
+    aggression: 1
   - type: STR_ETHEREAL_LEADER
     stats:
       tu: 68
@@ -2046,7 +2054,7 @@ units:
       melee: 85
     armor: ETHEREAL_ARMOR1
     intelligence: 7
-    aggression: 1    
+    aggression: 1
   - type: STR_ETHEREAL_COMMANDER
     stats:
       tu: 68
@@ -2062,7 +2070,7 @@ units:
       melee: 85
     armor: ETHEREAL_ARMOR2
     intelligence: 8
-    aggression: 1 
+    aggression: 1
   - type: STR_CHRYSSALID_TERRORIST
     stats:
       tu: 110
@@ -2078,7 +2086,7 @@ units:
       melee: 80
     intelligence: 4
     aggression: 1
-    healthPool: 96
+    healthPool: 100
   - type: STR_SECTOPOD_TERRORIST
     race: STR_SECTOPOD
     rank: STR_LIVE_TERRORIST
@@ -2117,7 +2125,7 @@ units:
       melee: 66
     intelligence: 3
     aggression: 2
-    healthPool: -60
+    healthPool: -120
 # RESEARCH #
 # RESEARCH #
 # RESEARCH #
@@ -2213,7 +2221,7 @@ manufacture:
     category: STR_WEAPON
     requires:
       []
-    space: 1			# -2  : 60 * (.5) - 26 
+    space: 1			# -2  : 60 * (.5) - 26
     time: 12
     cost: 1
   - name: STR_STINGRAY_MISSILES
@@ -2229,7 +2237,7 @@ manufacture:
     category: STR_CRAFT_AMMUNITION
     requires:
       []
-    space: 7			# 2 / -4  : 4 * (7.5 - 1) - 30 
+    space: 7			# 2 / -4  : 4 * (7.5 - 1) - 30
     time: 180
     cost: 200
     requiredItems:
@@ -2257,9 +2265,10 @@ manufacture:
       - STR_PLASMA_CANNON
     space: 8
     time: 1200
-    cost: 90000			# $19
+    cost: 87500			# $13
     requiredItems:
       STR_ELERIUM_115: 10
+      STR_ALIEN_ALLOYS: 2
   - name: STR_FUSION_BALL
     category: STR_CRAFT_AMMUNITION
     requires:
@@ -2384,20 +2393,20 @@ manufacture:
     category: STR_WEAPON
     requires:
       - STR_HEAVY_PLASMA
-    space: 5			# $15
+    space: 5			# $13
     time: 960
-    cost: 80000
+    cost: 75000
     requiredItems:
-      STR_ALIEN_ALLOYS: 1
+      STR_ALIEN_ALLOYS: 2
   - name: STR_PULSE_PLASMA
     category: STR_WEAPON
     requires:
       - STR_PULSE_PLASMA
     space: 6
     time: 1050
-    cost: 88000
+    cost: 82500			# $13.9k
     requiredItems:
-      STR_ALIEN_ALLOYS: 1
+      STR_ALIEN_ALLOYS: 2
   - name: STR_PULSE_PLASMA_CLIP
     category: STR_AMMUNITION
     requires:
@@ -2421,8 +2430,8 @@ manufacture:
     requires:
       - STR_PLASMA_RIFLE
     space: 4
-    time: 666			# 7.25 : .9 * 38.5 - 25 - 2.4
-    cost: 62000
+    time: 666			# 11.8
+    cost: 60000
     requiredItems:
       STR_ALIEN_ALLOYS: 1
   - name: STR_PLASMA_RIFLE_CLIP
@@ -2438,9 +2447,9 @@ manufacture:
     category: STR_WEAPON
     requires:
       - STR_PLASMA_PISTOL
-    space: 3			# 6.8	: 1.2 * (28 - 25 - 1.8)
+    space: 3			# 10k
     time: 480
-    cost: 40000
+    cost: 37500
     requiredItems:
       STR_ALIEN_ALLOYS: 1
   - name: STR_PLASMA_PISTOL_CLIP
@@ -2602,6 +2611,36 @@ manufacture:
       STR_ALIEN_ALLOYS: 120
       STR_UFO_POWER_SOURCE: 2
       STR_UFO_NAVIGATION: 1
+crafts:
+  - type: STR_FIRESTORM
+    fuelMax: 20
+    damageMax: 500
+    speedMax: 4200
+    accel: 9
+    weapons: 2
+    refuelRate: 5
+    costSell: 1800000
+  - type: STR_LIGHTNING
+    fuelMax: 30
+    damageMax: 800
+    speedMax: 3100
+    accel: 9
+    weapons: 1
+    soldiers: 12
+    refuelRate: 5
+    score: 300
+    costSell: 2600000
+  - type: STR_AVENGER
+    fuelMax: 60
+    damageMax: 1200
+    speedMax: 5400
+    accel: 10
+    weapons: 2
+    soldiers: 26
+    vehicles: 4
+    refuelRate: 5
+    score: 400
+    costSell: 4500000
 ufopaedia:
   - id: STR_PULSE_LASER
     type_id: 4
@@ -2812,7 +2851,7 @@ extraSprites:
     subX: 3
     subY: 3
     files:
-      385: Resources/Kmod/BulletSprites.png
+      385: Resources/Kmod/BulletSprites.gif
 extraStrings:
   - type: English
     strings:
