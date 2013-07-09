@@ -243,11 +243,23 @@ void CraftInfoState::init()
 			_txtW1Name->setText(_game->getLanguage()->getString(w1->getRules()->getType()));
 
 			std::wstringstream ss3;
-			ss3 << _game->getLanguage()->getString("STR_AMMO_") << L'\x01' << w1->getAmmo();
-			_txtW1Ammo->setText(ss3.str());
-
 			std::wstringstream ss4;
-			ss4 << _game->getLanguage()->getString("STR_MAX") << L'\x01' << w1->getRules()->getAmmoMax();
+			int ammo = w1->getAmmo();
+			int ammomax = w1->getRules()->getAmmoMax();
+
+			ss3 << _game->getLanguage()->getString("STR_AMMO_") << L'\x01';
+			ss4 << _game->getLanguage()->getString("STR_MAX") << L'\x01';
+			if (ammomax > 0)
+			{
+				ss3 << ammo;
+				ss4 << ammomax;
+			}
+			else
+			{
+				ss3 << "--";
+				ss4 << "--";
+			}
+			_txtW1Ammo->setText(ss3.str());
 			_txtW1Max->setText(ss4.str());
 		}
 		else
@@ -281,11 +293,23 @@ void CraftInfoState::init()
 			_txtW2Name->setText(_game->getLanguage()->getString(w2->getRules()->getType()));
 
 			std::wstringstream ss5;
-			ss5 << _game->getLanguage()->getString("STR_AMMO_") << L'\x01' << w2->getAmmo();
-			_txtW2Ammo->setText(ss5.str());
-
 			std::wstringstream ss6;
-			ss6 << _game->getLanguage()->getString("STR_MAX") << L'\x01' << w2->getRules()->getAmmoMax();
+			int ammo = w2->getAmmo();
+			int ammomax = w2->getRules()->getAmmoMax();
+
+			ss5 << _game->getLanguage()->getString("STR_AMMO_") << L'\x01';
+			ss6 << _game->getLanguage()->getString("STR_MAX") << L'\x01';
+			if (ammomax > 0)
+			{
+				ss5 << ammo;
+				ss6 << ammomax;
+			}
+			else
+			{
+				ss5 << "--";
+				ss6 << "--";
+			}
+			_txtW2Ammo->setText(ss5.str());
 			_txtW2Max->setText(ss6.str());
 		}
 		else

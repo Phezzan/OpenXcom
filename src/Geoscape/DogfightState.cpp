@@ -426,8 +426,16 @@ DogfightState::DogfightState(Game *game, Globe *globe, Craft *craft, Ufo *ufo) :
 
 		// Draw ammo
 		std::wstringstream ss;
-		ss << w->getAmmo();
-		ammo->setText(ss.str());
+		if(w->getRules()->getAmmoMax() > 0)
+		{
+			ss << w->getAmmo();
+			ammo->setText(ss.str());
+		}
+		else
+        {
+			ss << "-";
+			ammo->setText(ss.str());
+        }
 
 		// Draw range (1 km = 1 pixel)
 		Uint8 color = Palette::blockOffset(7) - 1;
@@ -1136,9 +1144,12 @@ void DogfightState::fireWeapon1()
 		if (NULL != p)
 		{
 
-			std::wstringstream ss;
-			ss << w1->getAmmo();
-			_txtAmmo1->setText(ss.str());
+			if (w1->getAmmo()>=0)
+			{
+				std::wstringstream ss;
+				ss << w1->getAmmo();
+				_txtAmmo1->setText(ss.str());
+			}
 
 			_projectiles.push_back(p);
 
@@ -1160,9 +1171,12 @@ void DogfightState::fireWeapon2()
 		if (NULL != p)
 		{
 
-			std::wstringstream ss;
-			ss << w2->getAmmo();
-			_txtAmmo2->setText(ss.str());
+			if (w2->getAmmo()>=0)
+			{
+				std::wstringstream ss;
+				ss << w2->getAmmo();
+				_txtAmmo2->setText(ss.str());
+			}
 
 			_projectiles.push_back(p);
 
