@@ -40,6 +40,7 @@ manufacture:
     category: STR_PERSONAL_ARMOR 
     space: 4
     time: 120
+    listOrder: 8401
     cost: 8000
 research:
   - name: STR_COMBAT_ARMOR

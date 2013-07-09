@@ -34,7 +34,7 @@ research:
     dependencies:
       - STR_SMALL_LAUNCHER
       - STR_STUN_BOMB
-    listOrder: 601
+    listOrder: 602
 manufacture:
   - name: STR_INCENDIARY_GRENADE
     category: STR_WEAPON

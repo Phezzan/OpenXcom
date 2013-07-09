@@ -494,6 +494,34 @@ items:
     invHeight: 3
     armor: 50
     turretType: 2
+  - type: STR_TANK_2_LASER_CANNON
+    costSell: 550000
+    size: 4
+    transferTime: 96
+    weight: 1
+    bigSprite: 54
+    floorSprite: 0
+    handSprite: 0
+    bulletSprite: 7
+    fireSound: 11
+    hitSound: 19
+    hitAnimation: 36
+    power: 98
+    damageType: 4
+    accuracyAuto: 50
+    accuracySnap: 65
+    accuracyAimed: 100
+    tuAuto: 34
+    tuSnap: 25
+    tuAimed: 55
+    battleType: 1
+    fixedWeapon: true
+    clipSize: -1
+    invWidth: 2
+    invHeight: 3
+    armor: 90
+    turretType: 2
+    listOrder: 1501
   - type: REAPER_WEAPON
     hitSound: 48
     power: 85
@@ -1460,6 +1488,28 @@ invs:
       STR_RIGHT_HAND: 4
       STR_RIGHT_SHOULDER: 10
 armors:
+  - type: TANK_2_ARMOR
+#    spriteSheet: TANK_2.PCK
+    spriteSheet: TANK.PCK
+    corpseItem: TANK_CORPSE_
+    frontArmor: 110
+    sideArmor: 100
+    rearArmor: 80
+    underArmor: 80
+    drawingRoutine: 2
+    size: 2
+    damageModifier:
+      - 1.0
+      - 0.9
+      - 0.1
+      - 0.75
+      - 0.9
+      - 0.9
+      - 0.0
+      - 0.8
+      - 0.4
+      - 0.0
+    loftempsSet: [ 92, 89, 90, 91 ]
   - type: STR_PERSONAL_ARMOR_UC
     frontArmor: 64
     sideArmor: 48
@@ -1854,6 +1904,26 @@ units:
       psiSkill: 0
       melee: 7
     armor: TANK_ARMOR
+  - type: STR_TANK_2_LASER_CANNON
+    race: STR_TANK_2_LASER_CANNON
+    stats:
+      tu: 90
+      stamina: 100
+      health: 100
+      bravery: 110
+      reactions: 30
+      firing: 65
+      throwing: 0
+      strength: 60
+      psiStrength: 100
+      psiSkill: 0
+      melee: 7
+    armor: TANK_2_ARMOR
+    standHeight: 16
+    kneelHeight: 16
+    value: 20
+    deathSound: 23
+    moveSound: 14
   - type: STR_HOVERTANK_PLASMA
     race: STR_HOVERTANK_PLASMA
     stats:
@@ -2239,6 +2309,7 @@ manufacture:
     space: 1			# -2  : 60 * (.5) - 26
     time: 12
     cost: 1
+    listOrder: 8010
   - name: STR_STINGRAY_MISSILES
     category: STR_CRAFT_AMMUNITION
     requires:
@@ -2246,6 +2317,7 @@ manufacture:
     space: 4			# -13/-14 : 6 * (3 - .5) - 28
     time: 120
     cost: 100
+    listOrder: 8011
     requiredItems:
       STR_HIGH_EXPLOSIVE: 1
   - name: STR_AVALANCHE_MISSILES
@@ -2255,18 +2327,9 @@ manufacture:
     space: 7			# 2 / -4  : 4 * (7.5 - 1) - 30
     time: 180
     cost: 200
+    listOrder: 8012
     requiredItems:
       STR_HIGH_EXPLOSIVE: 2
-######    END OF NEW MANUFACTURE ITEMS ########
-  - name: STR_FUSION_BALL_LAUNCHER
-    category: STR_CRAFT_WEAPON
-    requires:
-      - STR_FUSION_MISSILE
-    space: 8
-    time: 1200
-    cost: 87500			# $17.5
-    requiredItems:
-      STR_ALIEN_ALLOYS: 1
   - name: STR_LASER_CANNON
     category: STR_CRAFT_WEAPON
     requires:
@@ -2274,6 +2337,7 @@ manufacture:
     space: 6
     time: 720
     cost: 50000			# $14
+    listOrder: 8013
   - name: STR_PLASMA_BEAM
     category: STR_CRAFT_WEAPON
     requires:
@@ -2284,6 +2348,17 @@ manufacture:
     requiredItems:
       STR_ELERIUM_115: 10
       STR_ALIEN_ALLOYS: 2
+    listOrder: 8015
+  - name: STR_FUSION_BALL_LAUNCHER
+    category: STR_CRAFT_WEAPON
+    requires:
+      - STR_FUSION_MISSILE
+    space: 8
+    time: 1200
+    cost: 87500			# $17.5
+    listOrder: 8017
+    requiredItems:
+      STR_ALIEN_ALLOYS: 1
   - name: STR_FUSION_BALL
     category: STR_CRAFT_AMMUNITION
     requires:
@@ -2291,8 +2366,19 @@ manufacture:
     space: 8
     time: 400			# $4k
     cost: 2500
+    listOrder: 8019
     requiredItems:
       STR_ELERIUM_115: 2
+  - name: STR_HWP_ROCKETS
+    category: STR_HWP_CANNON_SHELLS
+    requires:
+      []
+    space: 3
+    time: 100
+    cost: 60
+    listOrder: 8882
+    requiredItems:
+      STR_HIGH_EXPLOSIVE: 1
   - name: STR_TANK_LASER_CANNON
     category: STR_HEAVY_WEAPONS_PLATFORM
     requires:
@@ -2300,7 +2386,20 @@ manufacture:
     space: 25
     time: 960
     cost: 335000		# $12
+    listOrder: 8883
     requiredItems:
+      STR_LASER_CANNON: 1
+  - name: STR_TANK_2_LASER_CANNON
+    category: STR_HEAVY_WEAPONS_PLATFORM
+    requires:
+      - STR_PERSONAL_ARMOR
+      - STR_LASER_CANNON
+    space: 25
+    time: 1020
+    cost: 335000		# ? $12
+    listOrder: 8884
+    requiredItems:
+      STR_ALIEN_ALLOYS: 10	# It's blue !
       STR_LASER_CANNON: 1
   - name: STR_HOVERTANK_PLASMA
     category: STR_HEAVY_WEAPONS_PLATFORM
@@ -2310,6 +2409,7 @@ manufacture:
     space: 30
     time: 1200
     cost: 500000		# $14
+    listOrder: 8888
     requiredItems:
       STR_PLASMA_BEAM: 1
       STR_ALIEN_ALLOYS: 10
@@ -2322,6 +2422,7 @@ manufacture:
     space: 30
     time: 1500
     cost: 580000		# $18
+    listOrder: 8889
     requiredItems:
       STR_FUSION_BALL_LAUNCHER: 1
       STR_ALIEN_ALLOYS: 10
@@ -2334,6 +2435,7 @@ manufacture:
     space: 5
     time: 240
     cost: 1000			# $1k
+    listOrder: 8090
     requiredItems:
       STR_ALIEN_ALLOYS: 2
       STR_ELERIUM_115: 1
@@ -2545,6 +2647,7 @@ manufacture:
     space: 12	  		# 2	: 32 * .9 - 25 - 7.2
     time: 800
     cost: 22000
+    listOrder: 8403
     requiredItems:
       STR_ALIEN_ALLOYS: 3
   - name: STR_POWER_SUIT
@@ -2554,6 +2657,7 @@ manufacture:
     space: 15
     time: 1000
     cost: 42000
+    listOrder: 8405
     requiredItems:
       STR_ALIEN_ALLOYS: 6
       STR_ELERIUM_115: 5
@@ -2564,6 +2668,7 @@ manufacture:
     space: 18
     time: 1400
     cost: 58000
+    listOrder: 8408
     requiredItems:
       STR_ALIEN_ALLOYS: 6
       STR_ELERIUM_115: 16
@@ -2874,15 +2979,22 @@ extraStrings:
       STR_MEDI_KIT_UFOPEDIA_ADV: Our research on alien medical technology has given us some ideas on improving the MEDKIT.
       STR_MIND_PROBE_M: M.I.N.D.
       STR_MIND_PROBE_M_UFO: The Mental InformatioN Display is based on an alien communication device which reads information directly from brain waves.  XCom units can use this device in combat to display a target's characteristics.
-      STR_HEAVY_LASER: Laser Cannon
+      STR_HEAVY_LASER: Laser - Anti Armor
+      STR_HEAVY_LASER_UFO: Although this is the most powerful laser our scientists can package into an infantry weapon, it has a relatively slow fire rate and is somewhat unwieldy.
       STR_PULSE_LASER: Laser Pulse Cannon
       STR_PULSE_LASER_UFO: An improved ergonomic handle and an Elerium power source capable of rapid fire make this the ultimate laser weapon and a favorite of squaddies everywhere.
       STR_PULSE_PLASMA: Plasma Pulse Cannon
       STR_PULSE_PLASMA_UFO: Although not as powerful as the single-shot Plasma Cannon, this weapon's auto-fire is still fully capable of penetrating all but the most heavily armored targets.
       STR_PULSE_PLASMA_CLIP: PPC Clip
+      STR_TANK_2_LASER_CANNON: Tank Adv/Laser Cannon
+###########################################################
   - type: EnglishUk
     strings:
-      STR_MEDI_KIT_ADV: Medikit+
+      STR_MEDI_KIT_ADV: Medi-kit+
       STR_MEDI_KIT_UFOPEDIA_ADV: Our research on alien medical technology has given us some ideas on improving the MEDKIT.
       STR_PULSE_LASER: An improved ergonomic handle and a rapid fire chamber make this ultimate laser weapon a favorite of squaddies everywhere.
       STR_PULSE_LASER_UFO: An improved ergonomic handle and a rapid fire chamber make this ultimate laser weapon a favorite of squaddies everywhere.
+      STR_PULSE_PLASMA: Plasma Pulse Cannon
+      STR_PULSE_PLASMA_UFO: Although not as powerful as the single-shot Plasma Cannon, this weapon's auto-fire is still fully capable of penetrating all but the most heavily armored targets.
+      STR_PULSE_PLASMA_CLIP: PPC Clip
+      STR_TANK_2_LASER_CANNON: Tank Adv/Laser Cannon
