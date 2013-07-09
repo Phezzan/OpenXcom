@@ -109,11 +109,11 @@ void Tile::load(const YAML::Node &node)
 		(*pName)[1] >> _discovered[1];
 		(*pName)[2] >> _discovered[2];
 	}
-	if (const YAML::Node *pName = node.FindValue("openDoorWest"))
+	if (node.FindValue("openDoorWest"))
 	{
 		_currentFrame[1] = 7;
 	}
-	if (const YAML::Node *pName = node.FindValue("openDoorNorth"))
+	if (node.FindValue("openDoorNorth"))
 	{
 		_currentFrame[2] = 7;
 	}

@@ -965,7 +965,7 @@ int BattleUnit::getMorale() const
  * @param type
  * @return damage done after adjustment
  */
-int BattleUnit::damage(Position const &relative, int power, ItemDamageType type, bool ignoreArmor)
+int BattleUnit::damage(const Position &relative, int power, ItemDamageType type, bool ignoreArmor)
 {
 	UnitSide side = SIDE_FRONT;
 	UnitBodyPart bodypart = BODYPART_TORSO;
@@ -1084,11 +1084,8 @@ int BattleUnit::damage(Position const &relative, int power, ItemDamageType type,
 				// fatal wounds
 				if (isWoundable())
 				{
-					if (type != DT_STUN)
-					{
-						// conventional weapons can cause additional stun damage
-						_stunlevel += RNG::nDice(2, 0, power / 4);
-					}
+					// conventional weapons can cause additional stun damage
+					_stunlevel += RNG::nDice(2, 0, power / 4);
 
 					int rnd = RNG::generate(1, _health);
 					if (rnd <= power)
@@ -1495,11 +1492,11 @@ unsigned BattleUnit::getReactionScore(int TUmod) const
     switch(_status)
     {
     case STATUS_STANDING:
-        return (RNG::nDice(2, 90, 110) * _stats.reactions * (TUmod + _tu)) / _stats.tu;
+        return (RNG::nDice(2, 88, 112) * _stats.reactions * (TUmod + _tu)) / _stats.tu;
     case STATUS_WALKING:
     case STATUS_FLYING:
     case STATUS_TURNING:
-        return (RNG::nDice(2, 80, 100) * _stats.reactions * (TUmod + _tu)) / _stats.tu;
+        return (RNG::nDice(2, 80, 105) * _stats.reactions * (TUmod + _tu)) / _stats.tu;
     case STATUS_AIMING:
         return (RNG::nDice(2, 95, 115) * _stats.reactions * (TUmod + _tu)) / _stats.tu;
     case STATUS_COLLAPSING:

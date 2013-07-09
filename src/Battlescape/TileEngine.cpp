@@ -270,7 +270,7 @@ bool TileEngine::calculateFOV(BattleUnit *unit)
 		{
 			for (int z = 0; z < _save->getMapSizeZ(); z++)
 			{
-				int const distanceSqr = x*x + y*y;
+				const int distanceSqr = x*x + y*y;
 				test.z = z;
 				if (distanceSqr <= MAX_VIEW_DISTANCE*MAX_VIEW_DISTANCE)
 				{
@@ -281,21 +281,18 @@ bool TileEngine::calculateFOV(BattleUnit *unit)
 						BattleUnit *visibleUnit = _save->getTile(test)->getUnit();
 						if (visibleUnit && !visibleUnit->isOut() && visible(unit, _save->getTile(test)))
 						{
+							if (unit->getFaction() == FACTION_PLAYER)
+							{
+								visibleUnit->getTile()->setVisible(+1);
+								visibleUnit->setVisible(true);
+							}
 							if ((visibleUnit->getFaction() == FACTION_HOSTILE && unit->getFaction() != FACTION_HOSTILE)
 								|| (visibleUnit->getFaction() != FACTION_HOSTILE && unit->getFaction() == FACTION_HOSTILE))
 							{
 								unit->addToVisibleUnits(visibleUnit);
 								unit->addToVisibleTiles(visibleUnit->getTile());
-								if (unit->getFaction() == FACTION_PLAYER)
-								{
-									visibleUnit->getTile()->setVisible(+1);
-								}
-								if (unit->getFaction() == FACTION_PLAYER)
-								{
-									visibleUnit->setVisible(true);
-								}
-								else if (unit->getFaction() == FACTION_HOSTILE && visibleUnit->getFaction() == FACTION_PLAYER 
-									&& unit->getIntelligence() > visibleUnit->getTurnsExposed())
+
+								if (unit->getFaction() == FACTION_HOSTILE && visibleUnit->getFaction() == FACTION_PLAYER && unit->getIntelligence() > visibleUnit->getTurnsExposed())
 								{
 									visibleUnit->setTurnsExposed(unit->getIntelligence());
 									_save->updateExposedUnits();
@@ -803,27 +800,29 @@ bool TileEngine::canTargetTile(Position *originVoxel, Tile *tile, int part, Posi
 		spiralArray = sliceObjectSpiral;
 		spiralCount = 41;
 	}
-	else {
-		if (part == MapData::O_NORTHWALL)
-		{
-			spiralArray = northWallSpiral;
-			spiralCount = 7;
-		}
-		else if (part == MapData::O_WESTWALL)
-		{
-			spiralArray = westWallSpiral;
-			spiralCount = 7;
-		}
-		else if (part == MapData::O_FLOOR)
-		{
-			spiralArray = sliceObjectSpiral;
-			spiralCount = 41;
-			minZfound = true; minZ=0;
-			maxZfound = true; maxZ=0;
-		}
+	else if (part == MapData::O_NORTHWALL)
+	{
+		spiralArray = northWallSpiral;
+		spiralCount = 7;
+	}
+	else if (part == MapData::O_WESTWALL)
+	{
+		spiralArray = westWallSpiral;
+		spiralCount = 7;
+	}
+	else if (part == MapData::O_FLOOR)
+	{
+		spiralArray = sliceObjectSpiral;
+		spiralCount = 41;
+		minZfound = true; minZ=0;
+		maxZfound = true; maxZ=0;
+	}
+	else
+	{
+		return false;
 	}
 
-	// find out height range
+// find out height range
 
 	if (!minZfound)
 	{
@@ -1167,19 +1166,19 @@ BattleUnit *TileEngine::hit(const Position &center, int power, ItemDamageType ty
 	Tile *tile = _save->getTile(Position(center.x/16, center.y/16, center.z/24));
 	BattleUnit *bu = tile->getUnit();
 	int adjustedDamage = 0;
-	int part = voxelCheck(center, unit);
+	const int part = voxelCheck(center, unit);
 	if (part >= 0 && part <= 3)
 	{
 		// power 25% to 75%
-		int rndPower = RNG::generate(power/4, (power*3)/4); //RNG::boxMuller(power, power/6)
+		const int rndPower = RNG::generate(power/4, (power*3)/4); //RNG::boxMuller(power, power/6)
 		if (tile->damage(part, rndPower))
 			_save->setObjectiveDestroyed(true);
 	}
 	else if (part == 4) // Unit was hit
 	{
 		// power 0 - 200%       Kmod distribution 7/8 chance power within 50%-150%
-		int rndPower = RNG::nDice(2, 0, power*2); // RNG::boxMuller(power, power/3)
-		if (! bu)
+		const int rndPower = RNG::nDice(2, 0, power*2); // RNG::boxMuller(power, power/3)
+		if (!bu)
 		{
 			// it's possible we have a unit below the actual tile, when he stands on a stairs and sticks his head out to the next tile
 			Tile *below = _save->getTile(Position(center.x/16, center.y/16, (center.z/24)-1));
@@ -1192,35 +1191,33 @@ BattleUnit *TileEngine::hit(const Position &center, int power, ItemDamageType ty
 				}
 			}
 		}
-
 		if(bu)
 		{
-			int const sz = bu->getArmor()->getSize() * 8;
-			Position const target = bu->getPosition() * Position(16,16,24) + Position(sz,sz,bu->getFloatHeight() - tile->getTerrainLevel());
-			Position const relative = center - target;
+			const int sz = bu->getArmor()->getSize() * 8;
+			const Position target = bu->getPosition() * Position(16,16,24) + Position(sz,sz,bu->getFloatHeight() - tile->getTerrainLevel());
+			const Position relative = center - target;
+
 			adjustedDamage = bu->damage(relative, rndPower, type);
+
+			const int cowardice = 110 - bu->getStats()->bravery;
+			const int modifier = bu->getFaction() == FACTION_PLAYER ? _save->getMoraleModifier() : 100;
+			const int morale_loss = 100 * (adjustedDamage * cowardice) / (100 * modifier);
+
+			bu->moraleChange(-morale_loss);
+
 			if (damageDealt != NULL)
 				*damageDealt = adjustedDamage;
 
-			// STUN has been moved to the unit's damage routine
+			if (bu->getSpecialAbility() == SPECAB_EXPLODEONDEATH && !bu->isOut() && bu->getHealth() == 0 
+				&& (type != DT_STUN && type != DT_HE) )
+			{
+				Position p = Position(bu->getPosition().x * 16, bu->getPosition().y * 16, bu->getPosition().z * 24);
+				_save->getBattleState()->getBattleGame()->statePushNext(new ExplosionBState(_save->getBattleState()->getBattleGame(), p, 0, bu, 0));
+			}
+
 			if (unit->getFaction() == FACTION_PLAYER && bu->getOriginalFaction() == FACTION_HOSTILE && type != DT_NONE)
 			{
 				unit->addFiringExp();
-			}
-
-			{
-
-				int const cowardice = 110 - bu->getStats()->bravery;
-				int const modifier = bu->getFaction() == FACTION_PLAYER ? _save->getMoraleModifier() : 100;
-				int const morale_loss = 100 * (adjustedDamage * cowardice) / (100 * modifier);
-				bu->moraleChange(-morale_loss);
-
-				if (bu->getSpecialAbility() == SPECAB_EXPLODEONDEATH && !bu->isOut() && bu->getHealth() == 0 
-					&& (type != DT_STUN && type != DT_HE) )
-				{
-					Position p = Position(bu->getPosition().x * 16, bu->getPosition().y * 16, bu->getPosition().z * 24);
-					_save->getBattleState()->getBattleGame()->statePushNext(new ExplosionBState(_save->getBattleState()->getBattleGame(), p, 0, bu, 0));
-				}
 			}
 		}
 	}
@@ -1273,7 +1270,7 @@ void TileEngine::explode(const Position &center, int power, ItemDamageType type,
 
 
 	for (int fi = -90; fi <= 90; fi += 5)
-//  for (int fi = 0; fi <= 0; fi += 10)
+//	for (int fi = 0; fi <= 0; fi += 10)
 	{
 		// raytrace every 3 degrees makes sure we cover all tiles in a circle.
 		for (int te = 0; te <= 360; te += 3)
@@ -1399,7 +1396,7 @@ void TileEngine::explode(const Position &center, int power, ItemDamageType type,
 								float resistance = dest->getUnit()->getArmor()->getDamageModifier(DT_IN);
 								if (resistance > 0.1)
 								{
-									dest->getUnit()->damage(Position(0,0,0), RNG::generate(5, 10), DT_IN, true);
+									dest->getUnit()->damage(Position(0, 0, 12-dest->getTerrainLevel()), RNG::generate(5, 10), DT_IN, true);
 									int burnTime = RNG::generate(0, int(5 * resistance));
 									if (dest->getUnit()->getFire() < burnTime)
 									{
@@ -1621,7 +1618,7 @@ int TileEngine::horizontalBlockage(Tile *startTile, Tile *endTile, ItemDamageTyp
 
 	switch(direction)
 	{
-	case 0: // north
+	case 0:	// north
 		block = blockage(startTile, MapData::O_NORTHWALL, type);
 	break;
 	case 1: // north east
@@ -1869,9 +1866,9 @@ int TileEngine::blockage(Tile *tile, const int part, ItemDamageType type, int di
  * Soldier opens a door (if any) by rightclick, or by walking through it. The unit has to face in the right direction.
  * @param unit
  * @return -1 there is no door, you can walk through.
- *        0 normal door opened, make a squeaky sound and you can walk through.
- *        1 ufo door is starting to open, make a whoosh sound, don't walk through.
- *        3 ufo door is still opening, don't walk through it yet. (have patience, futuristic technology...)
+ *		  0 normal door opened, make a squeaky sound and you can walk through.
+ *		  1 ufo door is starting to open, make a whoosh sound, don't walk through.
+ *		  3 ufo door is still opening, don't walk through it yet. (have patience, futuristic technology...)
  */
 int TileEngine::unitOpensDoor(BattleUnit *unit, bool rClick, int dir)
 {
@@ -2114,7 +2111,7 @@ int TileEngine::calculateLine(const Position& origin, const Position& target, bo
 	for (x = x0; x != (x1+step_x); x += step_x)
 	{
 		//copy position
-		cx = x; cy = y; cz = z;
+		cx = x;	cy = y;	cz = z;
 
 		//unswap (in reverse)
 		if (swap_xz) std::swap(cx, cz);
@@ -2171,7 +2168,7 @@ int TileEngine::calculateLine(const Position& origin, const Position& target, bo
 			//check for xy diagonal intermediate voxel step
 			if (doVoxelCheck)
 			{
-				cx = x; cz = z; cy = y;
+				cx = x;	cz = z; cy = y;
 				if (swap_xz) std::swap(cx, cz);
 				if (swap_xy) std::swap(cx, cy);
 				result = voxelCheck(Position(cx, cy, cz), excludeUnit, false, onlyVisible, excludeAllBut);
@@ -2448,7 +2445,7 @@ int TileEngine::psiAttack(BattleAction *action)
 	if (! action->actor->spendEnergy(distMod / 50 + randMod / 333))		// 1 eu for 2 dist, then up to 15 more for random strain
 	{
 		action->result = "STR_NOT_ENOUGH_ENERGY";
-		return 0;										            // Not enough energy
+		return 0;
 	}
 
 	action->actor->addPsiExp();
@@ -2459,7 +2456,7 @@ int TileEngine::psiAttack(BattleAction *action)
 		if (action->type == BA_PANIC)
 		{
 			int moraleLoss = (RNG::generate(60+total/200 ,110+total/1000) - victim->getStats()->bravery);
-			if (moraleLoss >= 0)
+			if (moraleLoss > 0)
 			{
 				victim->moraleChange(-moraleLoss);
 				return moraleLoss;

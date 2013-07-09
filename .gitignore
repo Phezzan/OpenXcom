@@ -82,3 +82,5 @@ bak/
 tags
 xcom.sh
 bin/d/
+#Ignore NetBeans project directory
+nbproject/
