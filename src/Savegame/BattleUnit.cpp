@@ -2212,13 +2212,14 @@ bool BattleUnit::postMissionProcedures(SavedGame *geoscape)
 */
 int BattleUnit::improveStat(int exp, int current, int max = 100)
 {
-	int rnd = exp + RNG::generate(1, max);
+	int rnd   = exp + RNG::generate(1, max);
+	int delta = exp + max - current;
 
-	return(rnd > max) 
-		+ (rnd > current - exp)
-		+ (rnd * 2 > current)
-		+ (rnd * 3 > current)
-		+ (rnd * 4 > current);
+	return(rnd > max - delta / 2)
+		+ (rnd > max - delta)
+		+ (rnd > max - delta * 3 / 2)
+		+ (rnd > max - delta * 5 / 2)
+		+ (rnd > max - delta * 7 / 2);
 }
 
 /*
