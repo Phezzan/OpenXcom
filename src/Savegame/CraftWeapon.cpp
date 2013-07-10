@@ -142,7 +142,7 @@ void CraftWeapon::rearm()
 	}
 }
 
-bool CraftWeapon::canFire()
+bool CraftWeapon::canFire() const
 {
 	if (_rules->getAmmoMax() > 0 && _ammo <= 0)
 		return false;
@@ -156,7 +156,7 @@ CraftWeaponProjectile* CraftWeapon::fire(enum Directions upDown, const int leftR
 {
 	if (_rules->getAmmoMax() > 0 && _ammo <= 0)
 		return NULL;
-	else if (_ammo > 0)
+	else if (_rules->getAmmoMax() > 0)
 		_ammo--;
 
 	CraftWeaponProjectile *p = new CraftWeaponProjectile();
@@ -171,3 +171,4 @@ CraftWeaponProjectile* CraftWeapon::fire(enum Directions upDown, const int leftR
 }
 
 }
+// vim : noet

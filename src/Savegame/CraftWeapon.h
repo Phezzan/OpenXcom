@@ -62,7 +62,7 @@ public:
 	/// Rearms the craft weapon.
 	void rearm();
 	/// whether the weapon can fire
-	bool canFire();
+	bool canFire() const;
 	/// Fires the craft weapon. Used during dogfights.
 	CraftWeaponProjectile* fire(enum Directions upDown, const int leftRight);
 };

@@ -280,9 +280,7 @@ void BattlescapeGame::handleAI(BattleUnit *unit)
 
 	if (!unit->getMainHandWeapon() || !unit->getMainHandWeapon()->getAmmoItem())
 	{
-		if (unit->getUnitRules()->isLivingWeapon())
-			;	// poof - a weapon appears
-		else
+		if (!unit->getUnitRules() || !unit->getUnitRules()->isLivingWeapon())
 		{
 			action.actor = unit;
 			findItem(&action);
