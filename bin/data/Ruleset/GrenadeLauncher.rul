@@ -100,13 +100,13 @@ manufacture:
   - name: STR_LAUNCHER_STUN
     category: STR_AMMUNITION
     requires:
-      - STR_STUN_GRENADE
+      - STR_LAUNCHER_STUN
     space: 1
     time: 8
     cost: 1
     requiredItems:
       STR_STUN_BOMB: 1
-    listOrder: 9001
+    listOrder: 242
 ufopaedia:
   - id: STR_GRENADE_LAUNCHER
     type_id: 4

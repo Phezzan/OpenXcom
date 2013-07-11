@@ -86,18 +86,16 @@ int CraftWeapon::getAmmo() const
  */
 bool CraftWeapon::setAmmo(int ammo)
 {
-	if (_rules->getAmmoMax() < 0)
-		return true;
-
 	_ammo = ammo;
+	if (ammo >= _rules->getAmmoMax())
+	{
+		_ammo = _rules->getAmmoMax();
+        return true;
+	}
 	if (ammo < 0)
 	{
 		_ammo = 0;
 		return false;
-	}
-	if (ammo > _rules->getAmmoMax())
-	{
-		_ammo = _rules->getAmmoMax();
 	}
 	return true;
 }
