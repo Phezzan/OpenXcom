@@ -241,7 +241,7 @@ void DebriefingState::btnOkClick(Action *)
 	}
 	else if (!_destroyBase)
 	{
-		if (_game->getSavedGame()->handlePromotions())
+		if (_game->getSavedGame()->handlePromotions(_soldiers))
 		{
 			_game->pushState(new PromotionsState(_game));
 		}
@@ -375,7 +375,7 @@ void DebriefingState::prepareDebriefing()
 				base = (*i);
 				craftIterator = j;
 				craft->returnToBase();
-				craft->setLowFuel(true);
+				//craft->setLowFuel(true);
 				craft->setInBattlescape(false);
 			}
 			else if ((*j)->getDestination() != 0)
@@ -572,7 +572,10 @@ void DebriefingState::prepareDebriefing()
 				{ // so game is not aborted or aborted and unit is on exit area
 					playerInExitArea++;
 					if (soldier != 0)
-						recoverItems((*j)->getInventory(), base);		
+					{
+						recoverItems((*j)->getInventory(), base);
+						_soldiers.push_back(soldier);
+					}
 					else
 					{ // non soldier player = tank
 						base->getItems()->addItem(type);
@@ -648,7 +651,7 @@ void DebriefingState::prepareDebriefing()
 				if (aborted || playersSurvived == 0)
 				{
 					addStat("STR_CIVILIANS_KILLED_BY_ALIENS", 1, -(*j)->getValue());
-				}				
+				}
 				else
 				{
 					addStat("STR_CIVILIANS_SAVED", 1, (*j)->getValue());
@@ -745,7 +748,7 @@ void DebriefingState::prepareDebriefing()
 					}
 				}
 				// recover items from the floor
-				recoverItems(battle->getTiles()[i]->getInventory(), base);		
+				recoverItems(battle->getTiles()[i]->getInventory(), base);
 			}
 		}
 		else
@@ -753,7 +756,7 @@ void DebriefingState::prepareDebriefing()
 			for (int i = 0; i < battle->getMapSizeXYZ(); ++i)
 			{
 				if (battle->getTiles()[i]->getMapData(MapData::O_FLOOR) && (battle->getTiles()[i]->getMapData(MapData::O_FLOOR)->getSpecialType() == START_POINT))
-					recoverItems(battle->getTiles()[i]->getInventory(), base);		
+					recoverItems(battle->getTiles()[i]->getInventory(), base);
 			}
 		}
 	}
@@ -783,7 +786,7 @@ void DebriefingState::prepareDebriefing()
 			for (int i = 0; i < battle->getMapSizeXYZ(); ++i)
 			{
 				if (battle->getTiles()[i]->getMapData(MapData::O_FLOOR) && (battle->getTiles()[i]->getMapData(MapData::O_FLOOR)->getSpecialType() == START_POINT))
-					recoverItems(battle->getTiles()[i]->getInventory(), base);		
+					recoverItems(battle->getTiles()[i]->getInventory(), base);
 			}
 		}
 	}
@@ -963,7 +966,7 @@ void DebriefingState::recoverItems(std::vector<BattleItem*> *from, Base *base)
 		if ((*it)->getRules()->getName() == "STR_ELERIUM_115")
 		{
 			// special case of an item counted as a stat
-			addStat("STR_ELERIUM_115", 50, 5);
+			addStat("STR_ELERIUM_115", 10, 1);
 		}
 		else
 		{

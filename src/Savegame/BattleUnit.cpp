@@ -1027,8 +1027,8 @@ int BattleUnit::damage(const Position &relative, int power, ItemDamageType type,
 			}
 		}
 
-		int centerHit = getArmor()->getSize() * 3;
-		centerHit = abs_x < centerHit && abs_y < centerHit && (abs_x * abs_x + abs_y*abs_y < centerHit * centerHit);
+		int centerHit = getArmor()->getSize() * 4;
+		centerHit = abs_x < centerHit && abs_y < centerHit && (abs_x*abs_x + abs_y*abs_y < centerHit*centerHit);
 
 		if (relative.z > getHeight() * 12 / 16 )
 		{
@@ -1039,7 +1039,7 @@ int BattleUnit::damage(const Position &relative, int power, ItemDamageType type,
 				side = SIDE_FRONT;				// Helmet armor is good all round
 			}
 		}
-		else if (relative.z > getHeight() * 8 / 16)
+		else if (relative.z > getHeight() * 7 / 16)
 		{
 			switch(side)
 			{
@@ -1097,7 +1097,7 @@ int BattleUnit::damage(const Position &relative, int power, ItemDamageType type,
 					}
 
 					if (_fatalWounds[bodypart])
-						moraleChange(-_fatalWounds[bodypart]);
+						moraleChange(-5 * std::min(10,_fatalWounds[bodypart]));
 				}
 				// armor damage
 				setArmor(getArmor(side) - (power/10) - 1, side);

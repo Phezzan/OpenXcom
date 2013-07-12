@@ -20,6 +20,7 @@
 #define OPENXCOM_DEBRIEFINGSTATE_H
 
 #include "../Engine/State.h"
+#include "../Savegame/Soldier.h"
 #include <string>
 #include <vector>
 #include <map>
@@ -57,6 +58,7 @@ private:
 	Text *_txtTitle, *_txtItem, *_txtQuantity, *_txtScore, *_txtRecovery, *_txtRating;
 	TextList *_lstStats, *_lstRecovery, *_lstTotal;
 	std::vector<ReequipStat> _missingItems;
+	std::vector<Soldier*> _soldiers;
 	std::map<RuleItem*, int> _rounds;
 	void addStat(const std::string &name, int quantity, int score);
 	void prepareDebriefing();

@@ -1329,7 +1329,7 @@ void TileEngine::explode(const Position &center, int power, ItemDamageType type,
 										//(*it)->getUnit()->instaKill();
 										if ((*it)->getUnit() && (*it)->getUnit()->getStatus() == STATUS_UNCONSCIOUS)
 										{
-											(*it)->getUnit()->damage(Position(0, 0, 0), (int)(RNG::nDice(2, power_/3.0, power_*1.5)), type);
+											(*it)->getUnit()->damage(Position(0, 0, 0), (int)(RNG::nDice(2, power_/2.0, power_*1.5)), type);
 											++it;
 										}
 										else
@@ -2707,3 +2707,4 @@ void TileEngine::recalculateFOV()
 }
 
 }
+// vim: noet

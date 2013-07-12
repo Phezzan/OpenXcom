@@ -280,7 +280,7 @@ void BattlescapeGenerator::run()
 	{
 		double lat = 0;
 		if (_ufo) lat = _ufo->getLatitude();
-		_terrain = getTerrain(_worldTexture, lat); 
+		_terrain = getTerrain(_worldTexture, lat);
 	}
 	else
 	{
@@ -535,9 +535,9 @@ BattleUnit *BattlescapeGenerator::addXCOMUnit(BattleUnit *unit)
 		for (int i = 0; i < _mapsize_x * _mapsize_y * _mapsize_z; i++)
 		{
 			// to spawn an xcom soldier, there has to be a tile, with a floor, with the starting point attribute and no object in the way
-			if (_save->getTiles()[i] && 
-				_save->getTiles()[i]->getMapData(MapData::O_FLOOR) && 
-				_save->getTiles()[i]->getMapData(MapData::O_FLOOR)->getSpecialType() == START_POINT && 
+			if (_save->getTiles()[i] &&
+				_save->getTiles()[i]->getMapData(MapData::O_FLOOR) &&
+				_save->getTiles()[i]->getMapData(MapData::O_FLOOR)->getSpecialType() == START_POINT &&
 				!_save->getTiles()[i]->getMapData(MapData::O_OBJECT) &&
 				_save->getTiles()[i]->getMapData(MapData::O_FLOOR)->getTUCost(MT_WALK) < 255)
 			{
@@ -930,8 +930,8 @@ BattleItem* BattlescapeGenerator::addItem(RuleItem *item, BattleUnit *unit)
 				placed = true;
 			}
 		}
-		else 
-		{	
+		else
+		{
 			for (int i = 0; i != 4; ++i)
 			{
 				if (!unit->getItem("STR_BELT", i) && _game->getRuleset()->getInventory("STR_BELT")->fitItemInSlot(item, i, 0))
@@ -1500,7 +1500,7 @@ void BattlescapeGenerator::generateMap()
 			neighbourSegments[3] = -1;
 		else
 			neighbourSegments[3] = segments[segmentX][segmentY-1];
-			
+		
 		for (std::vector<int>::iterator j = node->getNodeLinks()->begin(); j != node->getNodeLinks()->end(); ++j )
 		{
 			for (int n = 0; n < 4; n++)
@@ -1691,12 +1691,15 @@ void BattlescapeGenerator::fuelPowerSources()
 {
 	for (int i = 0; i < _save->getMapSizeXYZ(); ++i)
 	{
-		if (_save->getTiles()[i]->getMapData(MapData::O_OBJECT) 
+		if (_save->getTiles()[i]->getMapData(MapData::O_OBJECT)
 			&& _save->getTiles()[i]->getMapData(MapData::O_OBJECT)->getSpecialType() == UFO_POWER_SOURCE)
 		{
 			BattleItem *elerium = new BattleItem(_game->getRuleset()->getItem("STR_ELERIUM_115"), _save->getCurrentItemId());
-			_save->getItems()->push_back(elerium);
-			_save->getTiles()[i]->addItem(elerium, _game->getRuleset()->getInventory("STR_GROUND"));
+			for (int j = RNG::generate(4,6);j > 0; j--)
+			{
+				_save->getItems()->push_back(elerium);
+				_save->getTiles()[i]->addItem(elerium, _game->getRuleset()->getInventory("STR_GROUND"));
+			}
 		}
 	}
 }
@@ -1709,8 +1712,8 @@ void BattlescapeGenerator::explodePowerSources(int overkill)
 {
 	for (int i = 0; i < _save->getMapSizeXYZ(); ++i)
 	{
-		if (_save->getTiles()[i]->getMapData(MapData::O_OBJECT) 
-			&& _save->getTiles()[i]->getMapData(MapData::O_OBJECT)->getSpecialType() == UFO_POWER_SOURCE && RNG::generate(0,100) < 40 + overkill*3/5)
+		if (_save->getTiles()[i]->getMapData(MapData::O_OBJECT)
+			&& _save->getTiles()[i]->getMapData(MapData::O_OBJECT)->getSpecialType() == UFO_POWER_SOURCE && RNG::generate(0,100) < 33 + overkill*2/3)
 		{
 			Position pos;
 			pos.x = _save->getTiles()[i]->getPosition().x*16;
