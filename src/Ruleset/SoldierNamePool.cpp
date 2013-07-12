@@ -143,8 +143,8 @@ std::wstring SoldierNamePool::genName(SoldierGender *gender, SoldierLook *look) 
 
 SoldierLook SoldierNamePool::genLook(unsigned numLooks) const
 {
-	int maxChance = 0;
-	int look      = 0;
+	unsigned maxChance = 0;
+	unsigned look      = 0;
 
 	while(numLooks > 0)
 	{
@@ -158,11 +158,11 @@ SoldierLook SoldierNamePool::genLook(unsigned numLooks) const
 	maxChance = RNG::generate(0,maxChance);
 	for (look = 0; look < _lookWeights.size(); look++)
 	{
-		maxChance -= _lookWeights[look];
-        if (maxChance < 1)
+		if (maxChance <= (unsigned)_lookWeights[look])
 		{
 			return (SoldierLook) look;
 		}
+		maxChance -= _lookWeights[look];
 	}
 	return (SoldierLook) (look + (maxChance - 1) / 2);
 }

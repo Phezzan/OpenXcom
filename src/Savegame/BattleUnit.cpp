@@ -577,14 +577,15 @@ void BattleUnit::keepWalking(Tile *tileBelowMe, bool cache)
 				middle = 1;
 		}
 	}
-	if (!cache)
-	{
-		middle = 1;
-		end = 2;
-	}
 
 	_walkPhase++;
 	
+	if (!cache)
+	{
+		_walkPhase = 1;
+		middle = 1;
+		end = 1;
+	}
 
 	if (_walkPhase == middle)
 	{
@@ -2328,7 +2329,7 @@ unsigned BattleUnit::heal(int part, int healAmount, int healthAmount)
 
 		if (healthAmount > 0)		// Diminishing returns & delayed healing w/ healthPool
 		{
-			int const heal = healthAmount * (1 + statHealth - _health) / (1 + statHealth);
+			int const heal = healthAmount * (1 + statHealth - (_health+_healthPool)) / (1 + statHealth);
 			_healthPool += heal;
 			didHeal += heal;
 		}

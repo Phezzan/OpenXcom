@@ -1032,40 +1032,6 @@ std::list<std::pair <int, BattleUnit*> > TileEngine::getReactingUnits(BattleUnit
 }
 
 /*
- * get the unit with the highest reaction score from the spotter vector.
- * @param spotters the vector of spotting units.
- * @param unit the unit to check scores against.
- * @return the unit with the highest reactions.
- */
-BattleUnit* TileEngine::getReactor(std::vector<BattleUnit *> spotters, BattleUnit *unit)
-{
-	int bestScore = -1;
-	BattleUnit *bu = 0;
-	for (std::vector<BattleUnit *>::iterator i = spotters.begin(); i != spotters.end(); ++i)
-	{
-		if (!(*i)->isOut() &&
-		canMakeSnap(*i, unit) &&
-		(*i)->getReactionScore() > bestScore)
-		{
-			bestScore = (*i)->getReactionScore();
-			bu = *i;
-		}
-	}
-	if (unit->getReactionScore() <= bestScore)
-	{
-		if (bu->getOriginalFaction() == FACTION_PLAYER)
-		{
-			bu->addReactionExp();
-		}
-	}
-	else
-	{
-		bu = unit;
-	}
-	return bu;
-}
-
-/*
  * check the validity of a snap shot performed here.
  * @param unit the unit to check sight from
  * @param target the unit to check sight TO

@@ -198,6 +198,8 @@ int BattleItem::willDetonate(int turn) const
  */
 int BattleItem::willDetonate(int turn, BattleUnit const &unit) const
 {
+    (void) unit;    // unused - for smart Prox Grenades
+
     if (!_explodeTurn || _explodeTurn > turn)
         return 0;
     return 1;
