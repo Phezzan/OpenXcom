@@ -2740,7 +2740,7 @@ manufacture:
     category: STR_CRAFT
     requires:
       - STR_ULTIMATE_CRAFT
-    space: 36
+    space: 40
     time: 40000
     cost: 2000000
     requiredItems:
@@ -2749,12 +2749,12 @@ manufacture:
       STR_UFO_NAVIGATION: 1
 crafts:
   - type: STR_FIRESTORM
-    fuelMax: 20
+    fuelMax: 24
     damageMax: 500
-    speedMax: 4200
-    accel: 9
+    speedMax: 4500
+    accel: 10
     weapons: 2
-    refuelRate: 5
+    refuelRate: 6
     costSell: 2100000
   - type: STR_LIGHTNING
     fuelMax: 30
@@ -2763,7 +2763,7 @@ crafts:
     accel: 9
     weapons: 1
     soldiers: 12
-    refuelRate: 5
+    refuelRate: 6
     score: 300
     costSell: 3000000
   - type: STR_AVENGER
@@ -2774,8 +2774,8 @@ crafts:
     weapons: 2
     soldiers: 26
     vehicles: 4
-    refuelRate: 5
-    score: 400
+    refuelRate: 6
+    score: 500
     costSell: 6000000
 ufopaedia:
   - id: STR_PULSE_LASER
