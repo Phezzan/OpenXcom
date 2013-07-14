@@ -156,6 +156,7 @@ alienDeployments:
             - STR_STUN_BOMB
             - STR_STUN_BOMB
             - STR_STUN_BOMB
+            - STR_STUN_BOMB
             - STR_PLASMA_PISTOL
             - STR_PLASMA_PISTOL_CLIP
     width: 50
