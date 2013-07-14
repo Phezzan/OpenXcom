@@ -44,7 +44,7 @@ namespace OpenXcom
 /**
  * Sets up an UnitWalkBState.
  */
-UnitWalkBState::UnitWalkBState(BattlescapeGame *parent, BattleAction action, const Position finalFacing, const bool pathfindForFinalTurn) : BattleState(parent, action), _unit(0), _pf(0), _terrain(0), _falling(false), _finalFacing(finalFacing), _pathfindForFinalTurn(pathfindForFinalTurn), _numUnitsSpotted(0)
+UnitWalkBState::UnitWalkBState(BattlescapeGame *parent, BattleAction action, const Position finalFacing, const bool pathfindForFinalTurn) : BattleState(parent, action), _unit(0), _pf(0), _terrain(0), _falling(false), _beforeFirstStep(false), _finalFacing(finalFacing), _pathfindForFinalTurn(pathfindForFinalTurn), _numUnitsSpotted(0), _preMovementCost(0)
 {
 
 }
@@ -66,6 +66,11 @@ void UnitWalkBState::init()
 	_terrain = _parent->getTileEngine();
 	_target = _action.target;
 	if (_parent->getSave()->getTraceSetting()) { Log(LOG_INFO) << "Walking from: " << _unit->getPosition().x << "," << _unit->getPosition().y << "," << _unit->getPosition().z << "," << " to " << _target.x << "," << _target.y << "," << _target.z;}
+	int dir = _pf->getStartDirection();
+	if (!_action.strafe && dir != -1 && dir != _unit->getDirection())
+	{
+		_beforeFirstStep = true;
+	}
 }
 
 void UnitWalkBState::think()
@@ -404,7 +409,8 @@ void UnitWalkBState::think()
 				if (_unit->spendEnergy(energy))
 				{
 					Tile *tileBelow = _parent->getSave()->getTile(_unit->getPosition() + Position(0,0,-1));
-					_unit->startWalking(dir, destination, tileBelow, onScreen);
+					_unit->startWalking(dir, destination, tileBelow, onScreen);					
+					_beforeFirstStep = false;
 				}
 			}
 			// make sure the unit sprites are up to date
@@ -430,8 +436,14 @@ void UnitWalkBState::think()
 	// turning during walking costs no tu
 	if (_unit->getStatus() == STATUS_TURNING)
 	{
-		_unit->turn();
+		// except before the first step.
+		if (_beforeFirstStep)
+		{
+			_preMovementCost++;
+		}
 
+		_unit->turn();
+		
 		// calculateFOV is unreliable for setting the unitSpotted bool, as it can be called from various other places
 		// in the code, ie: doors opening, and this messes up the result.
 		_terrain->calculateFOV(_unit);
@@ -445,12 +457,16 @@ void UnitWalkBState::think()
 		}
 		if (unitSpotted && !(_action.desperate || _unit->getCharging()) && !_falling)
 		{
+			if (_beforeFirstStep)
+			{
+				_unit->spendTimeUnits(_preMovementCost);
+			}
 			if (_parent->getSave()->getTraceSetting()) { Log(LOG_INFO) << "Egads! A turn reveals new units! I must pause!"; }
 			_unit->_hidingForTurn = false; // not hidden, are we...
 			_pf->abortPath();
 			_unit->setCache(0);
 			_parent->getMap()->cacheUnit(_unit);
-			return;
+			_parent->popState();
 		}
 	}
 }

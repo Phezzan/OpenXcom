@@ -391,7 +391,7 @@ public:
 	void setEnergy(int energy);
 	/// Adjust the unit's armor values based on the difficulty, (default) 2 -> 100%.
 	void adjustArmor(int const diff);
-	/// Gets the unit's faction.
+	/// Get the faction that killed this unit.
 	UnitFaction killedBy() const;
 	/// Set the faction that killed this unit.
 	void killedBy(UnitFaction f);

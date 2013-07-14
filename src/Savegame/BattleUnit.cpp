@@ -582,8 +582,7 @@ void BattleUnit::keepWalking(Tile *tileBelowMe, bool cache)
 	
 	if (!cache)
 	{
-		_walkPhase = 1;
-		middle = 1;
+		_pos = _destination;
 		end = 1;
 	}
 
@@ -594,7 +593,7 @@ void BattleUnit::keepWalking(Tile *tileBelowMe, bool cache)
 		_pos = _destination;
 	}
 
-	if (_walkPhase == end)
+	if (_walkPhase >= end)
 	{
 		if (_floating && !_tile->hasNoFloor(tileBelowMe))
 		{
@@ -686,7 +685,10 @@ void BattleUnit::lookAt(int direction, bool force)
 	{
 		if (direction < 0 || direction >= 8) return;
 		_toDirection = direction;
-		_status = STATUS_TURNING;
+		if (_toDirection != _direction)
+		{
+			_status = STATUS_TURNING;
+		}
 	}
 	else
 	{
