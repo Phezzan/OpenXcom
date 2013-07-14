@@ -6,10 +6,10 @@ crafts:
     speedMax: 2400
     accel: 3
     weapons: 2
-    refuelRate: 40
+    refuelRate: 42
     transferTime: 96
     score: 250
-    costSell: 800000
+    costSell: 900000
 ufopaedia:
   - id: STR_SENTINEL
     type_id: 1
@@ -41,7 +41,7 @@ manufacture:
       - STR_SENTINEL_SCI
     space: 24
     time: 8640
-    cost: 200000
+    cost: 300000
     requiredItems:
       STR_ALIEN_ALLOYS: 30
     listOrder: 90001

@@ -21,6 +21,7 @@
 #include <sstream>
 #include <iomanip>
 #include <algorithm>
+#include <cmath>
 #include <yaml-cpp/yaml.h>
 #include "../version.h"
 #include "../Engine/Logger.h"
@@ -1261,7 +1262,7 @@ void SavedGame::inspectSoldiers(Soldier **highestRanked, size_t *total, int rank
 				        + 3 * s->tu     	+ 5 * s->firing
 				        + 1 * s->melee  	+ 1 * s->throwing + 1 * s->strength
 				        + 3 * s->psiStrength + s->psiSkill;
-				int score = ( (*j)->getMissions() * (*j)->getKills() );
+				int score = pts + ( std::sqrt((*j)->getMissions()) * (*j)->getKills() );
 				if (score > highestScore)
 				{
 					highestScore = score;

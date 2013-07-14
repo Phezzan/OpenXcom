@@ -371,12 +371,12 @@ items:
     size: 1.6
     costSell: 256000
   - type: STR_STINGRAY_MISSILES
-    size: 0.3
+    size: 0.2
     costBuy: 2700
     costSell: 2500
     transferTime: 48
   - type: STR_AVALANCHE_MISSILES
-    size: 0.5
+    size: 0.3
     costBuy: 6600
     costSell: 6250
     transferTime: 48
@@ -386,7 +386,7 @@ items:
     costSell: 756
     transferTime: 48
   - type: STR_FUSION_BALL
-    size: 0.5
+    size: 0.2
     costSell: 36000
     transferTime: 48
   - type: STR_TANK_CANNON
@@ -413,7 +413,7 @@ items:
     armor: 20
     turretType: 0
   - type: STR_HWP_CANNON_SHELLS
-    size: 0
+    size: 0.333
     costBuy: 200
     costSell: 100
     transferTime: 48
@@ -453,7 +453,7 @@ items:
     armor: 20
     turretType: 1
   - type: STR_HWP_ROCKETS
-    size: 0.25
+    size: 0.6
     costBuy: 1200
     costSell: 960
     transferTime: 48
@@ -618,7 +618,7 @@ items:
     armor: 75
     turretType: 4
   - type: STR_HWP_FUSION_BOMB
-    size: 0.6
+    size: 0.54
     costSell: 31500
     transferTime: 48
     weight: 3
@@ -635,7 +635,7 @@ items:
     armor: 20
     blastRadius: 11
   - type: STR_PISTOL
-    size: 0.1
+    size: 0.067
     costBuy: 800
     costSell: 600
     weight: 4
@@ -656,7 +656,7 @@ items:
     armor: 20
     attraction: 0
   - type: STR_PISTOL_CLIP
-    size: 0.1
+    size: 0.033
     costBuy: 70
     costSell: 52
     weight: 1
@@ -671,7 +671,7 @@ items:
     armor: 12
     attraction: 0
   - type: STR_RIFLE
-    size: 0.2
+    size: 0.1
     costBuy: 3000
     costSell: 2500
     weight: 6
@@ -695,7 +695,7 @@ items:
     armor: 25
     attraction: 1
   - type: STR_RIFLE_CLIP
-    size: 0.1
+    size: 0.033
     costBuy: 200
     costSell: 150
     weight: 2
@@ -734,7 +734,7 @@ items:
     armor: 20
     attraction: 6
   - type: STR_HC_AP_AMMO
-    size: 0.08
+    size: 0.067
     costBuy: 300
     costSell: 225
     weight: 7
@@ -751,7 +751,7 @@ items:
     armor: 30
     attraction: 1
   - type: STR_HC_HE_AMMO
-    size: 0.08
+    size: 0.067
     costBuy: 500
     costSell: 275
     weight: 6
@@ -768,7 +768,7 @@ items:
     armor: 20
     attraction: 0
   - type: STR_HC_I_AMMO
-    size: 0.08
+    size: 0.067
     costBuy: 400
     costSell: 300
     weight: 5
@@ -785,7 +785,7 @@ items:
     armor: 20
     attraction: 0
   - type: STR_AUTO_CANNON
-    size: 0.3
+    size: 0.2
     costBuy: 13500
     costSell: 10125
     weight: 19
@@ -810,7 +810,7 @@ items:
     invHeight: 3
     armor: 20
   - type: STR_AC_AP_AMMO
-    size: 0.1
+    size: 0.067
     costBuy: 500
     costSell: 400
     weight: 5
@@ -826,7 +826,7 @@ items:
     invHeight: 1
     armor: 20
   - type: STR_AC_HE_AMMO
-    size: 0.1
+    size: 0.067
     costBuy: 700
     costSell: 560
     weight: 5
@@ -842,7 +842,7 @@ items:
     invHeight: 1
     armor: 20
   - type: STR_AC_I_AMMO
-    size: 0.1
+    size: 0.067
     costBuy: 650
     costSell: 520
     weight: 5
@@ -859,7 +859,7 @@ items:
     armor: 20
     attraction: 0
   - type: STR_SMALL_ROCKET
-    size: 0.2
+    size: 0.1
     costBuy: 560
     costSell: 500
     weight: 6
@@ -875,7 +875,7 @@ items:
     invHeight: 3
     armor: 20
   - type: STR_LARGE_ROCKET
-    size: 0.2
+    size: 0.1
     costBuy: 820
     costSell: 750
     weight: 8
@@ -891,7 +891,7 @@ items:
     invHeight: 3
     armor: 20
   - type: STR_LASER_PISTOL
-    size: 0.1
+    size: 0.067
     costSell: 20000
     weight: 7
     bigSprite: 5
@@ -915,7 +915,7 @@ items:
     invHeight: 2
     armor: 20
   - type: STR_LASER_RIFLE
-    size: 0.2
+    size: 0.1
     costSell: 37000
     weight: 8
     bigSprite: 0
@@ -940,7 +940,7 @@ items:
     invHeight: 3
     armor: 20
   - type: STR_HEAVY_LASER
-    size: 0.3
+    size: 0.2
     costSell: 60000
     weight: 18
     bigSprite: 6
@@ -964,8 +964,8 @@ items:
     armor: 20
     attraction: 8
   - type: STR_PULSE_LASER
-    size: 0.3
-    costSell: 92000		# $3k / month - not a money maker
+    size: 0.2
+    costSell: 95000		# $13k / month - and it requires elerium
     weight: 14			## Alien Alloys - Hvy Plasma only weighs 8
     bigSprite: 80
     floorSprite: 0		## Hvy Laser was 6
@@ -1015,7 +1015,7 @@ items:
     armor: 20
     blastRadius: 6
   - type: STR_HIGH_EXPLOSIVE
-    size: 0.1
+    size: 0.067
     costBuy: 400
     costSell: 375
     weight: 6
@@ -1029,7 +1029,7 @@ items:
     armor: 20
     blastRadius: 5
   - type: STR_MOTION_SCANNER
-    size: 0.075
+    size: 0.033
     costSell: 42500
     weight: 3
     bigSprite: 23
@@ -1038,7 +1038,7 @@ items:
     tuUse: 25
     armor: 20
   - type: STR_MEDI_KIT
-    size: 0.1
+    size: 0.066
     costSell: 36000
     weight: 5
     bigSprite: 24
@@ -1057,7 +1057,7 @@ items:
     flatRate: true
     armor: 25
   - type: STR_MEDI_KIT_ADV
-    size: 0.1
+    size: 0.066
     costSell: 50000
     weight: 5
     bigSprite: 24
@@ -1079,7 +1079,7 @@ items:
   - type: STR_PSI_AMP
     requires:
       - STR_PSI_AMP
-    size: 0.05
+    size: 0.1
     costSell: 195000
     weight: 10
     bigSprite: 33
@@ -1092,6 +1092,22 @@ items:
     invHeight: 3
     tuUse: 25
     flatRate: true
+    armor: 20
+  - type: STR_STUN_ROD
+    size: 0.1
+    costBuy: 1260
+    costSell: 945
+    weight: 6
+    bigSprite: 26
+    floorSprite: 26
+    handSprite: 80
+    hitSound: 54
+    power: 65
+    damageType: 6
+    accuracyMelee: 100
+    tuMelee: 25
+    battleType: 3
+    twoHanded: true
     armor: 20
   - type: STR_ELECTRO_FLARE
     size: 0.025
@@ -1352,14 +1368,14 @@ items:
     attraction: 10
     listOrder: 4101
   - type: STR_ELERIUM_115
-    size: 0.1
+    size: 0.075
     costSell: 10000
     weight: 3
     bigSprite: 56
     floorSprite: 37
     invWidth: 1
     invHeight: 1
-    armor: 30
+    armor: 25
     attraction: 0
   - type: STR_MIND_PROBE
     requires:
@@ -1551,7 +1567,7 @@ armors:
     damageModifier:
       - 1.0   	#		DT_NONE
       - 1.0   	# ArmorP	DT_AP
-      - 0.1   	# Fire		DT_IN
+      - 0.0   	# Fire		DT_IN
       - 1.0   	# HiEx		DT_HE
       - 1.0   	# Laser		DT_LASER
       - 1.0   	# Plasma	DT_PLASMA
@@ -2702,9 +2718,9 @@ manufacture:
     category: STR_CRAFT
     requires:
       - STR_NEW_FIGHTER_CRAFT
-    space: 30
-    time: 14000
-    cost: 400000
+    space: 28
+    time: 16000
+    cost: 600000
     requiredItems:
       STR_ALIEN_ALLOYS: 65
       STR_UFO_POWER_SOURCE: 1
@@ -2714,8 +2730,8 @@ manufacture:
     requires:
       - STR_NEW_FIGHTER_TRANSPORTER
     space: 34
-    time: 18000
-    cost: 600000
+    time: 20000
+    cost: 1000000
     requiredItems:
       STR_ALIEN_ALLOYS: 85
       STR_UFO_POWER_SOURCE: 1
@@ -2725,8 +2741,8 @@ manufacture:
     requires:
       - STR_ULTIMATE_CRAFT
     space: 36
-    time: 34000
-    cost: 900000
+    time: 40000
+    cost: 2000000
     requiredItems:
       STR_ALIEN_ALLOYS: 120
       STR_UFO_POWER_SOURCE: 2
@@ -2739,7 +2755,7 @@ crafts:
     accel: 9
     weapons: 2
     refuelRate: 5
-    costSell: 1800000
+    costSell: 2100000
   - type: STR_LIGHTNING
     fuelMax: 30
     damageMax: 800
@@ -2749,7 +2765,7 @@ crafts:
     soldiers: 12
     refuelRate: 5
     score: 300
-    costSell: 2600000
+    costSell: 3000000
   - type: STR_AVENGER
     fuelMax: 60
     damageMax: 1200
@@ -2760,7 +2776,7 @@ crafts:
     vehicles: 4
     refuelRate: 5
     score: 400
-    costSell: 4500000
+    costSell: 6000000
 ufopaedia:
   - id: STR_PULSE_LASER
     type_id: 4

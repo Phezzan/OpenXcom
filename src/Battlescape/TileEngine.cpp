@@ -1318,31 +1318,23 @@ void TileEngine::explode(const Position &center, int power, ItemDamageType type,
 							{
 								dest->getUnit()->damage(Position(0, 0, 0), (int)(RNG::generate(power_/2.0, power_*1.5)), type);
 							}
-							//bool done = false;
-							//while (!done)
-							//{
-							//	done = dest->getInventory()->size() == 0;
-								for (std::vector<BattleItem*>::iterator it = dest->getInventory()->begin(); it != dest->getInventory()->end(); )
+
+							std::vector<BattleItem*> remove;
+							for (std::vector<BattleItem*>::iterator it = dest->getInventory()->begin(); it != dest->getInventory()->end(); it++)
+							{
+								if (power_ > (*it)->getRules()->getArmor())
 								{
-									if (power_ > (*it)->getRules()->getArmor())
-									{
-										//(*it)->getUnit()->instaKill();
-										if ((*it)->getUnit() && (*it)->getUnit()->getStatus() == STATUS_UNCONSCIOUS)
-										{
-											(*it)->getUnit()->damage(Position(0, 0, 0), (int)(RNG::nDice(2, power_/2.0, power_*1.5)), type);
-											++it;
-										}
-										else
-											_save->removeItem((*it));
-										break;
-									}
+									if ((*it)->getUnit() && (*it)->getUnit()->getStatus() == STATUS_UNCONSCIOUS)
+										(*it)->getUnit()->damage(Position(0, 0, 0), (int)(RNG::nDice(2, power_/2.0, power_*1.5)), type);
 									else
-									{
-										++it;
-							//			done = it == dest->getInventory()->end();
-									}
+										remove.push_back(*it);
 								}
-							//}
+							}
+							for (std::vector<BattleItem*>::iterator it = remove.begin(); it != remove.end(); it++)
+							{
+								// remove the item from { the savegame, the tile, the owner }... but not our temp vector so we aren't clobbering this loop.
+								_save->removeItem(*it);
+							}
 						}
 
 						if (type == DT_SMOKE)
@@ -1365,7 +1357,7 @@ void TileEngine::explode(const Position &center, int power, ItemDamageType type,
 							if (dest->getUnit())
 							{
 								float resistance = dest->getUnit()->getArmor()->getDamageModifier(DT_IN);
-								if (resistance > 0.1)
+								if (resistance > 0.11)
 								{
 									dest->getUnit()->damage(Position(0, 0, 12-dest->getTerrainLevel()), RNG::generate(5, 10), DT_IN, true);
 									int burnTime = RNG::generate(0, int(5 * resistance));

@@ -1711,17 +1711,18 @@ void BattlescapeGenerator::fuelPowerSources()
 void BattlescapeGenerator::explodePowerSources(int overkill)
 {
 	for (int i = 0; i < _save->getMapSizeXYZ(); ++i)
-	{
-		if (_save->getTiles()[i]->getMapData(MapData::O_OBJECT)
-			&& _save->getTiles()[i]->getMapData(MapData::O_OBJECT)->getSpecialType() == UFO_POWER_SOURCE && RNG::generate(0,100) < 33 + overkill*2/3)
+		if (_save->getTiles()[i]->getMapData(MapData::O_OBJECT) && _save->getTiles()[i]->getMapData(MapData::O_OBJECT)->getSpecialType() == UFO_POWER_SOURCE)
 		{
-			Position pos;
-			pos.x = _save->getTiles()[i]->getPosition().x*16;
-			pos.y = _save->getTiles()[i]->getPosition().y*16;
-			pos.z = (_save->getTiles()[i]->getPosition().z*24) +12;
-			_save->getTileEngine()->explode(pos, 180+RNG::generate(0,70), DT_HE, 11);
+			int rnd = RNG::generate(1,100);
+			if (rnd < 33 + overkill*2/3)
+			{
+				Position pos;
+				pos.x = _save->getTiles()[i]->getPosition().x*16;
+				pos.y = _save->getTiles()[i]->getPosition().y*16;
+				pos.z = (_save->getTiles()[i]->getPosition().z*24) +12;
+				_save->getTileEngine()->explode(pos, 150+RNG::generate(0,100), DT_HE, 9);
+			}
 		}
-	}
 }
 
 /**
@@ -1731,7 +1732,7 @@ void BattlescapeGenerator::deployCivilians(int max)
 {
 	if (max)
 	{
-		int number = RNG::generate(0, max);
+		int number = RNG::generate(1, max);
 
 		if (number > 0)
 		{
