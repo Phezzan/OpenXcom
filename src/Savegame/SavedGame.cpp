@@ -1230,7 +1230,7 @@ bool SavedGame::handlePromotions(std::vector <Soldier*> &survivors)
 
 	for (std::vector<Soldier*>::iterator s = survivors.begin(); s != survivors.end(); ++s)
 	{
-		if (RANK_ROOKIE == (*s)->getRank() && (*s)->getMissions() * (*s)->getKills() > 1 )
+		if (RANK_ROOKIE == (*s)->getRank() && (*s)->getMissions() * (*s)->getKills() > 0 )
 		{
 			(*s)->promoteRank();
 			soldiersPromoted++;
