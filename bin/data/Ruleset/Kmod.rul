@@ -2725,6 +2725,7 @@ manufacture:
       STR_ALIEN_ALLOYS: 65
       STR_UFO_POWER_SOURCE: 1
       STR_UFO_NAVIGATION: 1
+    listOrder: 90100
   - name: STR_LIGHTNING
     category: STR_CRAFT
     requires:
@@ -2736,6 +2737,7 @@ manufacture:
       STR_ALIEN_ALLOYS: 85
       STR_UFO_POWER_SOURCE: 1
       STR_UFO_NAVIGATION: 1
+    listOrder: 90200
   - name: STR_AVENGER
     category: STR_CRAFT
     requires:
@@ -2747,6 +2749,7 @@ manufacture:
       STR_ALIEN_ALLOYS: 120
       STR_UFO_POWER_SOURCE: 2
       STR_UFO_NAVIGATION: 1
+    listOrder: 90300
 crafts:
   - type: STR_FIRESTORM
     fuelMax: 24
