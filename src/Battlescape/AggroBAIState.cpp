@@ -957,7 +957,7 @@ bool AggroBAIState::selectPointNearTarget(BattleAction *action, BattleUnit *targ
 	int size = action->actor->getArmor()->getSize();
 	int targetsize = target->getArmor()->getSize();
 	bool returnValue = false;
-	int distance = 1000;
+	int distance = 10000;
 	for (int x = -size; x <= targetsize; ++x)
 	{
 		for (int y = -size; y <= targetsize; ++y)
@@ -973,11 +973,11 @@ bool AggroBAIState::selectPointNearTarget(BattleAction *action, BattleUnit *targ
 				if (valid && fitHere)
 				{
 					_game->getPathfinding()->calculate(action->actor, checkPath, 0, maxTUs);
-					if (_game->getPathfinding()->getStartDirection() != -1 && _game->getTileEngine()->distance(checkPath, action->actor->getPosition()) < distance)
+					if (_game->getPathfinding()->getStartDirection() != -1 && _game->getTileEngine()->distanceSq(checkPath, action->actor->getPosition()) < distance)
 					{
 						action->target = checkPath;
 						returnValue = true;
-						distance = _game->getTileEngine()->distance(checkPath, action->actor->getPosition());
+						distance = _game->getTileEngine()->distanceSq(checkPath, action->actor->getPosition());
 					}
 					_game->getPathfinding()->abortPath();
 				}
@@ -1007,7 +1007,7 @@ void AggroBAIState::meleeAttack(BattleAction *action)
 void AggroBAIState::selectFireMethod(BattleAction *action)
 {
 	RuleItem const *rules 	= action->weapon->getRules();;
-	int distance 			= _game->getTileEngine()->distance(_unit->getPosition(), action->target);
+	int distance 			= _game->getTileEngine()->distanceSq(_unit->getPosition(), action->target);
 	action->type 			= BA_RETHINK;
 	int const tuAuto 		= rules->getTUAuto();
 	int const tuSnap 		= rules->getTUSnap();
@@ -1026,7 +1026,7 @@ void AggroBAIState::selectFireMethod(BattleAction *action)
 
 	int const rand = RNG::generate(0, action->diff * 10);
 
-	if (distance < 5)
+	if (distance < 25)
 	{
 		if ( nAuto > nSnap)
 		{
@@ -1046,7 +1046,7 @@ void AggroBAIState::selectFireMethod(BattleAction *action)
 	}
 
 
-	if ( distance > 12 )
+	if ( distance > 144 )
 	{
 		if ( nAimed >= nSnap )
 		{
