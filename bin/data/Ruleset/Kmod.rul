@@ -1,4 +1,3 @@
----
 countries:
   - type: STR_USA
     fundingBase: 600
@@ -1752,7 +1751,7 @@ units:
       psiSkill: 0
       melee: 76
     intelligence: 3
-    aggression: 2
+    aggression: 5
   - type: STR_SECTOID_ENGINEER
     stats:
       tu: 54
@@ -1767,7 +1766,7 @@ units:
       psiSkill: 0
       melee: 76
     intelligence: 6
-    aggression: 2
+    aggression: 5
   - type: STR_SECTOID_MEDIC
     stats:
       tu: 54
@@ -1797,7 +1796,7 @@ units:
       psiSkill: 0
       melee: 76
     intelligence: 4
-    aggression: 2
+    aggression: 5
   - type: STR_SECTOID_LEADER
     stats:
       tu: 54
@@ -1828,6 +1827,10 @@ units:
       melee: 76
     intelligence: 8
     aggression: 0
+  - type: STR_CYBERDISC_TERRORIST
+    aggression: 7
+  - type: STR_FLOATER_SOLDIER
+    aggression: 5
   - type: STR_FLOATER_ENGINEER
     stats:
       tu: 50
@@ -1842,7 +1845,7 @@ units:
       psiSkill: 0
       melee: 70
     intelligence: 7
-    aggression: 2
+    aggression: 5
   - type: STR_FLOATER_NAVIGATOR
     stats:
       tu: 50
@@ -1857,7 +1860,7 @@ units:
       psiSkill: 0
       melee: 70
     intelligence: 5
-    aggression: 2
+    aggression: 5
   - type: STR_FLOATER_MEDIC
     stats:
       tu: 50
@@ -1988,7 +1991,7 @@ units:
       melee: 76
     armor: SNAKEMAN_ARMOR0
     intelligence: 2
-    aggression: 2
+    aggression: 7
     healthPool: 20
   - type: STR_SNAKEMAN_NAVIGATOR
     stats:
@@ -2005,7 +2008,7 @@ units:
       melee: 76
     armor: SNAKEMAN_ARMOR0
     intelligence: 3
-    aggression: 2
+    aggression: 5
     healthPool: 20
   - type: STR_SNAKEMAN_ENGINEER
     stats:
@@ -2022,7 +2025,7 @@ units:
       melee: 76
     armor: SNAKEMAN_ARMOR0
     intelligence: 4
-    aggression: 2
+    aggression: 5
     healthPool: 20
   - type: STR_SNAKEMAN_LEADER
     stats:
@@ -2039,7 +2042,7 @@ units:
       melee: 76
     armor: SNAKEMAN_ARMOR1
     intelligence: 5
-    aggression: 2
+    aggression: 5
     healthPool: 20
   - type: STR_SNAKEMAN_COMMANDER
     stats:
@@ -2056,7 +2059,7 @@ units:
       melee: 76
     armor: SNAKEMAN_ARMOR2
     intelligence: 6
-    aggression: 2
+    aggression: 6
     healthPool: 20
   - type: STR_MUTON_SOLDIER
     stats:
@@ -2073,7 +2076,7 @@ units:
       melee: 76
     armor: MUTON_ARMOR0
     intelligence: 2
-    aggression: 2
+    aggression: 7
     healthPool: 20
   - type: STR_MUTON_NAVIGATOR
     stats:
@@ -2090,7 +2093,7 @@ units:
       melee: 76
     armor: MUTON_ARMOR1
     intelligence: 3
-    aggression: 2
+    aggression: 5
     healthPool: 20
   - type: STR_MUTON_ENGINEER
     stats:
@@ -2107,7 +2110,7 @@ units:
       melee: 76
     armor: MUTON_ARMOR2
     intelligence: 4
-    aggression: 2
+    aggression: 5
     healthPool: 20
   - type: STR_ETHEREAL_SOLDIER
     stats:
@@ -2124,7 +2127,7 @@ units:
       melee: 85
     armor: ETHEREAL_ARMOR0
     intelligence: 6
-    aggression: 1
+    aggression: 3
   - type: STR_ETHEREAL_LEADER
     stats:
       tu: 68
@@ -2171,8 +2174,12 @@ units:
       psiSkill: 0
       melee: 80
     intelligence: 4
-    aggression: 1
+    aggression: 4
     healthPool: 100
+  - type: STR_SILACOID_TERRORIST
+    aggression: 5
+  - type: STR_CELATID_TERRORIST
+    aggression: 5
   - type: STR_SECTOPOD_TERRORIST
     race: STR_SECTOPOD
     rank: STR_LIVE_TERRORIST
@@ -2194,7 +2201,7 @@ units:
     value: 30
     deathSound: 23
     intelligence: 4
-    aggression: 3
+    aggression: 15
     livingWeapon: true
   - type: STR_ZOMBIE
     stats:
@@ -2210,7 +2217,7 @@ units:
       psiSkill: 0
       melee: 66
     intelligence: 3
-    aggression: 2
+    aggression: 5
     healthPool: -120
 # RESEARCH #
 # RESEARCH #

@@ -374,7 +374,7 @@ bool BattleItem::occupiesSlot(int x, int y, BattleItem *item) const
  * Gets the item's ammo item.
  * @return BattleItem
  */
-BattleItem *BattleItem::getAmmoItem()
+BattleItem *BattleItem::getAmmoItem() const
 {
 	return _ammoItem;
 }

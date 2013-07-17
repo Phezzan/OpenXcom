@@ -20,6 +20,7 @@
 #define OPENXCOM_AGGROBAISTATE_H
 
 #include "BattleAIState.h"
+#include "../Ruleset/RuleItem.h"
 #include <vector>
 
 
@@ -66,7 +67,7 @@ public:
 	/// Get the last known location of target, for turning.
 	Position getLastKnownPosition() const { return _lastKnownPosition; }
 	/// decide if we should throw a grenade/launch a missile to this position.
-	bool explosiveEfficacy(Position targetPos, BattleUnit *attackingUnit, int radius, int diff);
+    bool explosiveEfficacy(Position targetPos, BattleUnit *attackingUnit, RuleItem* rule, int diff);
 	/// attempt to take a melee attack/charge an enemy we can see.
 	void meleeAction(BattleAction *action);
 	/// attempt a psionic attack on an enemy we "know of".
@@ -85,6 +86,8 @@ public:
 	bool takeCoverAssessment(BattleAction *action);
 	/// select the nearest target we can see
 	void selectNearestTarget();
+	/// select the best target we can see try to hit things with less armor
+	void selectBestTarget(const int );
 	/// select the nearest moveable relative to a target
 	bool selectPointNearTarget(BattleAction *action, BattleUnit *target, int maxTUs);
 	/// perform a melee attack action

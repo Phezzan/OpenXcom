@@ -79,9 +79,9 @@ public:
 	/// Close ufo doors.
 	int closeUfoDoors();
 	/// Calculate line.
-	int calculateLine(const Position& origin, const Position& target, bool storeTrajectory, std::vector<Position> *trajectory, BattleUnit *excludeUnit, bool doVoxelCheck = true, bool onlyVisible = false, BattleUnit *excludeAllBut = 0);
+	int calculateLine(const Position& origin, const Position& target, bool storeTrajectory, std::vector<Position> *trajectory, const BattleUnit *excludeUnit, bool doVoxelCheck = true, bool onlyVisible = false, const BattleUnit *excludeAllBut = 0);
 	/// Calculate a parabola trajectory.
-	int calculateParabola(const Position& origin, const Position& target, bool storeTrajectory, std::vector<Position> *trajectory, BattleUnit *excludeUnit, double curvature, double accuracy);
+	int calculateParabola(const Position& origin, const Position& target, bool storeTrajectory, std::vector<Position> *trajectory, const BattleUnit *excludeUnit, double curvature, double accuracy);
 	/// Find all the soldiers that would see queryingUnit at tile (aka tilePos) and collect some statistics for AI.
 	bool surveyXComThreatToTile(Tile *tile, Position &tilePos, BattleUnit *hypotheticalUnit);	
 	/// Get the origin voxel of a unit's eyesight
@@ -121,15 +121,15 @@ public:
 	/// check the visibility of a given voxel
 	bool isVoxelVisible(const Position& voxel);
 	/// check what type of voxel occupies this space
-	int voxelCheck(const Position& voxel, BattleUnit *excludeUnit, bool excludeAllUnits = false, bool onlyVisible = false, BattleUnit *excludeAllBut = 0);
+	int voxelCheck(const Position& voxel, const BattleUnit *excludeUnit, bool excludeAllUnits = false, bool onlyVisible = false, const BattleUnit *excludeAllBut = 0);
 	/// blow this tile up
 	bool detonate(Tile* tile);
 	/// validate a throwing action
 	bool validateThrow(BattleAction *action);
 	/// open any doors this door is connected to.
 	void checkAdjacentDoors(Position pos, int part);
-    /// return a list of spotters that are going to shoot unit
-    std::list<std::pair<int, BattleUnit*> > getReactingUnits(OpenXcom::BattleUnit*);
+	/// return a list of spotters that are going to shoot unit
+	std::list<std::pair<int, BattleUnit*> > getReactingUnits(OpenXcom::BattleUnit*);
 	/// given a vector of spotters, and a unit, this will pick the one with the highest reaction score.
 	BattleUnit* getReactor(std::vector<BattleUnit *> spotters, BattleUnit *unit);
 	/// check validity of a snap shot to this position.

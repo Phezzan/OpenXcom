@@ -1491,7 +1491,7 @@ bool SavedBattleGame::eyesOnTarget(UnitFaction faction, BattleUnit* unit)
 		
 		std::vector<BattleUnit*> *vis = (*i)->getVisibleUnits();
 		if (std::find(vis->begin(), vis->end(), unit) != vis->end()) return true;
-		// aliens know the location of all XCom agents sighted by all other aliens due to sharing locations over their space-walkie-talkies				
+		// aliens know the location of all XCom agents sighted by all other aliens due to sharing locations over their space-walkie-talkies
 	}
 
 	return false;

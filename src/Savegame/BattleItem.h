@@ -101,7 +101,7 @@ public:
 	/// Checks if the item is occupying a slot.
 	bool occupiesSlot(int x, int y, BattleItem *item = 0) const;
 	/// Gets the item's ammo item.
-	BattleItem *getAmmoItem();
+	BattleItem *getAmmoItem() const;
 	bool needsAmmo() const;
 	/// Sets the item's ammo item.
 	int setAmmoItem(BattleItem *item);

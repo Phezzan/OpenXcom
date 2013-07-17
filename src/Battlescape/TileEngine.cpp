@@ -1103,7 +1103,7 @@ bool TileEngine::tryReactionSnap(BattleUnit *unit, BattleUnit *target)
 			}
 
 			if (action.weapon->getAmmoItem()->getRules()->getExplosionRadius() &&
-				aggro->explosiveEfficacy(action.target, unit, action.weapon->getAmmoItem()->getRules()->getExplosionRadius(), -1) == false)
+				aggro->explosiveEfficacy(action.target, unit, action.weapon->getAmmoItem()->getRules(), -1) == false)
 			{
 				// don't shoot. it's too early in the game or we'll kill ourselves or someone we care about
 				// this will cause the alien to NOT actually fire, but allow the loop to continue in case someone else CAN.
@@ -2021,7 +2021,7 @@ int TileEngine::closeUfoDoors()
  * @param excludeAllBut [optional] the only unit to be considered for ray hits
  * @return the objectnumber(0-3) or unit(4) or out of map (5) or -1(hit nothing)
  */
-int TileEngine::calculateLine(const Position& origin, const Position& target, bool storeTrajectory, std::vector<Position> *trajectory, BattleUnit *excludeUnit, bool doVoxelCheck, bool onlyVisible, BattleUnit *excludeAllBut)
+int TileEngine::calculateLine(const Position& origin, const Position& target, bool storeTrajectory, std::vector<Position> *trajectory, const BattleUnit *excludeUnit, bool doVoxelCheck, bool onlyVisible, const BattleUnit *excludeAllBut)
 {
 	int x, x0, x1, delta_x, step_x;
 	int y, y0, y1, delta_y, step_y;
@@ -2186,7 +2186,7 @@ int TileEngine::calculateLine(const Position& origin, const Position& target, bo
  * @param accuracy is the deviation of the angles it should take into account. 1.0 is perfection.
  * @return the objectnumber(0-3) or unit(4) or out of map (5) or -1(hit nothing)
  */
-int TileEngine::calculateParabola(const Position& origin, const Position& target, bool storeTrajectory, std::vector<Position> *trajectory, BattleUnit *excludeUnit, double curvature, double accuracy)
+int TileEngine::calculateParabola(const Position& origin, const Position& target, bool storeTrajectory, std::vector<Position> *trajectory, const BattleUnit *excludeUnit, double curvature, double accuracy)
 {
 	double ro = sqrt((double)((target.x - origin.x) * (target.x - origin.x) + (target.y - origin.y) * (target.y - origin.y) + (target.z - origin.z) * (target.z - origin.z)));
 
@@ -2286,7 +2286,7 @@ bool TileEngine::isVoxelVisible(const Position& voxel)
  * @param excludeAllBut if set, the only unit to be considered for ray hits
  * @return the objectnumber(0-3) or unit(4) or out of map (5) or -1(hit nothing)
  */
-int TileEngine::voxelCheck(const Position& voxel, BattleUnit *excludeUnit, bool excludeAllUnits, bool onlyVisible, BattleUnit *excludeAllBut)
+int TileEngine::voxelCheck(const Position& voxel, const BattleUnit *excludeUnit, bool excludeAllUnits, bool onlyVisible, const BattleUnit *excludeAllBut)
 {
 
 	Tile *tile = _save->getTile(Position(voxel.x/16, voxel.y/16, voxel.z/24));

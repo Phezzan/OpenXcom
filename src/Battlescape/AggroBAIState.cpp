@@ -33,6 +33,7 @@
 #include "../Engine/RNG.h"
 #include "../Engine/Logger.h"
 #include "../Engine/Game.h"
+#include "../Engine/Options.h"
 #include "../Ruleset/Armor.h"
 #include "../Resource/ResourcePack.h"
 
@@ -254,10 +255,10 @@ void AggroBAIState::setAggroTarget(BattleUnit *unit)
 /*
  * decide if it worth our while to create an explosion here.
  */
-bool AggroBAIState::explosiveEfficacy(Position targetPos, BattleUnit *attackingUnit, int radius, int diff)
+bool AggroBAIState::explosiveEfficacy(Position targetPos, BattleUnit *attackingUnit, RuleItem* rule, int diff)
 {
 	// i hate the player and i want him dead, but i don't want to piss him off.
-	if (_game->getTurn() < 3)
+	if (_game->getTurn() + diff/2 < 4)
 		return false;
 	if (diff == -1)
 	{
@@ -273,22 +274,26 @@ bool AggroBAIState::explosiveEfficacy(Position targetPos, BattleUnit *attackingU
 		desperation += 3;
 
 	int efficacy = desperation + enemiesAffected;
+	int const radius = rule->getExplosionRadius();
+    int const power = rule->getPower() * 2/3;
+	int const exHeight = Options::getInt("battleExplosionHeight");
 	if (distance <= radius)
 		efficacy -= 3;
 
-	// we don't want to ruin our own base, but we do want to ruin XCom's day.
-	if (_game->getMissionType() == "STR_ALIEN_BASE_ASSAULT") efficacy -= 3;
-	else if (_game->getMissionType() == "STR_BASE_DEFENSE" || _game->getMissionType() == "STR_TERROR_MISSION") efficacy += 3;
+	// we want to ruin XCom's day.
+	if (_game->getMissionType() == "STR_BASE_DEFENSE" || _game->getMissionType() == "STR_TERROR_MISSION") efficacy += 1 + diff/2;
 
-
+	const Position grenadePos = Position ((targetPos.x * 16)+8, (targetPos.y * 16)+8, (targetPos.z * 24)+12);
 	BattleUnit *target = _game->getTile(targetPos)->getUnit();
 	for (std::vector<BattleUnit*>::iterator i = _game->getUnits()->begin(); i != _game->getUnits()->end(); ++i)
 	{
-		if (!(*i)->isOut() && (*i) != attackingUnit && (*i)->getPosition().z == targetPos.z && _game->getTileEngine()->distance((*i)->getPosition(), targetPos) <= radius)
+		const BattleUnit* bu = *i;
+		if (bu == attackingUnit || bu->isOut() || power < bu->getArmor()->getUnderArmor())
+			continue;
+		if (bu->getPosition().z <= targetPos.z + exHeight && _game->getTileEngine()->distance(bu->getPosition(), targetPos) <= radius)
 		{
-			Position voxelPosA = Position ((targetPos.x * 16)+8, (targetPos.y * 16)+8, (targetPos.z * 24)+12);
-			Position voxelPosB = Position (((*i)->getPosition().x * 16)+8, ((*i)->getPosition().y * 16)+8, ((*i)->getPosition().z * 24)+12);
-			int collidesWith = _game->getTileEngine()->calculateLine(voxelPosA, voxelPosB, false, 0, target, true, false, *i);
+			Position voxelPosB = Position ((bu->getPosition().x * 16)+8, (bu->getPosition().y * 16)+8, (bu->getPosition().z * 24)+12);
+			int collidesWith = _game->getTileEngine()->calculateLine(grenadePos, voxelPosB, false, 0, target, true, false, bu);
 			if (collidesWith == 4)
 			{
 				if ((*i)->getFaction() != attackingUnit->getFaction())
@@ -297,12 +302,12 @@ bool AggroBAIState::explosiveEfficacy(Position targetPos, BattleUnit *attackingU
 					++efficacy;
 				}
 				else
-					efficacy -= 2; // friendlies count double
+					efficacy -= 1; // friendlies count against
 			}
 		}
 	}
 	// spice things up a bit by adding a random number based on difficulty level
-	efficacy += RNG::generate(0, diff+1) - RNG::generate(0,2);
+	efficacy += RNG::generate(-diff, diff);
 	if (efficacy > 0 || enemiesAffected >= 10)
 		return true;
 	return false;
@@ -443,7 +448,7 @@ void AggroBAIState::wayPointAction(BattleAction *action)
 			for (std::vector<BattleUnit*>::const_iterator j = (*i)->getVisibleUnits()->begin(); j != (*i)->getVisibleUnits()->end() && _aggroTarget == 0; ++j)
 			{
 				_game->getPathfinding()->calculate(_unit, (*j)->getPosition(), *j, -1);
-				if (_game->getPathfinding()->getStartDirection() != -1 && explosiveEfficacy((*j)->getPosition(), _unit, (_unit->getMainHandWeapon()->getAmmoItem()->getRules()->getPower()/20)+1, action->diff))
+				if (_game->getPathfinding()->getStartDirection() != -1 && explosiveEfficacy((*j)->getPosition(), _unit, _unit->getMainHandWeapon()->getAmmoItem()->getRules(), action->diff))
 				{
 					_aggroTarget = *j;
 				}
@@ -510,23 +515,28 @@ void AggroBAIState::wayPointAction(BattleAction *action)
  */
 void AggroBAIState::projectileAction(BattleAction *action)
 {
-	if(action->weapon->getRules()->isWaypoint())
+	const BattleItem * weapon = action->weapon;
+	const int power           = weapon->getAmmoItem()->getRules()->getPower();;
+	const int radius          = weapon->getAmmoItem()->getRules()->getExplosionRadius();;
+
+	if(weapon->getRules()->isWaypoint())
 	{
 		if (action->actor->getType() != "SOLDIER")
 			wayPointAction(action);
 		return;
 	}
 
-	selectNearestTarget();
+	if (_aggroTarget == 0 || _aggroTarget->isOut())
+		selectBestTarget(power);
 
 	if (_aggroTarget != 0)
 	{
 		_timesNotSeen = 0;
 		_lastKnownPosition = _aggroTarget->getPosition();
 		action->target = _aggroTarget->getPosition();
-		if((action->actor->getFaction() == FACTION_PLAYER && _aggroTarget->getFaction() == FACTION_HOSTILE) || action->actor->getFaction() == FACTION_HOSTILE)
+		if(action->actor->getFaction() == FACTION_HOSTILE || (action->actor->getFaction() == FACTION_PLAYER && _aggroTarget->getFaction() == FACTION_HOSTILE) )
 		{
-			if (!action->weapon->getAmmoItem()->getRules()->getExplosionRadius() || explosiveEfficacy(_aggroTarget->getPosition(), _unit, action->weapon->getAmmoItem()->getRules()->getExplosionRadius(), action->diff))
+			if (!radius || explosiveEfficacy(_aggroTarget->getPosition(), _unit, action->weapon->getAmmoItem()->getRules(), action->diff))
 			{
 				selectFireMethod(action);
 			}
@@ -543,7 +553,7 @@ void AggroBAIState::grenadeAction(BattleAction *action)
 	// do we have a grenade on our belt?
 	BattleItem *grenade = _unit->getGrenadeFromBelt();
 	// distance must be more than X tiles, otherwise it's too dangerous to play with explosives
-	if (explosiveEfficacy(_aggroTarget->getPosition(), _unit, grenade->getRules()->getExplosionRadius(), action->diff))
+	if (explosiveEfficacy(_aggroTarget->getPosition(), _unit, grenade->getRules(), action->diff))
 	{
 		int tu = 4; // 4TUs for picking up the grenade
 		if(_unit->getFaction() == FACTION_HOSTILE)
@@ -572,26 +582,33 @@ void AggroBAIState::grenadeAction(BattleAction *action)
 */
 void AggroBAIState::takeCoverAction(BattleAction *action)
 {
-	selectNearestTarget();
 	if (!_aggroTarget)
 	{
-		action->type = BA_RETHINK;
+		selectNearestTarget();
+		if (!_aggroTarget)
+		{
+			action->type = BA_RETHINK;
+			return;
+		}
+	}
+
+	if (_unit->getTimeUnits() <= 5)
+	{
+		action->target = _unit->getPosition(); // stop wasting our time with calculations when you can't walk anywhere, reapers
 		return;
 	}
+
 	Uint32 start = SDL_GetTicks();
-	int unitsSpottingMe =_game->getSpottingUnits(action->actor);
 	action->type = BA_WALK;
+
 	int currentTilePreference = _unit->_hidingForTurn ? action->number * 5 : 0;
 	int tries = -1;
 	bool coverFound = false;
-	int dx = _unit->getPosition().x - _aggroTarget->getPosition().x; // 2d vector in the direction away from the aggro target
-	int dy = _unit->getPosition().y - _aggroTarget->getPosition().y;
-	int dist = _game->getTileEngine()->distance(_unit->getPosition(), _aggroTarget->getPosition());
-    dist = dist ? dist : 1; // division by zero paranoia
-	Position runOffset;
-	runOffset.x = (dx * 5) / dist;
-	runOffset.y = (dy * 5) / dist;
-	runOffset.z = 0;
+
+	const int dx = _unit->getPosition().x - _aggroTarget->getPosition().x; // 2d vector in the direction away from the aggro target
+	const int dy = _unit->getPosition().y - _aggroTarget->getPosition().y;
+	const int dist = 1 + _game->getTileEngine()->distance(_unit->getPosition(), _aggroTarget->getPosition());
+	const Position runOffset ((dx * 6) / dist, (dy * 6) / dist, 0 );
 				
 	int bestTileScore = -100000;
 	int score = -100000;
@@ -603,12 +620,6 @@ void AggroBAIState::takeCoverAction(BattleAction *action)
 				
 	const bool civ = _unit->getFaction() == FACTION_NEUTRAL;
 
-	if (_unit->getTimeUnits() <= 5)
-	{
-		action->target = _unit->getPosition(); // stop wasting our time with calculations when you can't walk anywhere, reapers
-		return;
-	}
-				
 	// weights of various factors in choosing a tile to which to withdraw
 	const int EXPOSURE_PENALTY = civ ? -20 : 20;
 	const int WINDOW_PENALTY = 30;
@@ -651,6 +662,7 @@ void AggroBAIState::takeCoverAction(BattleAction *action)
 			action->target.y += _randomTileSearch[tries].y;
 			if (action->target == _unit->getPosition()) 
 			{
+				int unitsSpottingMe =_game->getSpottingUnits(action->actor);
 				if (unitsSpottingMe > 0)
 				{
 					// maybe don't stay in the same spot? move or something if there's any point to it?
@@ -833,57 +845,50 @@ bool AggroBAIState::takeCoverAssessment(BattleAction *action)
 {
 	action->actor->_hidingForTurn = false;
 
-	bool takeCover = true;
-	int number = RNG::generate(0,100);
-	int unitsSpottingMe = _game->getSpottingUnits(_unit);
-	int aggression = _unit->getAggression();
+	bool takeCover = false;
+	const int tu = _unit->getActionTUs(action->type, action->weapon);
 
 	if (_charge || !_aggroTarget)
 		return false;
+	if (action->type == BA_MINDCONTROL || action->type == BA_PANIC || action->type == BA_HIT)
+	{
+		return false;
+	}
+	else if (action->number > 3 && (!action->weapon || action->weapon->getRules()->getBattleType() != BT_MELEE))
+	{
+		return true; // always seek cover as last action (unless melee... charge, stupid reapers!)
+	}
+	else if (!action->weapon || !action->weapon->getAmmoItem() || !action->weapon->getAmmoItem()->getAmmoQuantity())
+	{
+		return true;	// out of ammo or no weapon or ammo at all, we have to take cover
+	}
+	else if(action->type != BA_RETHINK && action->type != BA_WALK)
+	{
+		// enough time units to shoot?
+		if (tu > _unit->getTimeUnits())
+		{
+			return true;
+		}
+	}
 
-	// extra 5% chance per unit that sees us
-	number += unitsSpottingMe * 5;
+	int fear = 0;
+	int aggression = _unit->getAggression();
+
+	// extra 4% chance per unit that sees us
+	fear += _game->getSpottingUnits(_unit) * 4;
 
 	// lost health, chances to take cover get bigger
-	if (_unit->getHealth() < _unit->getStats()->health)
-		number += 10;
-
+	fear += (_unit->getStats()->health - _unit->getHealth()) * 20 / _unit->getStats()->health;
 
 	// aggrotarget has no weapon - chances of take cover get smaller
 	if (!_unit->getVisibleUnits()->empty() && _aggroTarget && !_aggroTarget->getMainHandWeapon())
-		number -= 50;
-	if (aggression == 0 && number < 10)
-		takeCover = false;
-	if (aggression == 1 && number < 50)
-		takeCover = false;
-	if (aggression == 2 && number < 90)
-		takeCover = false;
-	if (action->type == BA_MINDCONTROL || action->type == BA_PANIC)
-		takeCover = false;
-			
-
-	if (action->number >= 3 && (!_unit->getMainHandWeapon() || _unit->getMainHandWeapon()->getRules()->getBattleType() != BT_MELEE))
+		fear -= 40;
+	if (fear > 0)
 	{
-        takeCover = true; // always seek cover as last action (unless melee... charge, stupid reapers!)
+		fear = RNG::nDice(2,0,fear*2);
+		takeCover = fear > 10 * aggression;
 	}
 
-	// out of ammo or no weapon or ammo at all, we have to take cover
-	if (!action->weapon || !action->weapon->getAmmoItem() || !action->weapon->getAmmoItem()->getAmmoQuantity())
-	{
-		takeCover = true;
-	}
-	else
-	{
-		if(action->type != BA_RETHINK && action->type != BA_WALK)
-		{
-			int tu = action->actor->getActionTUs(action->type, action->weapon);
-			// enough time units to shoot?
-			if (tu > _unit->getTimeUnits())
-			{
-				takeCover = true;
-			}
-		}
-	}
 	return takeCover;
 }
 
@@ -903,6 +908,33 @@ void AggroBAIState::selectNearestTarget()
 		}
 	}
 }	
+
+void AggroBAIState::selectBestTarget(int const power)
+{
+	int aggroT_dist = 420; // 20 * 20 == 400
+	for (std::vector<BattleUnit*>::iterator j = _unit->getVisibleUnits()->begin(); j != _unit->getVisibleUnits()->end(); ++j)
+	{
+		BattleUnit * const bu = *j;
+		if (bu->isOut())
+			continue;
+
+		int const armor = bu->getArmor()->getFrontArmor();
+		int const factor = std::max(0, (2*armor - power)) 
+			+ _game->getTileEngine()->distanceSq(_unit->getPosition(), bu->getPosition());
+
+		if (!_aggroTarget){
+			_aggroTarget = bu;
+			aggroT_dist  = factor;
+			continue;
+		}
+
+		if (factor < aggroT_dist)
+		{
+			_aggroTarget = bu;
+			aggroT_dist  = factor;
+		}
+	}
+}
 
 /*
  * pick a point near enough to our target to perform a melee attack
@@ -959,23 +991,36 @@ void AggroBAIState::meleeAttack(BattleAction *action)
  */
 void AggroBAIState::selectFireMethod(BattleAction *action)
 {
-	int distance = _game->getTileEngine()->distance(_unit->getPosition(), action->target);
-	action->type = BA_RETHINK;
-	int tuAuto = action->weapon->getRules()->getTUAuto();
-	int tuSnap = action->weapon->getRules()->getTUSnap();
-	int tuAimed = action->weapon->getRules()->getTUAimed();
-	int currentTU = action->actor->getTimeUnits() - _coverCharge;
+	RuleItem const *rules 	= action->weapon->getRules();;
+	int distance 			= _game->getTileEngine()->distance(_unit->getPosition(), action->target);
+	action->type 			= BA_RETHINK;
+	int const tuAuto 		= rules->getTUAuto();
+	int const tuSnap 		= rules->getTUSnap();
+	int const tuAimed 		= rules->getTUAimed();
+	int const currentTU 	= action->actor->getTimeUnits() - _coverCharge;
 
-	if (distance < 4)
+	int const nSnap = tuSnap ? currentTU / action->actor->getActionTUs(BA_SNAPSHOT, action->weapon) * rules->getAccuracySnap(): 0;
+	int const nAimed=tuAimed ? currentTU / action->actor->getActionTUs(BA_AIMEDSHOT,action->weapon) * rules->getAccuracyAimed(): 0;
+	int       nAuto = tuAuto ? currentTU / action->actor->getActionTUs(BA_AUTOSHOT,action->weapon): 0;
+	if (nAuto)
 	{
-		if ( tuAuto && currentTU >= action->actor->getActionTUs(BA_AUTOSHOT, action->weapon) )
+		const int miss = (100 - rules->getAccuracyAuto());
+		const int hit  = 100 - miss * miss * miss / 10000;
+		nAuto *= hit;
+	}
+
+	int const rand = RNG::generate(0, action->diff * 10);
+
+	if (distance < 5)
+	{
+		if ( nAuto > nSnap)
 		{
 			action->type = BA_AUTOSHOT;
 			return;
 		}
-		if ( !tuSnap || currentTU < action->actor->getActionTUs(BA_SNAPSHOT, action->weapon) )
+		if ( !nSnap )
 		{
-			if ( tuAimed && currentTU >= action->actor->getActionTUs(BA_AIMEDSHOT, action->weapon) )
+			if ( nAimed )
 			{
 				action->type = BA_AIMEDSHOT;
 			}
@@ -988,33 +1033,32 @@ void AggroBAIState::selectFireMethod(BattleAction *action)
 
 	if ( distance > 12 )
 	{
-		if ( tuAimed && currentTU >= action->actor->getActionTUs(BA_AIMEDSHOT, action->weapon) )
+		if ( nAimed >= nSnap )
 		{
 			action->type = BA_AIMEDSHOT;
 			return;
 		}
-		if ( distance < 20
-			&& tuSnap
-			&& currentTU >= action->actor->getActionTUs(BA_SNAPSHOT, action->weapon) )
+		if (nSnap > nAuto)
 		{
 			action->type = BA_SNAPSHOT;
 			return;
 		}
 	}
 	
-	if ( tuSnap && currentTU >= action->actor->getActionTUs(BA_SNAPSHOT, action->weapon) )
+	if (nAuto > 0 && nAuto + rand > nSnap)
 	{
-			action->type = BA_SNAPSHOT;
-			return;
+		action->type = BA_AUTOSHOT;
+		return;
 	}
-	if ( tuAimed && currentTU >= action->actor->getActionTUs(BA_AIMEDSHOT, action->weapon) )
+	if (nSnap > nAimed || (nSnap > 0 && rand == 1))
 	{
-			action->type = BA_AIMEDSHOT;
-			return;
+		action->type = BA_SNAPSHOT;
+		return;
 	}
-	if ( tuAuto && currentTU >= action->actor->getActionTUs(BA_AUTOSHOT, action->weapon) )
+	if ( nAimed )
 	{
-			action->type = BA_AUTOSHOT;
+		action->type = BA_AIMEDSHOT;
+		return;
 	}
 }
 
