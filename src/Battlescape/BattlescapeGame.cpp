@@ -179,7 +179,6 @@ void BattlescapeGame::init()
  */
 void BattlescapeGame::handleAI(BattleUnit *unit)
 {
-	GameDifficulty const diff = _parentState->getGame()->getSavedGame()->getDifficulty();
 	std::wstringstream ss;
 	
 	_tuReserved = BA_NONE;
@@ -224,9 +223,10 @@ void BattlescapeGame::handleAI(BattleUnit *unit)
 		}
 	}
 
-	_save->getTileEngine()->calculateFOV(unit); // might need this populate _visibleUnit for a newly-created alien
-	// it might also help chryssalids realize they've zombified someone and need to move on
-	// it's also for good luck
+	_save->getTileEngine()->calculateFOV(unit->getPosition()); // might need this populate _visibleUnit for a newly-created alien
+        // it might also help chryssalids realize they've zombified someone and need to move on
+		// it should also hide units when they've killed the guy spotting them
+        // it's also for good luck
 
     BattleAIState *ai = unit->getCurrentAIState();
 	if (!ai)
@@ -332,7 +332,7 @@ void BattlescapeGame::handleAI(BattleUnit *unit)
 		statePushBack(new UnitWalkBState(this, action, finalFacing, usePathfinding));
 	}
 
-	if (action.type == BA_SNAPSHOT || action.type == BA_AUTOSHOT || action.type == BA_THROW || action.type == BA_HIT || action.type == BA_MINDCONTROL || action.type == BA_PANIC || action.type == BA_LAUNCH)
+	if (action.type == BA_SNAPSHOT || action.type == BA_AUTOSHOT || action.type == BA_AIMEDSHOT || action.type == BA_THROW || action.type == BA_HIT || action.type == BA_MINDCONTROL || action.type == BA_PANIC || action.type == BA_LAUNCH)
 	{
 		if (action.type == BA_MINDCONTROL || action.type == BA_PANIC)
 		{
@@ -1369,7 +1369,7 @@ void BattlescapeGame::primaryAction(const Position &pos)
 				_save->getPathfinding()->removePreview();
 			_currentAction.run = false;
 			_currentAction.strafe = _save->getStrafeSetting() && (SDL_GetModState() & KMOD_CTRL) != 0 && _save->getSelectedUnit()->getTurretType() == -1;
-			if (_currentAction.strafe && _save->getTileEngine()->distance(_currentAction.actor->getPosition(), pos) > 2)
+			if (_currentAction.strafe && _save->getTileEngine()->distance(_currentAction.actor->getPosition(), pos) > 1)
 			{
 				_currentAction.run = true;
 				_currentAction.strafe = false;
@@ -1553,6 +1553,7 @@ BattleUnit *BattlescapeGame::convertUnit(BattleUnit *unit, std::string newType)
 	for (std::vector<BattleItem*>::iterator i = unit->getInventory()->begin(); i != unit->getInventory()->end(); ++i)
 	{
 		dropItem(unit->getPosition(), (*i));
+		(*i)->setOwner(0);
 	}
 
 	unit->getInventory()->clear();
@@ -1993,7 +1994,7 @@ void BattlescapeGame::tallyUnits(int &liveAliens, int &liveSoldiers, bool conver
 		}
 		else if (FACTION_PLAYER == (*j)->getOriginalFaction()						// Perhaps he's just resting
 			&& STATUS_DEAD != (*j)->getStatus() 
-			&& (!(*j)->getFatalWounds() || (*j)->getStunlevel() < ((*j)->getHealth() / (*j)->getFatalWounds()))
+			&& (!(*j)->getFatalWounds() || (*j)->getStunlevel() < std::min(30,(*j)->getHealth() / (*j)->getFatalWounds()))
 			)
 		{
 			liveSoldiers++;

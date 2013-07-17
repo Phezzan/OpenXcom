@@ -175,13 +175,24 @@ void AggroBAIState::think(BattleAction *action)
 	action->diff = (int)(_game->getBattleState()->getGame()->getSavedGame()->getDifficulty());
  	action->type = BA_RETHINK;
 	action->actor = _unit;
-	_aggroTarget = 0;
-	_wasHit = false;
+	// we were hit, but we can't see who did it, try turning around...
+	if (_wasHit && _unit->getVisibleUnits()->empty())
+	{
+		_unit->lookAt(_lastKnownPosition);
+		while (_unit->getStatus() == STATUS_TURNING && _unit->getVisibleUnits()->empty())
+		{
+			_unit->turn();
+			_game->getTileEngine()->calculateFOV(_unit);
+		}
+		_unit->abortTurn();
+		_wasHit = false;
+	}
 	if (_lastKnownTarget && _lastKnownTarget->isOut())
 	{
 		_lastKnownTarget = 0;
 		_lastKnownPosition = Position(0,0,-1);
 	}
+	_aggroTarget = 0;
 
 	if (_unit->getCharging() && _unit->getCharging()->isOut())
 	{
@@ -194,14 +205,15 @@ void AggroBAIState::think(BattleAction *action)
 	*/
 	
 	action->weapon = _unit->getMainHandWeapon();
-	if (_coverCharge == 0)
+	// the living weapon rule here doubles for "being a terrorist"
+	if (_coverCharge == 0 && !(_unit->getOriginalFaction() == FACTION_PLAYER || _unit->getUnitRules()->isLivingWeapon()))
 	{
 		_coverAction->actor = action->actor;
 		_coverAction->number = action->number;
 		_coverAction->weapon = action->weapon;
 		takeCoverAction(_coverAction);
 	}
-	if (_unit->getStats()->psiSkill && RNG::generate(0,3 - (action->diff / 2)) == 0)
+	if (_unit->getOriginalFaction() != FACTION_PLAYER && _unit->getStats()->psiSkill && RNG::generate(0,3 - (action->diff / 2)) == 0)
 	{
 		psiAction(action);
 	}
@@ -221,14 +233,15 @@ void AggroBAIState::think(BattleAction *action)
 			}
 		}
 	}
-
-	if (takeCoverAssessment(action))
+	// terrorists don't run or hide, they only live to kill.
+	if (!(_unit->getOriginalFaction() == FACTION_PLAYER || _unit->getUnitRules()->isLivingWeapon()) && takeCoverAssessment(action))
 	{
 		_unit->_hidingForTurn = true;
 		_aggroTarget = 0;
 		if (_traceAI) { Log(LOG_INFO) << "changed my mind, TAKING COVER!"; }
 		_coverCharge = 0;
-		takeCoverAction(action);
+		action->target = _coverAction->target;
+		action->type = BA_WALK;
 	}
 	else if (_unit->getGrenadeFromBelt() && (action->type == BA_SNAPSHOT || action->type == BA_AUTOSHOT) && RNG::generate(0,4 - (action->diff / 2)) == 0)
 	{
@@ -334,9 +347,9 @@ void AggroBAIState::meleeAction(BattleAction *action)
 	{
 		int newDistance = _game->getTileEngine()->distance(_unit->getPosition(), (*j)->getPosition());
 		//pick closest living unit that we can move to
-		if (newDistance <  distance && !(*j)->isOut())
+		if ((newDistance < distance || newDistance == 1) && !(*j)->isOut())
 		{
-			if (selectPointNearTarget(action, (*j), chargeReserve))
+			if (newDistance == 1 || selectPointNearTarget(action, (*j), chargeReserve))
 			{
 				_aggroTarget = (*j);
 				action->type = BA_WALK;
@@ -558,7 +571,6 @@ void AggroBAIState::grenadeAction(BattleAction *action)
 		int tu = 4; // 4TUs for picking up the grenade
 		if(_unit->getFaction() == FACTION_HOSTILE)
 		{
-			action->weapon = grenade;
 			tu += _unit->getActionTUs(BA_PRIME, grenade);
 			tu += _unit->getActionTUs(BA_THROW, grenade);
 			// do we have enough TUs to prime and throw the grenade?
@@ -570,6 +582,7 @@ void AggroBAIState::grenadeAction(BattleAction *action)
 					grenade->setExplodeTurn(_game->getTurn());
 					_unit->spendTimeUnits(_unit->getActionTUs(BA_PRIME, grenade));
 					action->type = BA_THROW;
+					action->weapon = grenade;
 				}
 			}
 		}
@@ -944,6 +957,7 @@ bool AggroBAIState::selectPointNearTarget(BattleAction *action, BattleUnit *targ
 	int size = action->actor->getArmor()->getSize();
 	int targetsize = target->getArmor()->getSize();
 	bool returnValue = false;
+	int distance = 1000;
 	for (int x = -size; x <= targetsize; ++x)
 	{
 		for (int y = -size; y <= targetsize; ++y)
@@ -959,10 +973,11 @@ bool AggroBAIState::selectPointNearTarget(BattleAction *action, BattleUnit *targ
 				if (valid && fitHere)
 				{
 					_game->getPathfinding()->calculate(action->actor, checkPath, 0, maxTUs);
-					if (_game->getPathfinding()->getStartDirection() != -1)
+					if (_game->getPathfinding()->getStartDirection() != -1 && _game->getTileEngine()->distance(checkPath, action->actor->getPosition()) < distance)
 					{
 						action->target = checkPath;
 						returnValue = true;
+						distance = _game->getTileEngine()->distance(checkPath, action->actor->getPosition());
 					}
 					_game->getPathfinding()->abortPath();
 				}
