@@ -209,7 +209,6 @@ void UnitDieBState::convertUnitToCorpse()
 {
 	_parent->getSave()->getBattleState()->showPsiButton(false);
 	// in case the unit was unconscious
-	//if (_unit->getStatus() == STATUS_DEAD)	// I think maybe remote origin is right and it's always ok to remove the body.
 	_parent->getSave()->removeUnconsciousBodyItem(_unit);
 	Position lastPosition = _unit->getPosition();
 	int size = _unit->getArmor()->getSize() - 1;
