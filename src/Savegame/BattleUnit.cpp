@@ -2351,7 +2351,7 @@ unsigned BattleUnit::painKillers ()
 	{
 		return 0;
 	}
-	_morale += std::min(100, _morale + _stats.health - _health);
+	_morale = std::min(100, _morale + _pain);
 	_pain = 0;
 	return 1;
 }
@@ -2679,7 +2679,7 @@ int BattleUnit::getAggroSound() const
  */
 void BattleUnit::setEnergy(int energy)
 {
-	_energy = std::min(energy, _stats.stamina);
+	_energy = std::min( energy > 0 ? energy:0, _stats.stamina);
 }
 
 /**

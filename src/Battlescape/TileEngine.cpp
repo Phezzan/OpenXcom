@@ -1164,7 +1164,7 @@ BattleUnit *TileEngine::hit(const Position &center, int power, ItemDamageType ty
 				}
 			}
 		}
-		if(bu)
+		if (bu)
 		{
 			const int sz = bu->getArmor()->getSize() * 8;
 			const Position target = bu->getPosition() * Position(16,16,24) + Position(sz,sz, bu->getFloatHeight() - tile->getTerrainLevel());
