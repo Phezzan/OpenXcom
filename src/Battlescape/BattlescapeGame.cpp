@@ -180,7 +180,8 @@ void BattlescapeGame::init()
 void BattlescapeGame::handleAI(BattleUnit *unit)
 {
 	std::wstringstream ss;
-	
+
+	assert(unit != NULL);
 	_tuReserved = BA_NONE;
 
 	if (unit->getTimeUnits() <= 5)
@@ -208,17 +209,17 @@ void BattlescapeGame::handleAI(BattleUnit *unit)
 	BattleItem * const weapon = unit->getMainHandWeapon();
 	if (weapon && weapon->getRules()->getBattleType() == BT_FIREARM)
 	{
-		switch (unit->getAggression())
+		switch (unit->getAggression())  // only snapshot is valid for reaction fire
 		{
-		case 0:
+		/*case 0:
 			_tuReserved = BA_AIMEDSHOT;
 		break;
 		case 1:
 			_tuReserved = BA_AUTOSHOT;
 		break;
-		case 2:
-			_tuReserved = BA_SNAPSHOT;
+		case 2:*/
 		default:
+			_tuReserved = BA_SNAPSHOT;
 		break;
 		}
 	}

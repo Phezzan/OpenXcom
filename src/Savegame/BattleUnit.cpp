@@ -1700,8 +1700,11 @@ std::vector<BattleItem*> *BattleUnit::getInventory()
  */
 void BattleUnit::think(BattleAction *action)
 {
-	checkAmmo();
-	_currentAIState->think(action);
+	if (!isOut())
+	{
+		checkAmmo();
+		_currentAIState->think(action);
+	}
 }
 
 /**
