@@ -19,6 +19,7 @@
 #include "ManufactureState.h"
 #include <sstream>
 #include "../Engine/Game.h"
+#include "../Engine/Action.h"
 #include "../Resource/ResourcePack.h"
 #include "../Engine/Language.h"
 #include "../Engine/Palette.h"
@@ -33,6 +34,7 @@
 #include "../Ruleset/Ruleset.h"
 #include "../Ruleset/RuleManufacture.h"
 #include "../Savegame/Production.h"
+#include "MiniBaseView.h"
 #include "NewManufactureListState.h"
 #include "ManufactureInfoState.h"
 #include <limits>
@@ -49,9 +51,10 @@ ManufactureState::ManufactureState(Game *game, Base *base) : State(game), _base(
 {
 	// Create objects
 	_window = new Window(this, 320, 200, 0, 0);
+	_mini = new MiniBaseView(128, 16, 187, 7);
 	_btnNew = new TextButton(148, 16, 8, 176);
 	_btnOk = new TextButton(148, 16, 164, 176);
-	_txtTitle = new Text(310, 16, 5, 8);
+	_txtTitle = new Text(182, 16, 6, 7);
 	_txtAvailable = new Text(150, 9, 8, 24);
 	_txtAllocated = new Text(150, 9, 160, 24);
 	_txtSpace = new Text(150, 9, 8, 34);
@@ -71,6 +74,7 @@ ManufactureState::ManufactureState(Game *game, Base *base) : State(game), _base(
 	_game->setPalette(_game->getResourcePack()->getPalette("BACKPALS.DAT")->getColors(Palette::blockOffset(6)), Palette::backPos, 16);
 
 	add(_window);
+	add(_mini);
 	add(_btnNew);
 	add(_btnOk);
 	add(_txtTitle);
@@ -87,6 +91,26 @@ ManufactureState::ManufactureState(Game *game, Base *base) : State(game), _base(
 
 	centerAllSurfaces();
 
+	_mini->setTexture(_game->getResourcePack()->getSurfaceSet("BASEBITS.PCK"));
+	_mini->setBases(_game->getSavedGame()->getBases());
+	for (unsigned int i = 0; i < _game->getSavedGame()->getBases()->size(); ++i)
+	{
+		if (_game->getSavedGame()->getBases()->at(i) == _base)
+		{
+			_mini->setSelectedBase(i);
+			break;
+		}
+	}
+	_mini->onMouseClick((ActionHandler)&ManufactureState::miniClick);
+	_mini->onKeyboardPress((ActionHandler)&ManufactureState::miniPress, (SDLKey)Options::getInt("keyGeoBase1"));
+	_mini->onKeyboardPress((ActionHandler)&ManufactureState::miniPress, (SDLKey)Options::getInt("keyGeoBase2"));
+	_mini->onKeyboardPress((ActionHandler)&ManufactureState::miniPress, (SDLKey)Options::getInt("keyGeoBase3"));
+	_mini->onKeyboardPress((ActionHandler)&ManufactureState::miniPress, (SDLKey)Options::getInt("keyGeoBase4"));
+	_mini->onKeyboardPress((ActionHandler)&ManufactureState::miniPress, (SDLKey)Options::getInt("keyGeoBase5"));
+	_mini->onKeyboardPress((ActionHandler)&ManufactureState::miniPress, (SDLKey)Options::getInt("keyGeoBase6"));
+	_mini->onKeyboardPress((ActionHandler)&ManufactureState::miniPress, (SDLKey)Options::getInt("keyGeoBase7"));
+	_mini->onKeyboardPress((ActionHandler)&ManufactureState::miniPress, (SDLKey)Options::getInt("keyGeoBase8"));
+
 	// Set up objects
 	_window->setColor(Palette::blockOffset(15)+6);
 	_window->setBackground(_game->getResourcePack()->getSurface("BACK17.SCR"));
@@ -102,7 +126,7 @@ ManufactureState::ManufactureState(Game *game, Base *base) : State(game), _base(
 
 	_txtTitle->setColor(Palette::blockOffset(15)+6);
 	_txtTitle->setBig();
-	_txtTitle->setAlign(ALIGN_CENTER);
+	_txtTitle->setAlign(ALIGN_LEFT);
 	_txtTitle->setText(_game->getLanguage()->getString("STR_CURRENT_PRODUCTION"));
 
 	_txtAvailable->setColor(Palette::blockOffset(15)+6);
@@ -158,6 +182,47 @@ ManufactureState::~ManufactureState()
 void ManufactureState::init ()
 {
 	fillProductionList();
+}
+
+/**
+ * Selects a new base to display.
+ * @param action Pointer to an action.
+ */
+void ManufactureState::miniClick(Action *)
+{
+	unsigned int base = _mini->getHoveredBase();
+	miniPress(NULL, base);
+}
+
+void ManufactureState::miniPress(Action * act, unsigned base)
+{
+	if (act)
+	{
+		const int key = act->getDetails()->key.keysym.sym;
+		base = 999;
+		if (key == (SDLKey)Options::getInt("keyGeoBase1"))
+            base = 0;
+		if (key == (SDLKey)Options::getInt("keyGeoBase2"))
+            base = 1;
+		if (key == (SDLKey)Options::getInt("keyGeoBase3"))
+            base = 2;
+		if (key == (SDLKey)Options::getInt("keyGeoBase4"))
+            base = 3;
+		if (key == (SDLKey)Options::getInt("keyGeoBase5"))
+            base = 4;
+		if (key == (SDLKey)Options::getInt("keyGeoBase6"))
+            base = 5;
+		if (key == (SDLKey)Options::getInt("keyGeoBase7"))
+            base = 6;
+		if (key == (SDLKey)Options::getInt("keyGeoBase8"))
+            base = 7;
+	}
+	if (base < _game->getSavedGame()->getBases()->size() && _game->getSavedGame()->getBases()->at(base))
+	{
+		_mini->setSelectedBase(base);
+		_base = _game->getSavedGame()->getBases()->at(base);
+		init();
+	}
 }
 
 /**

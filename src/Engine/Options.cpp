@@ -203,6 +203,7 @@ void createDefault()
 	setInt("keyGeoUfopedia", SDLK_u);
 	setInt("keyGeoOptions", SDLK_ESCAPE);
 	setInt("keyGeoFunding", SDLK_f);
+	setInt("keyGeoManufacture", SDLK_m);
 	setInt("keyGeoToggleDetail", SDLK_TAB);
 	setInt("keyGeoToggleRadar", SDLK_r);
 	setInt("keyQuickSave", SDLK_F6);

@@ -157,6 +157,7 @@ BasescapeState::BasescapeState(Game *game, Base *base, Globe *globe) : State(gam
 	_btnManufacture->setColor(Palette::blockOffset(13)+5);
 	_btnManufacture->setText(_game->getLanguage()->getString("STR_MANUFACTURE"));
 	_btnManufacture->onMouseClick((ActionHandler)&BasescapeState::btnManufactureClick);
+	_btnManufacture->onKeyboardPress((ActionHandler)&BasescapeState::btnManufactureClick, (SDLKey)Options::getInt("keyGeoManufacture"));
 
 	_btnTransfer->setColor(Palette::blockOffset(13)+5);
 	_btnTransfer->setText(_game->getLanguage()->getString("STR_TRANSFER_UC"));
@@ -211,7 +212,7 @@ void BasescapeState::init()
 			if (*i == _base)
 			{
 				exists = true;
-        break;
+				break;
 			}
 		}
 		// If base was removed, select first one

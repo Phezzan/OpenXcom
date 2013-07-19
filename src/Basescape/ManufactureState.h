@@ -20,6 +20,7 @@
 #define OPENXCOM_MANUFACTURESTATE_H
 
 #include "../Engine/State.h"
+#include "MiniBaseView.h"
 #include <SDL.h>
 
 namespace OpenXcom
@@ -44,7 +45,10 @@ private:
 	Text *_txtTitle, *_txtAvailable, *_txtAllocated, *_txtSpace, *_txtFunds, *_txtItem, *_txtEngineers, *_txtProduced, *_txtCost, *_txtTimeLeft;
 	TextList *_lstManufacture;	
 	SDL_Color _oldPalette[256];
+	MiniBaseView *_mini;
 	void lstManufactureClick(Action * action);
+	void miniClick(Action *);
+	void miniPress(Action *, unsigned);
 public:
 	/// Creates the Manufacture state.
 	ManufactureState(Game *game, Base *base);
