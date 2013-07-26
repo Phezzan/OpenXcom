@@ -2798,6 +2798,11 @@ ufopaedia:
     section: STR_WEAPONS_AND_EQUIPMENT
     text: STR_PULSE_PLASMA_UFO
     listOrder: 4201
+  - id: STR_PULSE_PLASMA_CLIP
+    type_id: 4
+    section: STR_WEAPONS_AND_EQUIPMENT
+    text: STR_PULSE_PLASMA_CLIP_UFO
+    listOrder: 4202
   - id: STR_MEDI_KIT_ADV
     type_id: 4
     section: STR_WEAPONS_AND_EQUIPMENT
@@ -3012,6 +3017,7 @@ extraStrings:
       STR_PULSE_PLASMA: Plasma Pulse Cannon
       STR_PULSE_PLASMA_UFO: Although not as powerful as the single-shot Plasma Cannon, this weapon's auto-fire is still fully capable of penetrating all but the most heavily armored targets.
       STR_PULSE_PLASMA_CLIP: PPC Clip
+      STR_PULSE_PLASMA_CLIP_UFO: PPC Clip
       STR_TANK_2_LASER_CANNON: Tank Adv/Laser Cannon
 ###########################################################
   - type: EnglishUk
@@ -3023,4 +3029,5 @@ extraStrings:
       STR_PULSE_PLASMA: Plasma Pulse Cannon
       STR_PULSE_PLASMA_UFO: Although not as powerful as the single-shot Plasma Cannon, this weapon's auto-fire is still fully capable of penetrating all but the most heavily armored targets.
       STR_PULSE_PLASMA_CLIP: PPC Clip
+      STR_PULSE_PLASMA_CLIP_UFO: PPC Clip
       STR_TANK_2_LASER_CANNON: Tank Adv/Laser Cannon
