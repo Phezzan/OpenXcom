@@ -301,29 +301,29 @@ bool AggroBAIState::explosiveEfficacy(Position targetPos, BattleUnit *attackingU
 	for (std::vector<BattleUnit*>::iterator i = _game->getUnits()->begin(); i != _game->getUnits()->end(); ++i)
 	{
 		const BattleUnit* bu = *i;
-		if (bu == attackingUnit || bu->isOut() || power < bu->getArmor()->getUnderArmor())
+		if (bu->isOut())
 			continue;
-		if (bu->getPosition().z <= targetPos.z + exHeight && _game->getTileEngine()->distance(bu->getPosition(), targetPos) <= radius)
+
+		const int dist = _game->getTileEngine()->distance(bu->getPosition(), targetPos) ;
+		const int powerDist = (power - dist * 5)/2;
+		const int rndDmg = RNG::nDice(2, powerDist, powerDist*3) - bu->getArmor()->getUnderArmor();
+		if ( dist > radius || rndDmg <= 0 || bu->getPosition().z > targetPos.z + exHeight)
+			continue;
+
+		Position targetPos = Position ((bu->getPosition().x * 16)+8, (bu->getPosition().y * 16)+8, (bu->getPosition().z * 24)+12);
+		int collidesWith = _game->getTileEngine()->calculateLine(grenadePos, targetPos, false, 0, target, true, false, bu);
+		if (collidesWith == 4)
 		{
-			Position voxelPosB = Position ((bu->getPosition().x * 16)+8, (bu->getPosition().y * 16)+8, (bu->getPosition().z * 24)+12);
-			int collidesWith = _game->getTileEngine()->calculateLine(grenadePos, voxelPosB, false, 0, target, true, false, bu);
-			if (collidesWith == 4)
+			if ((*i)->getFaction() != attackingUnit->getFaction())
 			{
-				if ((*i)->getFaction() != attackingUnit->getFaction())
-				{
-					++enemiesAffected;
-					++efficacy;
-				}
-				else
-					efficacy -= 1; // friendlies count against
+				++enemiesAffected;
+				efficacy += rndDmg;
 			}
+			else
+				efficacy -= rndDmg; // friendlies count against
 		}
 	}
-	// spice things up a bit by adding a random number based on difficulty level
-	efficacy += RNG::generate(-diff, diff);
-	if (efficacy > 0 || enemiesAffected >= 10)
-		return true;
-	return false;
+	return (efficacy > 10 || enemiesAffected >= 5);
 }
 
 /*
@@ -924,7 +924,7 @@ void AggroBAIState::selectNearestTarget()
 
 void AggroBAIState::selectBestTarget(int const power)
 {
-	int aggroT_dist = 420; // 20 * 20 == 400
+	int aggroT_dist = 500; // 20 * 20 == 400
 	for (std::vector<BattleUnit*>::iterator j = _unit->getVisibleUnits()->begin(); j != _unit->getVisibleUnits()->end(); ++j)
 	{
 		BattleUnit * const bu = *j;
@@ -932,7 +932,7 @@ void AggroBAIState::selectBestTarget(int const power)
 			continue;
 
 		int const armor = bu->getArmor()->getFrontArmor();
-		int const factor = std::max(0, (2*armor - power)) 
+		int const factor = (armor > power * 2) ? 1000 : std::max(0, 50*armor/power)
 			+ _game->getTileEngine()->distanceSq(_unit->getPosition(), bu->getPosition());
 
 		if (!_aggroTarget){
